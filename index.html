@@ -90,7 +90,7 @@
       background:var(--red); color:#fff; border:none; padding:12px;
       border-radius:4px; font-weight:bold; cursor:pointer; font-size:15px; margin-top:4px;
     }
-    .auth-msg { font-size:12px; text-align:center; min-height:16px; font-weight:500; }
+    .auth-msg { font-size:12px; text-align:center; min-height:16px; font-weight:bold; }
     .auth-toggle { text-align:center; font-size:13px; color:#aaa; margin-top:8px; }
     .auth-toggle a { color:#fff; font-weight:bold; text-decoration:underline; cursor:pointer; }
   </style>
@@ -189,31 +189,52 @@
     let currentFilter = 'todos';
     let hls = null;
     let hero = null;
-    let securityTimer = null; // Temporizador que checa se o usuário foi banido
 
-    // Expulsa o usuário imediatamente do app
-    async function kickUserOut(reason = 'Sua conta foi suspensa ou bloqueada.') {
-      if (securityTimer) clearInterval(securityTimer);
-      closePlayer();
+    // ==========================================
+    // TRAVA DE SEGURANÇA E EXPULSÃO INSTANTÂNEA
+    // ==========================================
+
+    async function expulsarUsuario(mensagem = 'Seu acesso foi bloqueado pelo administrador.') {
+      closePlayer(); // Para o vídeo na mesma hora
       await sb.auth.signOut();
+      localStorage.removeItem('user_email');
       
       const msg = document.getElementById('authMsg');
       msg.style.color = '#ff4444';
-      msg.innerText = reason;
+      msg.innerText = mensagem;
       document.getElementById('authOverlay').style.display = 'flex';
     }
 
-    // Inicia a verificação contínua em segundo plano (a cada 20 segundos)
-    function startSecurityWatcher() {
-      if (securityTimer) clearInterval(securityTimer);
-      securityTimer = setInterval(async () => {
-        const { data: { user }, error } = await sb.auth.getUser();
-        // Se der erro ou o usuário foi banido/deletado no Supabase
-        if (error || !user) {
-          kickUserOut('Sua conta foi bloqueada pelo administrador.');
-        }
-      }, 20000); // 20000 ms = 20 segundos
+    // Consulta direta no banco de dados se o e-mail está bloqueado
+    async function checkUserStatus() {
+      const email = localStorage.getItem('user_email');
+      if (!email) return false;
+
+      const { data: isAllowed, error } = await sb.rpc('check_user_status', { 
+        user_email: email 
+      });
+
+      // Se der erro ou se o Supabase responder false (banido)
+      if (error || isAllowed === false) {
+        expulsarUsuario('Seu acesso foi suspenso ou bloqueado.');
+        return false;
+      }
+      return true;
     }
+
+    // VIGILANTE: Pergunta ao banco a cada 8 segundos se o cliente ainda pode assistir
+    setInterval(async () => {
+      if (document.getElementById('authOverlay').style.display === 'none') {
+        await checkUserStatus();
+      }
+    }, 8000); // Checa a cada 8 segundos
+
+    // Checa na hora se voltar para a tela do navegador
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && document.getElementById('authOverlay').style.display === 'none') {
+        checkUserStatus();
+      }
+    });
 
     // Alternar entre Entrar e Cadastrar
     function toggleAuthMode() {
@@ -241,7 +262,6 @@
       msg.innerText = 'Processando...';
 
       if (isSignUpMode) {
-        // Criar Conta
         const { data, error } = await sb.auth.signUp({ email, password });
         if (error) {
           msg.style.color = '#ff4444';
@@ -249,53 +269,63 @@
         } else {
           msg.style.color = '#4CAF50';
           msg.innerText = 'Conta criada com sucesso! Entrando...';
+          localStorage.setItem('user_email', email);
           setTimeout(() => {
             document.getElementById('authOverlay').style.display = 'none';
             initPlayerApp();
-            startSecurityWatcher();
           }, 800);
         }
       } else {
-        // Entrar
         const { data, error } = await sb.auth.signInWithPassword({ email, password });
         if (error) {
           msg.style.color = '#ff4444';
-          if (error.message.toLowerCase().includes('banned') || error.message.toLowerCase().includes('suspended')) {
-            msg.innerText = 'Sua conta está bloqueada pelo administrador.';
+          if (error.message && (error.message.toLowerCase().includes('banned') || error.message.toLowerCase().includes('disabled'))) {
+            msg.innerText = 'Este usuário está bloqueado pelo administrador.';
           } else {
             msg.innerText = 'E-mail ou senha incorretos.';
           }
         } else {
-          document.getElementById('authOverlay').style.display = 'none';
-          initPlayerApp();
-          startSecurityWatcher();
+          localStorage.setItem('user_email', email);
+          const ativo = await checkUserStatus();
+          if (ativo) {
+            document.getElementById('authOverlay').style.display = 'none';
+            initPlayerApp();
+          }
         }
       }
     }
 
     // Sair da conta
     async function handleLogout() {
-      if (securityTimer) clearInterval(securityTimer);
       closePlayer();
       await sb.auth.signOut();
+      localStorage.removeItem('user_email');
       location.reload();
     }
 
-    // Verificar se já está logado ao abrir a página (consulta real ao Supabase)
+    // Verificar se já está logado ao abrir a página
     async function checkAuth() {
-      const { data: { user }, error } = await sb.auth.getUser();
-      if (user && !error) {
-        document.getElementById('authOverlay').style.display = 'none';
-        initPlayerApp();
-        startSecurityWatcher();
-      } else {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
         document.getElementById('authOverlay').style.display = 'flex';
+        return;
       }
 
-      sb.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_OUT' || !session) {
-          if (securityTimer) clearInterval(securityTimer);
-          closePlayer();
+      if (session.user && session.user.email) {
+        localStorage.setItem('user_email', session.user.email);
+      }
+
+      const ativo = await checkUserStatus();
+      if (!ativo) {
+        await expulsarUsuario('Seu acesso foi bloqueado pelo administrador.');
+        return;
+      }
+
+      document.getElementById('authOverlay').style.display = 'none';
+      initPlayerApp();
+
+      sb.auth.onAuthStateChange((_event, session) => {
+        if (!session) {
           document.getElementById('authOverlay').style.display = 'flex';
         }
       });
@@ -401,14 +431,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       render(pool.filter(i => i.name.toLowerCase().includes(val)));
     }
 
-    // Tocar canal ou vídeo com trava de segurança
+    // Iniciar vídeo checando permissão no mesmo segundo
     async function play(url, name) {
-      // 1. Checa com o Supabase se o usuário ainda tem permissão antes de dar Play
-      const { data: { user }, error } = await sb.auth.getUser();
-      if (error || !user) {
-        kickUserOut('Acesso negado. Sua conta foi bloqueada.');
-        return;
-      }
+      const valido = await checkUserStatus();
+      if (!valido) return;
 
       url = decodeURI(url);
       document.getElementById('playerTitle').innerText = name;
@@ -431,9 +457,14 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     function closePlayer() {
       const v = document.getElementById('videoPlayer');
-      v.pause(); v.removeAttribute('src'); v.load();
+      if (v) {
+        v.pause();
+        v.removeAttribute('src');
+        v.load();
+      }
       if (hls) { hls.destroy(); hls = null; }
-      document.getElementById('playerModal').classList.remove('active');
+      const modal = document.getElementById('playerModal');
+      if (modal) modal.classList.remove('active');
     }
 
     function openM3U() { document.getElementById('modalM3U').classList.add('active'); }
@@ -484,7 +515,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    // Inicia checando o login real do Supabase
+    // Inicia checando o login do Supabase
     window.onload = checkAuth;
   </script>
 </body>
