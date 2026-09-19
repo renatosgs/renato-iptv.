@@ -3,143 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Renato IPTV - Canais, Filmes, Séries e Novelas</title>
-  <meta name="description" content="Aplicativo Renato IPTV no estilo Netflix com suporte a listas M3U e M3U8 para canais, filmes, séries e novelas.">
-  
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Hls.js para rodar canais e vídeos .m3u8 no navegador -->
+  <title>Renato IPTV</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    :root { --red: #E50914; --dark: #141414; --card: #1f1f1f; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:Helvetica, Arial, sans-serif; }
+    body { background:var(--dark); color:#fff; min-height:100vh; overflow-x:hidden; padding-bottom:50px; }
+    .navbar { position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#141414; z-index:100; border-bottom:1px solid #222; }
+    .logo { font-size:20px; font-weight:900; color:var(--red); letter-spacing:1px; }
+    .logo span { color:#fff; font-size:12px; background:var(--red); padding:2px 5px; border-radius:3px; }
+    .btn-m3u { background:var(--red); color:#fff; border:none; padding:7px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px; }
+    .banner { height:45vh; min-height:280px; background-size:cover; background-position:center; display:flex; align-items:flex-end; padding:20px; position:relative; margin-top:60px; }
+    .banner-overlay { position:absolute; inset:0; background:linear-gradient(0deg, #141414 0%, rgba(20,20,20,0.4) 60%, transparent 100%); }
+    .banner-content { position:relative; z-index:2; max-width:600px; }
+    .banner-title { font-size:24px; font-weight:900; margin-bottom:8px; }
+    .banner-desc { font-size:13px; color:#ccc; margin-bottom:12px; }
+    .btn-play { background:#fff; color:#000; border:none; padding:8px 18px; font-weight:bold; border-radius:4px; cursor:pointer; }
+    .tabs { display:flex; gap:8px; overflow-x:auto; padding:12px 16px; background:#181818; }
+    .tab { padding:6px 14px; background:#252525; border-radius:20px; font-size:13px; cursor:pointer; white-space:nowrap; border:none; color:#ccc; font-weight:500; }
+    .tab.active { background:var(--red); color:#fff; font-weight:bold; }
+    .section-title { font-size:17px; font-weight:bold; padding:16px 16px 8px; color:#eee; }
+    .carousel { display:flex; gap:10px; overflow-x:auto; padding:0 16px 16px; scrollbar-width:none; }
+    .carousel::-webkit-scrollbar { display:none; }
+    .card { flex:0 0 140px; height:210px; background:var(--card); border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; position:relative; }
+    .card-img { width:100%; height:140px; object-fit:cover; background:#222; }
+    .card-badge { position:absolute; top:6px; left:6px; font-size:9px; background:var(--red); color:#fff; padding:2px 5px; border-radius:3px; font-weight:bold; }
+    .card-title { font-size:12px; font-weight:bold; padding:8px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .player-modal { position:fixed; inset:0; background:#000; z-index:2000; display:none; flex-direction:column; }
+    .player-modal.active { display:flex; }
+    .player-header { height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#141414; }
+    .btn-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; }
+    video { width:100%; flex:1; }
+    .modal-m3u { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:3000; display:none; align-items:center; justify-content:center; padding:16px; }
+    .modal-m3u.active { display:flex; }
+    .box-m3u { background:#222; padding:20px; border-radius:8px; width:100%; max-width:400px; display:flex; flex-direction:column; gap:12px; }
+    .input-m3u { background:#333; border:1px solid #444; color:#fff; padding:10px; border-radius:4px; width:100%; outline:none; }
+  </style>
 </head>
 <body>
 
-  <!-- BARRA DE NAVEGAÇÃO ESTILO NETFLIX -->
-  <header class="navbar" id="navbar">
-    <div class="nav-left">
-      <div class="brand-logo" onclick="app.setTab('inicio')">
-        RENATO <span>IPTV</span>
-      </div>
-      <ul class="nav-links">
-        <li><a class="nav-link active" data-tab="inicio" onclick="app.setTab('inicio')">Início</a></li>
-        <li><a class="nav-link" data-tab="canais" onclick="app.setTab('canais')">Canais ao Vivo</a></li>
-        <li><a class="nav-link" data-tab="filmes" onclick="app.setTab('filmes')">Filmes</a></li>
-        <li><a class="nav-link" data-tab="series" onclick="app.setTab('series')">Séries</a></li>
-        <li><a class="nav-link" data-tab="novelas" onclick="app.setTab('novelas')">Novelas</a></li>
-        <li><a class="nav-link" data-tab="favoritos" onclick="app.setTab('favoritos')">Minha Lista</a></li>
-      </ul>
+  <div class="navbar">
+    <div class="logo">RENATO <span>IPTV</span></div>
+    <button class="btn-m3u" onclick="openM3U()">+ Carregar M3U</button>
+  </div>
+
+  <div class="banner" id="banner">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="banner-title" id="bannerTitle">Renato IPTV</div>
+      <div class="banner-desc">Assista canais ao vivo, filmes, séries e novelas.</div>
+      <button class="btn-play" onclick="playHero()">▶ Assistir</button>
     </div>
+  </div>
 
-    <div class="nav-right">
-      <!-- Pesquisa em tempo real -->
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Títulos, canais, novelas..." oninput="app.handleSearch(event)">
-      </div>
+  <div class="tabs">
+    <button class="tab active" onclick="filterCat('todos', this)">Todos</button>
+    <button class="tab" onclick="filterCat('canais', this)">📺 Canais</button>
+    <button class="tab" onclick="filterCat('filmes', this)">🍿 Filmes</button>
+    <button class="tab" onclick="filterCat('series', this)">🎬 Séries</button>
+    <button class="tab" onclick="filterCat('novelas', this)">🌹 Novelas</button>
+  </div>
 
-      <!-- Botão para adicionar a lista M3U -->
-      <button class="btn-load-list" onclick="app.openModal()">
-        <span>+</span> Carregar M3U
-      </button>
-    </div>
-  </header>
+  <div id="content"></div>
 
-  <!-- BANNER DESTAQUE (HERO BANNER ESTILO NETFLIX) -->
-  <section class="hero-banner" id="heroBanner">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="hero-tag" id="heroTag">★ DESTAQUE NO RENATO IPTV</div>
-      <h1 class="hero-title" id="heroTitle">Carregando conteúdo...</h1>
-      <div class="hero-meta">
-        <span class="badge" id="heroBadge">HD 1080p</span>
-        <span id="heroCategory">Transmissão M3U8</span>
-        <span id="heroRating">99% Relevante</span>
-      </div>
-      <p class="hero-desc" id="heroDesc">
-        Assista a milhares de canais ao vivo, filmes de sucesso, maratonas de séries e novelas no Renato IPTV.
-      </p>
-      <div class="hero-buttons">
-        <button class="btn-hero btn-play" id="heroPlayBtn" onclick="app.playHero()">
-          ▶ Assistir Agora
-        </button>
-        <button class="btn-hero btn-fav" id="heroFavBtn" onclick="app.toggleHeroFav()">
-          + Minha Lista
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTEÚDO PRINCIPAL (CARROSSEIS) -->
-  <main class="main-container" id="mainContainer">
-    <!-- As fileiras serão geradas automaticamente pelo app.js -->
-  </main>
-
-  <!-- MODAL DO REPRODUTOR DE VÍDEO (PLAYER HLS) -->
   <div class="player-modal" id="playerModal">
-    <div class="player-header" id="playerHeader">
-      <div class="player-stream-info">
-        <button class="btn-back" onclick="app.closePlayer()" title="Voltar">←</button>
-        <div>
-          <h2 class="player-title" id="playerTitle">Nome da Transmissão</h2>
-          <span class="player-category-tag" id="playerTag">CANAL AO VIVO</span>
-        </div>
-      </div>
-      <div>
-        <button class="btn-secondary" onclick="app.toggleFullscreen()">Tela Cheia</button>
-      </div>
+    <div class="player-header">
+      <span id="playerTitle" style="font-size:14px; font-weight:bold;">Reproduzindo</span>
+      <button class="btn-close" onclick="closePlayer()">✕</button>
     </div>
-
-    <div class="player-body" id="playerBody">
-      <div class="player-loading" id="playerLoading">
-        <div class="spinner"></div>
-        <span>Carregando transmissão...</span>
-      </div>
-
-      <div class="player-error" id="playerError">
-        <h3>Falha na Transmissão</h3>
-        <p id="playerErrorMessage">Não foi possível reproduzir este canal ou vídeo. O link pode estar offline ou bloqueado por CORS.</p>
-        <button class="btn-primary" onclick="app.closePlayer()">Voltar</button>
-      </div>
-
-      <video id="videoPlayer" controls autoplay playsinline></video>
-    </div>
+    <video id="videoPlayer" controls autoplay playsinline></video>
   </div>
 
-  <!-- MODAL PARA CARREGAR LISTA M3U / M3U8 -->
-  <div class="modal-overlay" id="playlistModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2>Adicionar Lista M3U / M3U8</h2>
-        <button class="modal-close" onclick="app.closeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="playlistUrl">URL da Lista M3U ou M3U8</label>
-          <input type="url" id="playlistUrl" class="form-input" placeholder="http://exemplo.com/lista.m3u">
-          <small style="color: #888; font-size: 11px;">Insira a URL fornecida pela sua lista IPTV.</small>
-        </div>
-
-        <div class="divider-text">OU CARREGUE UM ARQUIVO DO SEU APARELHO</div>
-
-        <div class="file-dropzone" onclick="document.getElementById('fileInput').click()">
-          <input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none" onchange="app.handleFileUpload(event)">
-          <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
-          <div style="font-weight: 600;">Selecione o arquivo .m3u ou .m3u8</div>
-          <div style="color: #777; font-size: 12px; margin-top: 4px;">Clique para abrir do celular ou computador</div>
-        </div>
-
-        <div class="form-group">
-          <button class="btn-secondary" onclick="app.loadDefaultPlaylist()">
-            🔄 Restaurar Canais de Demonstração
-          </button>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="app.closeModal()">Cancelar</button>
-        <button class="btn-primary" onclick="app.loadPlaylistFromUrl()">Carregar Lista</button>
+  <div class="modal-m3u" id="modalM3U">
+    <div class="box-m3u">
+      <h3>Carregar Lista M3U / M3U8</h3>
+      <input type="url" id="urlM3U" class="input-m3u" placeholder="Cole o link da sua lista M3U">
+      <input type="file" id="fileM3U" accept=".m3u,.m3u8,.txt" onchange="uploadFile(event)">
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+        <button class="btn-m3u" style="background:#555;" onclick="closeM3U()">Fechar</button>
+        <button class="btn-m3u" onclick="loadUrl()">Carregar</button>
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    let list = [];
+    let hls = null;
+    let hero = null;
+
+    const DEMO = `#EXTM3U
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" group-title="Filmes", Big Buck Bunny 4K
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1518676599649-9c7a3be9865c?w=400" group-title="Filmes", Sintel O Filme
+https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=400" group-title="Novelas", Novela: Amor e Destino Cap 01
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400" group-title="Novelas", Novela: Terra Dourada Cap 05
+https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400" group-title="Séries", Série: Espaço S01E01
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400" group-title="Canais", Red Bull TV Ao Vivo
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
+
+    function init() {
+      const saved = localStorage.getItem('r_iptv');
+      list = parse(saved || DEMO);
+      hero = list[0];
+      document.getElementById('bannerTitle').innerText = hero.name;
+      document.getElementById('banner').style.backgroundImage = 'url(' + (hero.logo || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800') + ')';
+      render(list);
+    }
+
+    function parse(txt) {
+      const lines = txt.split(/\r?\n/);
+      const res = [];
+      let item = null;
+      for (let l of lines) {
+        l = l.trim();
+        if (l.startsWith('#EXTINF:')) {
+          item = { name: 'Canal', logo: '', cat: 'canais', url: '' };
+          const lg = l.match(/tvg-logo="([^"]*)"/i); if (lg) item.logo = lg[1];
+          const nm = l.match(/tvg-name="([^"]*)"/i); if (nm) item.name = nm[1];
+          const gr = l.match(/group-title="([^"]*)"/i);
+          const c = l.lastIndexOf(','); if (c !== -1) item.name = l.substring(c+1).trim() || item.name;
+          const full = (item.name + ' ' + (gr ? gr[1] : '')).toLowerCase();
+          if (full.includes('novela')) item.cat = 'novelas';
+          else if (full.includes('serie') || /s\d{1,2}/i.test(full)) item.cat = 'series';
+          else if (full.includes('filme') || l.endsWith('.mp4')) item.cat = 'filmes';
+          else item.cat = 'canais';
+        } else if (!l.startsWith('#') && item) {
+          item.url = l;
+          res.push(item);
+          item = null;
+        }
+      }
+      return res;
+    }
+
+    function render(data) {
+      const div = document.getElementById('content');
+      div.innerHTML = '';
+      const cats = [
+        { id: 'canais', title: '📺 Canais ao Vivo' },
+        { id: 'filmes', title: '🍿 Filmes' },
+        { id: 'series', title: '🎬 Séries' },
+        { id: 'novelas', title: '🌹 Novelas' }
+      ];
+      cats.forEach(c => {
+        const sub = data.filter(i => i.cat === c.id);
+        if (sub.length) {
+          div.innerHTML += '<div class="section-title">' + c.title + '</div><div class="carousel">' + 
+            sub.map(i => `
+              <div class="card" onclick="play('${i.url}', '${i.name}')">
+                <span class="card-badge">${i.cat.toUpperCase()}</span>
+                <img class="card-img" src="${i.logo || 'https://via.placeholder.com/150/222/fff?text=IPTV'}" onerror="this.src='https://via.placeholder.com/150/222/fff?text=IPTV'">
+                <div class="card-title">${i.name}</div>
+              </div>
+            `).join('') + '</div>';
+        }
+      });
+    }
+
+    function filterCat(cat, btn) {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(cat === 'todos' ? list : list.filter(i => i.cat === cat));
+    }
+
+    function play(url, name) {
+      document.getElementById('playerTitle').innerText = name;
+      document.getElementById('playerModal').classList.add('active');
+      const v = document.getElementById('videoPlayer');
+      if (hls) hls.destroy();
+      if (url.includes('.m3u8') && window.Hls && Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(v);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => v.play());
+      } else {
+        v.src = url;
+        v.play();
+      }
+    }
+
+    function playHero() { if (hero) play(hero.url, hero.name); }
+    function closePlayer() {
+      const v = document.getElementById('videoPlayer');
+      v.pause(); v.removeAttribute('src');
+      if (hls) hls.destroy();
+      document.getElementById('playerModal').classList.remove('active');
+    }
+
+    function openM3U() { document.getElementById('modalM3U').classList.add('active'); }
+    function closeM3U() { document.getElementById('modalM3U').classList.remove('active'); }
+
+    async function loadUrl() {
+      const u = document.getElementById('urlM3U').value.trim();
+      if (!u) return alert('Insira a URL');
+      try {
+        const r = await fetch(u);
+        const t = await r.text();
+        list = parse(t);
+        localStorage.setItem('r_iptv', t);
+        init();
+        closeM3U();
+      } catch {
+        alert('Erro CORS ao baixar o link. Tente carregar o arquivo .m3u do aparelho.');
+      }
+    }
+
+    function uploadFile(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        list = parse(ev.target.result);
+        localStorage.setItem('r_iptv', ev.target.result);
+        init();
+        closeM3U();
+      };
+      reader.readAsText(f);
+    }
+
+    window.onload = init;
+  </script>
 </body>
 </html>
