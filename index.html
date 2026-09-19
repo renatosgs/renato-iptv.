@@ -353,37 +353,31 @@
     .grid {
       width: 100%;
       display: grid !important;
-
-      /* 3 COLUNAS NO CELULAR */
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
       gap: 10px;
       padding: 0 10px 25px;
       align-items: start;
     }
 
-    /* TABLET */
     @media (min-width: 601px) {
       .grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 12px;
         padding-left: 16px;
         padding-right: 16px;
       }
     }
 
-    /* COMPUTADOR */
     @media (min-width: 901px) {
       .grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
         gap: 14px;
       }
     }
 
-    /* TELAS GRANDES */
     @media (min-width: 1400px) {
       .grid {
-        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
       }
     }
 
@@ -644,12 +638,7 @@
 
 <body>
 
-  <!-- =========================
-       LOGIN
-  ========================= -->
-
   <div id="authScreen">
-
     <div class="auth-box">
 
       <div class="auth-logo">
@@ -687,17 +676,9 @@
       <div id="authMessage"></div>
 
     </div>
-
   </div>
 
-
-  <!-- =========================
-       APP
-  ========================= -->
-
   <div id="app">
-
-    <!-- NAVBAR -->
 
     <nav class="navbar">
 
@@ -725,9 +706,6 @@
 
     </nav>
 
-
-    <!-- BUSCA -->
-
     <div class="search-area">
 
       <input
@@ -737,9 +715,6 @@
       >
 
     </div>
-
-
-    <!-- HERO -->
 
     <section class="hero" id="hero">
 
@@ -763,9 +738,6 @@
       </div>
 
     </section>
-
-
-    <!-- CATEGORIAS -->
 
     <div class="tabs">
 
@@ -791,17 +763,9 @@
 
     </div>
 
-
-    <!-- CONTEÚDO -->
-
     <main id="content"></main>
 
   </div>
-
-
-  <!-- =========================
-       MODAL M3U
-  ========================= -->
 
   <div class="modal" id="m3uModal">
 
@@ -839,11 +803,6 @@
 
   </div>
 
-
-  <!-- =========================
-       PLAYER
-  ========================= -->
-
   <div id="playerModal">
 
     <div class="player-top">
@@ -867,7 +826,6 @@
 
   </div>
 
-
   <script>
 
     /* =====================================================
@@ -878,7 +836,7 @@
       "https://tcsikxqgyyvewqwfudcu.supabase.co";
 
     const SUPABASE_KEY =
-      "SUA_CHAVE_ANON_AQUI";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
 
     const sb =
       window.supabase.createClient(
@@ -1038,9 +996,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           continue;
         }
 
-
-        /* EXTINF */
-
         if (
           line
             .toUpperCase()
@@ -1106,17 +1061,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           continue;
         }
 
-
-        /* IGNORA COMANDOS */
-
         if (
           line.startsWith("#")
         ) {
           continue;
         }
-
-
-        /* URL */
 
         if (
           item &&
@@ -1209,7 +1158,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       content.innerHTML = "";
 
-
       if (!data.length) {
 
         content.innerHTML = `
@@ -1228,7 +1176,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         return;
       }
-
 
       const categories = [
 
@@ -1254,7 +1201,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       ];
 
-
       if (
         currentFilter === "todos"
       ) {
@@ -1273,7 +1219,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               return;
             }
 
-
             const section =
               document.createElement(
                 "section"
@@ -1281,7 +1226,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
             section.className =
               "section";
-
 
             section.innerHTML = `
 
@@ -1297,7 +1241,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               </div>
 
             `;
-
 
             content.appendChild(
               section
@@ -1315,12 +1258,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               currentFilter
           );
 
-
         const title =
           category
             ? category.title
             : currentFilter;
-
 
         const section =
           document.createElement(
@@ -1329,7 +1270,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         section.className =
           "section";
-
 
         section.innerHTML = `
 
@@ -1346,15 +1286,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         `;
 
-
         content.appendChild(
           section
         );
 
       }
-
-
-      /* EVENTO DOS CARDS */
 
       content
         .querySelectorAll(".card")
@@ -1400,7 +1336,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           searchTerm
         );
 
-
       let data =
         list.filter(
           item => {
@@ -1431,7 +1366,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           }
         );
 
-
       render(data);
 
     }
@@ -1458,7 +1392,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "heroDescription"
         );
 
-
       if (!list.length) {
 
         hero.style.backgroundImage =
@@ -1473,10 +1406,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         return;
       }
 
-
       const item =
         list[0];
-
 
       if (item.logo) {
 
@@ -1492,7 +1423,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           `;
 
       }
-
 
       title.textContent =
         item.name;
@@ -1527,7 +1457,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         return;
       }
 
-
       const modal =
         document.getElementById(
           "playerModal"
@@ -1543,14 +1472,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "playerTitle"
         );
 
-
       title.textContent =
         name || "Reprodução";
 
-
       modal.style.display =
         "flex";
-
 
       if (hls) {
 
@@ -1560,7 +1486,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       video.pause();
 
       video.removeAttribute(
@@ -1568,7 +1493,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       );
 
       video.load();
-
 
       if (
         isHlsUrl(url) &&
@@ -1581,7 +1505,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             enableWorker: true
           });
 
-
         hls.loadSource(
           url
         );
@@ -1589,7 +1512,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         hls.attachMedia(
           video
         );
-
 
         hls.on(
           Hls.Events.MANIFEST_PARSED,
@@ -1600,7 +1522,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
           }
         );
-
 
         hls.on(
           Hls.Events.ERROR,
@@ -1617,7 +1538,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           }
         );
 
-
       } else if (
         isHlsUrl(url) &&
         video.canPlayType(
@@ -1629,7 +1549,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         video.play()
           .catch(() => {});
-
 
       } else {
 
@@ -1659,7 +1578,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "video"
         );
 
-
       video.pause();
 
       video.removeAttribute(
@@ -1668,7 +1586,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       video.load();
 
-
       if (hls) {
 
         hls.destroy();
@@ -1676,7 +1593,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         hls = null;
 
       }
-
 
       modal.style.display =
         "none";
@@ -1722,15 +1638,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             "renato_iptv_list"
           );
 
-
         if (!saved) {
           return false;
         }
 
-
         const parsed =
           JSON.parse(saved);
-
 
         if (
           Array.isArray(parsed) &&
@@ -1756,7 +1669,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       return false;
 
     }
@@ -1771,7 +1683,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       if (!currentUser) {
         return;
       }
-
 
       try {
 
@@ -1797,7 +1708,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                 "user_id"
             }
           );
-
 
         if (error) {
 
@@ -1830,7 +1740,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         return false;
       }
 
-
       try {
 
         const {
@@ -1845,7 +1754,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           )
           .maybeSingle();
 
-
         if (error) {
 
           console.warn(
@@ -1857,7 +1765,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         }
 
-
         if (
           data &&
           data.content
@@ -1867,7 +1774,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             typeof data.content === "string"
               ? JSON.parse(data.content)
               : data.content;
-
 
           if (
             Array.isArray(parsed) &&
@@ -1897,7 +1803,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       return false;
 
     }
@@ -1913,7 +1818,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         parseM3U(
           DEMO
         );
-
 
       if (parsed.length) {
 
@@ -1942,7 +1846,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           text
         );
 
-
       if (!parsed.length) {
 
         alert(
@@ -1953,23 +1856,18 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       list =
         parsed;
-
 
       saveLocal();
 
       await saveListToCloud();
 
-
       updateHero();
 
       updateView();
 
-
       closeM3UModal();
-
 
       alert(
         `${parsed.length} itens carregados com sucesso.`
@@ -1996,14 +1894,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       try {
 
         const response =
           await fetch(
             url
           );
-
 
         if (!response.ok) {
 
@@ -2014,15 +1910,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         }
 
-
         const text =
           await response.text();
-
 
         await loadM3UText(
           text
         );
-
 
       } catch (error) {
 
@@ -2030,7 +1923,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "Falha direta:",
           error
         );
-
 
         try {
 
@@ -2040,12 +1932,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               url
             );
 
-
           const response =
             await fetch(
               proxy
             );
-
 
           if (!response.ok) {
 
@@ -2056,22 +1946,18 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
           }
 
-
           const text =
             await response.text();
-
 
           await loadM3UText(
             text
           );
-
 
         } catch (proxyError) {
 
           console.error(
             proxyError
           );
-
 
           alert(
             "Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida."
@@ -2096,10 +1982,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         return;
       }
 
-
       const reader =
         new FileReader();
-
 
       reader.onload =
         async function(event) {
@@ -2110,7 +1994,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         };
 
-
       reader.onerror =
         function() {
 
@@ -2119,7 +2002,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           );
 
         };
-
 
       reader.readAsText(
         file
@@ -2188,14 +2070,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           .value
           .trim();
 
-
       const password =
         document
           .getElementById(
             "password"
           )
           .value;
-
 
       if (!email || !password) {
 
@@ -2207,11 +2087,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       }
 
-
       showAuthMessage(
         "Aguarde..."
       );
-
 
       try {
 
@@ -2227,11 +2105,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                 password
               });
 
-
           if (error) {
             throw error;
           }
-
 
           if (data.user) {
 
@@ -2240,11 +2116,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
           }
 
-
           showAuthMessage(
             "Conta criada. Verifique seu e-mail se a confirmação estiver ativada."
           );
-
 
         } else {
 
@@ -2258,15 +2132,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                 password
               });
 
-
           if (error) {
             throw error;
           }
 
-
           currentUser =
             data.user;
-
 
           showApp();
 
@@ -2277,7 +2148,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         console.error(
           error
         );
-
 
         showAuthMessage(
           error.message ||
@@ -2302,7 +2172,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         .style.display =
         "none";
 
-
       document
         .getElementById(
           "app"
@@ -2310,16 +2179,13 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         .style.display =
         "block";
 
-
       const cloudLoaded =
         await loadListFromCloud();
-
 
       if (!cloudLoaded) {
 
         const localLoaded =
           loadLocal();
-
 
         if (!localLoaded) {
 
@@ -2345,14 +2211,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       list = [];
 
-
       document
         .getElementById(
           "app"
         )
         .style.display =
         "none";
-
 
       document
         .getElementById(
@@ -2389,7 +2253,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           isSignup =
             !isSignup;
 
-
           document
             .getElementById(
               "authButton"
@@ -2399,7 +2262,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               ? "Criar conta"
               : "Entrar";
 
-
           document
             .getElementById(
               "authSwitch"
@@ -2408,7 +2270,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             isSignup
               ? "Já tenho uma conta"
               : "Criar uma conta";
-
 
           showAuthMessage(
             ""
@@ -2464,14 +2325,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               .value
               .trim();
 
-
           const file =
             document
               .getElementById(
                 "m3uFile"
               )
               .files[0];
-
 
           if (file) {
 
@@ -2531,15 +2390,12 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                       )
                 );
 
-
               tab.classList.add(
                 "active"
               );
 
-
               currentFilter =
                 tab.dataset.filter;
-
 
               updateView();
 
@@ -2618,7 +2474,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         } =
           await sb.auth
             .getSession();
-
 
         if (
           data &&
