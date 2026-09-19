@@ -40,20 +40,56 @@
     .banner-desc { font-size:13px; color:#ccc; margin-bottom:12px; text-shadow:0 1px 3px rgba(0,0,0,0.8); }
     .btn-play { background:#fff; color:#000; border:none; padding:9px 20px; font-weight:bold; border-radius:4px; cursor:pointer; font-size:14px; }
 
-    /* Abas de Categorias */
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:12px 16px; background:#181818; scrollbar-width:none; }
+    /* Barra de Abas e Seletor de Modo de Exibição */
+    .tabs-bar { display:flex; align-items:center; justify-content:space-between; background:#181818; border-bottom:1px solid #222; flex-wrap:wrap; gap:8px; }
+    .tabs { display:flex; gap:8px; overflow-x:auto; padding:12px 16px; scrollbar-width:none; flex:1; min-width:280px; }
     .tabs::-webkit-scrollbar { display:none; }
-    .tab { padding:7px 15px; background:#252525; border-radius:20px; font-size:13px; cursor:pointer; white-space:nowrap; border:none; color:#ccc; font-weight:500; }
+    .tab { padding:7px 15px; background:#252525; border-radius:20px; font-size:13px; cursor:pointer; white-space:nowrap; border:none; color:#ccc; font-weight:500; transition:all 0.2s; }
     .tab.active { background:var(--red); color:#fff; font-weight:bold; }
 
-    /* Seções e Carrosséis */
-    .section-title { font-size:17px; font-weight:bold; padding:16px 16px 8px; color:#eee; }
+    /* Botões Grade / Carrossel */
+    .view-modes { display:flex; gap:6px; padding:8px 16px; align-items:center; flex-shrink:0; }
+    .btn-mode { background:#252525; border:1px solid #333; color:#aaa; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all 0.2s; }
+    .btn-mode:hover { color:#fff; border-color:#555; }
+    .btn-mode.active { background:var(--red); color:#fff; border-color:var(--red); font-weight:bold; }
+
+    /* Títulos de Seção */
+    .section-title { font-size:17px; font-weight:bold; padding:16px 16px 10px; color:#eee; }
+    
+    /* Modo Carrossel (Horizontal) */
     .carousel { display:flex; gap:12px; overflow-x:auto; padding:0 16px 16px; scrollbar-width:none; }
     .carousel::-webkit-scrollbar { display:none; }
-    .card { flex:0 0 140px; height:210px; background:var(--card); border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; position:relative; }
+    .carousel .card { flex:0 0 140px; height:210px; }
+
+    /* Modo Grade (Grid Responsiva) */
+    .grid-container { 
+      display:grid; 
+      grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); 
+      gap:12px; 
+      padding:0 16px 20px; 
+    }
+    .grid-container .card { 
+      width:100%; 
+      height:220px; 
+    }
+
+    @media (min-width: 600px) {
+      .grid-container { grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:14px; }
+      .grid-container .card { height:240px; }
+      .grid-container .card-img { height:160px; }
+    }
+    @media (min-width: 1024px) {
+      .grid-container { grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); gap:16px; }
+      .grid-container .card { height:260px; }
+      .grid-container .card-img { height:180px; }
+    }
+
+    /* Cards */
+    .card { background:var(--card); border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; position:relative; transition:transform 0.2s ease, box-shadow 0.2s ease; border:1px solid transparent; }
+    .card:hover { transform:translateY(-4px); box-shadow:0 8px 18px rgba(0,0,0,0.6); border-color:#383838; }
     .card-img { width:100%; height:140px; object-fit:cover; background:#262626; }
-    .card-badge { position:absolute; top:6px; left:6px; font-size:9px; background:var(--red); color:#fff; padding:2px 5px; border-radius:3px; font-weight:bold; }
-    .card-title { font-size:12px; font-weight:bold; padding:8px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .card-badge { position:absolute; top:6px; left:6px; font-size:9px; background:var(--red); color:#fff; padding:2px 5px; border-radius:3px; font-weight:bold; z-index:1; }
+    .card-title { font-size:12px; font-weight:bold; padding:8px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; color:#eee; }
 
     /* Player Modal */
     .player-modal { position:fixed; inset:0; background:#000; z-index:3000; display:none; flex-direction:column; }
@@ -141,16 +177,28 @@
     </div>
   </div>
 
-  <!-- Abas de Filtro -->
-  <div class="tabs">
-    <button class="tab active" onclick="filterCat('todos', this)">Todos</button>
-    <button class="tab" onclick="filterCat('canais', this)">📺 Canais</button>
-    <button class="tab" onclick="filterCat('filmes', this)">🍿 Filmes</button>
-    <button class="tab" onclick="filterCat('series', this)">🎬 Séries</button>
-    <button class="tab" onclick="filterCat('novelas', this)">🌹 Novelas</button>
+  <!-- Barra de Abas e Seletor de Modo de Exibição -->
+  <div class="tabs-bar">
+    <div class="tabs">
+      <button class="tab active" onclick="filterCat('todos', this)">Todos</button>
+      <button class="tab" onclick="filterCat('canais', this)">📺 Canais</button>
+      <button class="tab" onclick="filterCat('filmes', this)">🍿 Filmes</button>
+      <button class="tab" onclick="filterCat('series', this)">🎬 Séries</button>
+      <button class="tab" onclick="filterCat('novelas', this)">🌹 Novelas</button>
+    </div>
+    <div class="view-modes">
+      <button class="btn-mode active" id="btnGrid" onclick="setViewMode('grid')" title="Exibir em Grade">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Grade
+      </button>
+      <button class="btn-mode" id="btnCarousel" onclick="setViewMode('carousel')" title="Exibir em Carrossel">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+        Carrossel
+      </button>
+    </div>
   </div>
 
-  <!-- Container de Listas -->
+  <!-- Container de Listas / Grade -->
   <div id="content"></div>
 
   <!-- Player Modal -->
@@ -187,6 +235,7 @@
     let isSignUpMode = false;
     let list = [];
     let currentFilter = 'todos';
+    let viewMode = localStorage.getItem('iptv_view_mode') || 'grid'; // Padrão: Grade
     let hls = null;
     let hero = null;
 
@@ -343,180 +392,4 @@ https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
 #EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400" group-title="Novelas", Novela: Terra Dourada Cap 05
 https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8
-#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400" group-title="Séries", Série: Espaço S01E01
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400" group-title="Canais", Red Bull TV Ao Vivo
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
-
-    function initPlayerApp() {
-      const saved = localStorage.getItem('r_iptv');
-      list = parse(saved || DEMO);
-      if (list.length > 0) {
-        hero = list[0];
-        document.getElementById('bannerTitle').innerText = hero.name;
-        if (hero.logo) {
-          document.getElementById('banner').style.backgroundImage = 'url(' + hero.logo + ')';
-        }
-      }
-      render(list);
-    }
-
-    function parse(txt) {
-      if (!txt) return [];
-      const lines = txt.split(/\r?\n/);
-      const res = [];
-      let item = null;
-      for (let raw of lines) {
-        let l = raw.trim();
-        if (!l) continue;
-        if (l.startsWith('#EXTINF:')) {
-          item = { name: 'Canal', logo: '', cat: 'canais', url: '' };
-          const lg = l.match(/tvg-logo="([^"]*)"/i); if (lg) item.logo = lg[1];
-          const nm = l.match(/tvg-name="([^"]*)"/i); if (nm) item.name = nm[1];
-          const gr = l.match(/group-title="([^"]*)"/i);
-          const c = l.lastIndexOf(','); if (c !== -1) item.name = l.substring(c+1).trim() || item.name;
-          const full = (item.name + ' ' + (gr ? gr[1] : '')).toLowerCase();
-          if (full.includes('novela')) item.cat = 'novelas';
-          else if (full.includes('serie') || /s\d{1,2}/i.test(full)) item.cat = 'series';
-          else if (full.includes('filme') || l.endsWith('.mp4')) item.cat = 'filmes';
-          else item.cat = 'canais';
-        } else if (!l.startsWith('#') && item) {
-          item.url = l;
-          res.push(item);
-          item = null;
-        }
-      }
-      return res;
-    }
-
-    function render(data) {
-      const div = document.getElementById('content');
-      div.innerHTML = '';
-      if (!data || data.length === 0) {
-        div.innerHTML = '<p style="padding:30px; text-align:center; color:#777;">Nenhum canal encontrado.</p>';
-        return;
-      }
-      const cats = [
-        { id: 'canais', title: '📺 Canais ao Vivo' },
-        { id: 'filmes', title: '🍿 Filmes' },
-        { id: 'series', title: '🎬 Séries' },
-        { id: 'novelas', title: '🌹 Novelas' }
-      ];
-      cats.forEach(c => {
-        const sub = data.filter(i => i.cat === c.id);
-        if (sub.length) {
-          div.innerHTML += '<div class="section-title">' + c.title + ' (' + sub.length + ')</div><div class="carousel">' + 
-            sub.map(i => `
-              <div class="card" onclick="play('${encodeURI(i.url)}', '${escapeQuotes(i.name)}')">
-                <span class="card-badge">${i.cat.toUpperCase()}</span>
-                <img class="card-img" src="${i.logo || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400'}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400';">
-                <div class="card-title">${i.name}</div>
-              </div>
-            `).join('') + '</div>';
-        }
-      });
-    }
-
-    function filterCat(cat, btn) {
-      currentFilter = cat;
-      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      render(cat === 'todos' ? list : list.filter(i => i.cat === cat));
-    }
-
-    function handleSearch(val) {
-      val = val.trim().toLowerCase();
-      let pool = currentFilter === 'todos' ? list : list.filter(i => i.cat === currentFilter);
-      if (!val) { render(pool); return; }
-      render(pool.filter(i => i.name.toLowerCase().includes(val)));
-    }
-
-    // Iniciar vídeo checando permissão no mesmo segundo
-    async function play(url, name) {
-      const valido = await checkUserStatus();
-      if (!valido) return;
-
-      url = decodeURI(url);
-      document.getElementById('playerTitle').innerText = name;
-      document.getElementById('playerModal').classList.add('active');
-      const v = document.getElementById('videoPlayer');
-      if (hls) { hls.destroy(); hls = null; }
-
-      if (url.includes('.m3u8') && window.Hls && Hls.isSupported()) {
-        hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(v);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => v.play().catch(() => {}));
-      } else {
-        v.src = url;
-        v.play().catch(() => {});
-      }
-    }
-
-    function playHero() { if (hero) play(hero.url, hero.name); }
-
-    function closePlayer() {
-      const v = document.getElementById('videoPlayer');
-      if (v) {
-        v.pause();
-        v.removeAttribute('src');
-        v.load();
-      }
-      if (hls) { hls.destroy(); hls = null; }
-      const modal = document.getElementById('playerModal');
-      if (modal) modal.classList.remove('active');
-    }
-
-    function openM3U() { document.getElementById('modalM3U').classList.add('active'); }
-    function closeM3U() { document.getElementById('modalM3U').classList.remove('active'); }
-
-    async function loadUrl() {
-      const u = document.getElementById('urlM3U').value.trim();
-      if (!u) return alert('Insira a URL');
-      try {
-        let text = '';
-        try {
-          const r = await fetch(u);
-          text = await r.text();
-        } catch {
-          const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(u));
-          text = await r.text();
-        }
-        saveList(text);
-        closeM3U();
-      } catch {
-        alert('Erro ao baixar lista. Tente carregar o arquivo .m3u diretamente.');
-      }
-    }
-
-    function uploadFile(e) {
-      const f = e.target.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        saveList(ev.target.result);
-        closeM3U();
-      };
-      reader.readAsText(f);
-    }
-
-    function saveList(txt) {
-      try { localStorage.setItem('r_iptv', txt); } catch(e) {}
-      list = parse(txt);
-      if (list.length > 0) {
-        hero = list[0];
-        document.getElementById('bannerTitle').innerText = hero.name;
-        if (hero.logo) document.getElementById('banner').style.backgroundImage = 'url(' + hero.logo + ')';
-      }
-      render(list);
-    }
-
-    function escapeQuotes(str) {
-      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
-    // Inicia checando o login do Supabase
-    window.onload = checkAuth;
-  </script>
-</body>
-</html>
+#E
