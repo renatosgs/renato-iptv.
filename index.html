@@ -4,18 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Renato IPTV</title>
+  <title>Renato IPTV Turbo</title>
+
+  <!-- =====================================================
+       CDN
+  ===================================================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
+
     :root {
       --red: #E50914;
       --dark: #141414;
-      --dark2: #181818;
       --card: #222;
-      --card2: #292929;
       --text: #fff;
       --muted: #aaa;
     }
@@ -48,9 +51,9 @@
       cursor: pointer;
     }
 
-    /* =========================
+    /* =====================================================
        LOGIN
-    ========================= */
+    ===================================================== */
 
     #authScreen {
       position: fixed;
@@ -142,18 +145,18 @@
       min-height: 18px;
     }
 
-    /* =========================
+    /* =====================================================
        APP
-    ========================= */
+    ===================================================== */
 
     #app {
       display: none;
       min-height: 100vh;
     }
 
-    /* =========================
+    /* =====================================================
        NAVBAR
-    ========================= */
+    ===================================================== */
 
     .navbar {
       position: fixed;
@@ -201,9 +204,9 @@
       border-color: var(--red);
     }
 
-    /* =========================
+    /* =====================================================
        SEARCH
-    ========================= */
+    ===================================================== */
 
     .search-area {
       position: fixed;
@@ -234,9 +237,9 @@
       border-color: var(--red);
     }
 
-    /* =========================
+    /* =====================================================
        HERO
-    ========================= */
+    ===================================================== */
 
     .hero {
       margin-top: 116px;
@@ -285,9 +288,9 @@
       font-size: 14px;
     }
 
-    /* =========================
+    /* =====================================================
        TABS
-    ========================= */
+    ===================================================== */
 
     .tabs {
       position: sticky;
@@ -296,7 +299,7 @@
       display: flex;
       gap: 7px;
       overflow-x: auto;
-      padding: 12px 12px;
+      padding: 12px;
       background: rgba(20,20,20,.97);
       border-bottom: 1px solid #292929;
       scrollbar-width: none;
@@ -322,13 +325,14 @@
       border-color: var(--red);
     }
 
-    /* =========================
+    /* =====================================================
        CONTENT
-    ========================= */
+    ===================================================== */
 
     #content {
       width: 100%;
       padding-top: 8px;
+      contain: content;
     }
 
     .section {
@@ -346,9 +350,9 @@
       color: var(--red);
     }
 
-    /* =========================
+    /* =====================================================
        GRADE
-    ========================= */
+    ===================================================== */
 
     .grid {
       width: 100%;
@@ -381,9 +385,9 @@
       }
     }
 
-    /* =========================
+    /* =====================================================
        CARD
-    ========================= */
+    ===================================================== */
 
     .card {
       width: 100%;
@@ -393,11 +397,13 @@
       overflow: hidden;
       border: 1px solid #2d2d2d;
       transition:
-        transform .18s ease,
-        border-color .18s ease,
-        box-shadow .18s ease;
+        transform .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease;
       position: relative;
       cursor: pointer;
+      content-visibility: auto;
+      contain-intrinsic-size: 220px;
     }
 
     .card:hover {
@@ -412,6 +418,7 @@
       aspect-ratio: 2 / 2.7;
       background: #111;
       object-fit: cover;
+      content-visibility: auto;
     }
 
     .card-info {
@@ -450,9 +457,9 @@
       z-index: 3;
     }
 
-    /* =========================
+    /* =====================================================
        EMPTY
-    ========================= */
+    ===================================================== */
 
     .empty {
       text-align: center;
@@ -467,9 +474,9 @@
       margin-bottom: 8px;
     }
 
-    /* =========================
-       MODAL M3U
-    ========================= */
+    /* =====================================================
+       MODAL
+    ===================================================== */
 
     .modal {
       display: none;
@@ -533,9 +540,9 @@
       border-color: var(--red);
     }
 
-    /* =========================
+    /* =====================================================
        PLAYER
-    ========================= */
+    ===================================================== */
 
     #playerModal {
       display: none;
@@ -584,9 +591,9 @@
       font-size: 20px;
     }
 
-    /* =========================
+    /* =====================================================
        RESPONSIVO
-    ========================= */
+    ===================================================== */
 
     @media (max-width: 480px) {
 
@@ -633,12 +640,18 @@
         font-size: 8px;
       }
     }
+
   </style>
 </head>
 
 <body>
 
+  <!-- =====================================================
+       LOGIN
+  ===================================================== -->
+
   <div id="authScreen">
+
     <div class="auth-box">
 
       <div class="auth-logo">
@@ -663,7 +676,10 @@
         autocomplete="current-password"
       >
 
-      <button class="auth-btn" id="authButton">
+      <button
+        class="auth-btn"
+        id="authButton"
+      >
         Entrar
       </button>
 
@@ -676,7 +692,13 @@
       <div id="authMessage"></div>
 
     </div>
+
   </div>
+
+
+  <!-- =====================================================
+       APP
+  ===================================================== -->
 
   <div id="app">
 
@@ -706,25 +728,41 @@
 
     </nav>
 
+
+    <!-- SEARCH -->
+
     <div class="search-area">
 
       <input
         type="search"
         id="searchInput"
         placeholder="🔎 Pesquisar canais, filmes, séries..."
+        autocomplete="off"
       >
 
     </div>
 
-    <section class="hero" id="hero">
+
+    <!-- HERO -->
+
+    <section
+      class="hero"
+      id="hero"
+    >
 
       <div class="hero-content">
 
-        <div class="hero-title" id="heroTitle">
+        <div
+          class="hero-title"
+          id="heroTitle"
+        >
           RENATO IPTV
         </div>
 
-        <div class="hero-description" id="heroDescription">
+        <div
+          class="hero-description"
+          id="heroDescription"
+        >
           Sua programação em um só lugar.
         </div>
 
@@ -739,35 +777,62 @@
 
     </section>
 
+
+    <!-- TABS -->
+
     <div class="tabs">
 
-      <button class="tab active" data-filter="todos">
+      <button
+        class="tab active"
+        data-filter="todos"
+      >
         Todos
       </button>
 
-      <button class="tab" data-filter="canais">
+      <button
+        class="tab"
+        data-filter="canais"
+      >
         Canais
       </button>
 
-      <button class="tab" data-filter="filmes">
+      <button
+        class="tab"
+        data-filter="filmes"
+      >
         Filmes
       </button>
 
-      <button class="tab" data-filter="series">
+      <button
+        class="tab"
+        data-filter="series"
+      >
         Séries
       </button>
 
-      <button class="tab" data-filter="novelas">
+      <button
+        class="tab"
+        data-filter="novelas"
+      >
         Novelas
       </button>
 
     </div>
 
+
     <main id="content"></main>
 
   </div>
 
-  <div class="modal" id="m3uModal">
+
+  <!-- =====================================================
+       MODAL M3U
+  ===================================================== -->
+
+  <div
+    class="modal"
+    id="m3uModal"
+  >
 
     <div class="modal-box">
 
@@ -793,7 +858,10 @@
           Cancelar
         </button>
 
-        <button class="red" id="loadM3u">
+        <button
+          class="red"
+          id="loadM3u"
+        >
           Carregar lista
         </button>
 
@@ -802,6 +870,11 @@
     </div>
 
   </div>
+
+
+  <!-- =====================================================
+       PLAYER
+  ===================================================== -->
 
   <div id="playerModal">
 
@@ -821,10 +894,11 @@
       id="video"
       controls
       playsinline
-      preload="metadata"
+      preload="none"
     ></video>
 
   </div>
+
 
   <script>
 
@@ -836,7 +910,7 @@
       "https://tcsikxqgyyvewqwfudcu.supabase.co";
 
     const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoidGNzaWt4cWd5eXZld3F3ZnVkY3UiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4OTc5NjU0OCwiZXhwIjoyMTA1MzcyNTQ4fQ.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
 
     const sb =
       window.supabase.createClient(
@@ -850,10 +924,18 @@
     ===================================================== */
 
     let currentUser = null;
+
     let list = [];
+
     let currentFilter = "todos";
+
     let searchTerm = "";
+
     let hls = null;
+
+    let searchTimer = null;
+
+    let cloudLoading = false;
 
 
     /* =====================================================
@@ -974,6 +1056,67 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
 
     /* =====================================================
+       PREPARAR ITEM
+       OTIMIZA PESQUISA
+    ===================================================== */
+
+    function prepareItem(item) {
+
+      const name =
+        String(item.name || "Sem nome");
+
+      const group =
+        String(item.group || "");
+
+      item.name =
+        name;
+
+      item.group =
+        group;
+
+      item.cat =
+        item.cat ||
+        detectCategory(
+          name,
+          group
+        );
+
+      item.searchText =
+        normalizeText(
+          name +
+          " " +
+          group
+        );
+
+      return item;
+
+    }
+
+
+    /* =====================================================
+       PREPARAR LISTA
+    ===================================================== */
+
+    function prepareList(data) {
+
+      if (!Array.isArray(data)) {
+        return [];
+      }
+
+      return data
+        .filter(
+          item =>
+            item &&
+            item.url
+        )
+        .map(
+          prepareItem
+        );
+
+    }
+
+
+    /* =====================================================
        PARSER M3U
     ===================================================== */
 
@@ -987,7 +1130,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       let item = null;
 
-      for (let i = 0; i < lines.length; i++) {
+      for (
+        let i = 0;
+        i < lines.length;
+        i++
+      ) {
 
         const line =
           lines[i].trim();
@@ -1015,42 +1162,37 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           const comma =
             line.indexOf(",");
 
-          let name = "Sem nome";
-
-          if (comma !== -1) {
-
-            name =
-              line
-                .substring(comma + 1)
-                .trim();
-
-          }
-
-          const logo =
-            logoMatch
-              ? logoMatch[1]
-              : "";
-
-          const group =
-            groupMatch
-              ? groupMatch[1]
-              : "";
+          const name =
+            comma !== -1
+              ? line
+                  .substring(
+                    comma + 1
+                  )
+                  .trim()
+              : "Sem nome";
 
           item = {
 
             name:
-              name || "Sem nome",
+              name ||
+              "Sem nome",
 
             logo:
-              logo,
+              logoMatch
+                ? logoMatch[1]
+                : "",
 
             group:
-              group,
+              groupMatch
+                ? groupMatch[1]
+                : "",
 
             cat:
               detectCategory(
                 name,
-                group
+                groupMatch
+                  ? groupMatch[1]
+                  : ""
               ),
 
             url:
@@ -1072,22 +1214,27 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           !line.startsWith("#")
         ) {
 
-          item.url = line;
+          item.url =
+            line;
 
           if (item.url) {
 
-            result.push({
-              ...item
-            });
+            result.push(
+              prepareItem({
+                ...item
+              })
+            );
 
           }
 
           item = null;
+
         }
 
       }
 
       return result;
+
     }
 
 
@@ -1095,7 +1242,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
        CARD
     ===================================================== */
 
-    function createCard(item) {
+    function createCard(
+      item
+    ) {
 
       const index =
         list.indexOf(item);
@@ -1103,6 +1252,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       const logo =
         item.logo ||
         "https://dummyimage.com/300x450/222/ffffff&text=RENATO+IPTV";
+
+      const badge =
+        item.cat === "canais"
+          ? "LIVE"
+          : item.cat.toUpperCase();
 
       return `
 
@@ -1112,11 +1266,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         >
 
           <div class="badge">
-            ${escapeHtml(
-              item.cat === "canais"
-                ? "LIVE"
-                : item.cat.toUpperCase()
-            )}
+            ${escapeHtml(badge)}
           </div>
 
           <img
@@ -1124,6 +1274,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             src="${escapeHtml(logo)}"
             alt="${escapeHtml(item.name)}"
             loading="lazy"
+            decoding="async"
             onerror="this.onerror=null;this.src='https://dummyimage.com/300x450/222/ffffff&text=IPTV';"
           >
 
@@ -1134,7 +1285,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             </div>
 
             <div class="card-category">
-              ${escapeHtml(item.group || item.cat)}
+              ${escapeHtml(
+                item.group ||
+                item.cat
+              )}
             </div>
 
           </div>
@@ -1142,21 +1296,51 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         </div>
 
       `;
+
     }
+
+
+    /* =====================================================
+       CATEGORIAS
+    ===================================================== */
+
+    const CATEGORIES = [
+
+      {
+        id: "canais",
+        title: "Canais"
+      },
+
+      {
+        id: "filmes",
+        title: "Filmes"
+      },
+
+      {
+        id: "series",
+        title: "Séries"
+      },
+
+      {
+        id: "novelas",
+        title: "Novelas"
+      }
+
+    ];
 
 
     /* =====================================================
        RENDER
     ===================================================== */
 
-    function render(data) {
+    function render(
+      data
+    ) {
 
       const content =
         document.getElementById(
           "content"
         );
-
-      content.innerHTML = "";
 
       if (!data.length) {
 
@@ -1175,63 +1359,40 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         `;
 
         return;
+
       }
 
-      const categories = [
-
-        {
-          id: "canais",
-          title: "Canais"
-        },
-
-        {
-          id: "filmes",
-          title: "Filmes"
-        },
-
-        {
-          id: "series",
-          title: "Séries"
-        },
-
-        {
-          id: "novelas",
-          title: "Novelas"
-        }
-
-      ];
+      let html = "";
 
       if (
         currentFilter === "todos"
       ) {
 
-        categories.forEach(
-          category => {
+        for (
+          const category
+          of CATEGORIES
+        ) {
 
-            const items =
-              data.filter(
-                item =>
-                  item.cat ===
-                  category.id
-              );
+          const items =
+            data.filter(
+              item =>
+                item.cat ===
+                category.id
+            );
 
-            if (!items.length) {
-              return;
-            }
+          if (!items.length) {
+            continue;
+          }
 
-            const section =
-              document.createElement(
-                "section"
-              );
+          html += `
 
-            section.className =
-              "section";
-
-            section.innerHTML = `
+            <section class="section">
 
               <div class="section-title">
                 ${category.title}
-                <span>(${items.length})</span>
+                <span>
+                  (${items.length})
+                </span>
               </div>
 
               <div class="grid">
@@ -1240,19 +1401,16 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                   .join("")}
               </div>
 
-            `;
+            </section>
 
-            content.appendChild(
-              section
-            );
+          `;
 
-          }
-        );
+        }
 
       } else {
 
         const category =
-          categories.find(
+          CATEGORIES.find(
             c =>
               c.id ===
               currentFilter
@@ -1263,70 +1421,37 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             ? category.title
             : currentFilter;
 
-        const section =
-          document.createElement(
-            "section"
-          );
+        html = `
 
-        section.className =
-          "section";
+          <section class="section">
 
-        section.innerHTML = `
+            <div class="section-title">
+              ${title}
+              <span>
+                (${data.length})
+              </span>
+            </div>
 
-          <div class="section-title">
-            ${title}
-            <span>(${data.length})</span>
-          </div>
+            <div class="grid">
+              ${data
+                .map(createCard)
+                .join("")}
+            </div>
 
-          <div class="grid">
-            ${data
-              .map(createCard)
-              .join("")}
-          </div>
+          </section>
 
         `;
 
-        content.appendChild(
-          section
-        );
-
       }
 
-      content
-        .querySelectorAll(".card")
-        .forEach(card => {
-
-          card.addEventListener(
-            "click",
-            () => {
-
-              const index =
-                Number(
-                  card.dataset.index
-                );
-
-              const item =
-                list[index];
-
-              if (item) {
-
-                playVideo(
-                  item.url,
-                  item.name
-                );
-
-              }
-
-            }
-          );
-
-        });
+      content.innerHTML =
+        html;
 
     }
 
 
     /* =====================================================
-       FILTRAR
+       FILTRAGEM OTIMIZADA
     ===================================================== */
 
     function updateView() {
@@ -1336,37 +1461,59 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           searchTerm
         );
 
-      let data =
+      const filter =
+        currentFilter;
+
+      const data =
         list.filter(
           item => {
 
-            const text =
-              normalizeText(
-                item.name +
-                " " +
-                item.group
-              );
-
             const categoryOK =
-              currentFilter === "todos" ||
+              filter === "todos" ||
               item.cat ===
-              currentFilter;
+              filter;
 
-            const searchOK =
-              !normalizedSearch ||
-              text.includes(
+            if (!categoryOK) {
+              return false;
+            }
+
+            if (!normalizedSearch) {
+              return true;
+            }
+
+            return item.searchText
+              .includes(
                 normalizedSearch
               );
-
-            return (
-              categoryOK &&
-              searchOK
-            );
 
           }
         );
 
       render(data);
+
+    }
+
+
+    /* =====================================================
+       PESQUISA COM DEBOUNCE
+    ===================================================== */
+
+    function scheduleSearch(
+      value
+    ) {
+
+      searchTerm =
+        value;
+
+      clearTimeout(
+        searchTimer
+      );
+
+      searchTimer =
+        setTimeout(
+          updateView,
+          80
+        );
 
     }
 
@@ -1404,6 +1551,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "Sua programação em um só lugar.";
 
         return;
+
       }
 
       const item =
@@ -1412,15 +1560,13 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       if (item.logo) {
 
         hero.style.backgroundImage =
-          `
-          linear-gradient(
+          `linear-gradient(
             90deg,
             rgba(0,0,0,.95),
             rgba(0,0,0,.5),
             rgba(0,0,0,.8)
           ),
-          url("${item.logo}")
-          `;
+          url("${item.logo}")`;
 
       }
 
@@ -1438,7 +1584,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
        PLAYER
     ===================================================== */
 
-    function isHlsUrl(url) {
+    function isHlsUrl(
+      url
+    ) {
 
       return /\.m3u8(?:$|[?#])/i
         .test(
@@ -1473,7 +1621,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         );
 
       title.textContent =
-        name || "Reprodução";
+        name ||
+        "Reprodução";
 
       modal.style.display =
         "flex";
@@ -1482,7 +1631,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         hls.destroy();
 
-        hls = null;
+        hls =
+          null;
 
       }
 
@@ -1502,7 +1652,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         hls =
           new Hls({
-            enableWorker: true
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 30
           });
 
         hls.loadSource(
@@ -1518,7 +1670,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           () => {
 
             video.play()
-              .catch(() => {});
+              .catch(
+                () => {}
+              );
 
           }
         );
@@ -1545,17 +1699,23 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         )
       ) {
 
-        video.src = url;
+        video.src =
+          url;
 
         video.play()
-          .catch(() => {});
+          .catch(
+            () => {}
+          );
 
       } else {
 
-        video.src = url;
+        video.src =
+          url;
 
         video.play()
-          .catch(() => {});
+          .catch(
+            () => {}
+          );
 
       }
 
@@ -1590,7 +1750,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
         hls.destroy();
 
-        hls = null;
+        hls =
+          null;
 
       }
 
@@ -1615,7 +1776,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       } catch (error) {
 
-        console.error(
+        console.warn(
           "Erro ao salvar local:",
           error
         );
@@ -1643,27 +1804,32 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         }
 
         const parsed =
-          JSON.parse(saved);
+          JSON.parse(
+            saved
+          );
 
         if (
           Array.isArray(parsed) &&
           parsed.length
         ) {
 
-          list = parsed;
+          list =
+            prepareList(
+              parsed
+            );
 
           updateHero();
 
           updateView();
 
-          return true;
+          return list.length > 0;
 
         }
 
       } catch (error) {
 
-        console.error(
-          "Erro ao carregar lista local:",
+        console.warn(
+          "Erro ao carregar local:",
           error
         );
 
@@ -1696,7 +1862,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
                 currentUser.id,
 
               content:
-                JSON.stringify(list),
+                JSON.stringify(
+                  list
+                ),
 
               updated_at:
                 new Date()
@@ -1712,7 +1880,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         if (error) {
 
           console.warn(
-            "Não foi possível salvar no Supabase:",
+            "Supabase:",
             error.message
           );
 
@@ -1736,9 +1904,17 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     async function loadListFromCloud() {
 
-      if (!currentUser) {
+      if (
+        !currentUser ||
+        cloudLoading
+      ) {
+
         return false;
+
       }
+
+      cloudLoading =
+        true;
 
       try {
 
@@ -1757,7 +1933,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         if (error) {
 
           console.warn(
-            "Erro carregando lista:",
+            "Supabase:",
             error.message
           );
 
@@ -1771,8 +1947,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         ) {
 
           const parsed =
-            typeof data.content === "string"
-              ? JSON.parse(data.content)
+            typeof data.content ===
+            "string"
+              ? JSON.parse(
+                  data.content
+                )
               : data.content;
 
           if (
@@ -1780,7 +1959,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             parsed.length
           ) {
 
-            list = parsed;
+            list =
+              prepareList(
+                parsed
+              );
 
             saveLocal();
 
@@ -1788,7 +1970,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
             updateView();
 
-            return true;
+            return list.length > 0;
 
           }
 
@@ -1801,6 +1983,11 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           error
         );
 
+      } finally {
+
+        cloudLoading =
+          false;
+
       }
 
       return false;
@@ -1809,7 +1996,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
 
     /* =====================================================
-       CARREGAR DEMO
+       DEMO
     ===================================================== */
 
     function loadDemo() {
@@ -1861,13 +2048,18 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
       saveLocal();
 
-      await saveListToCloud();
-
       updateHero();
 
       updateView();
 
       closeM3UModal();
+
+      /*
+       * Salva na nuvem sem bloquear
+       * a atualização da interface.
+       */
+
+      saveListToCloud();
 
       alert(
         `${parsed.length} itens carregados com sucesso.`
@@ -1917,6 +2109,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           text
         );
 
+        return;
+
       } catch (error) {
 
         console.warn(
@@ -1924,46 +2118,46 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           error
         );
 
-        try {
+      }
 
-          const proxy =
-            "https://corsproxy.io/?" +
-            encodeURIComponent(
-              url
-            );
+      try {
 
-          const response =
-            await fetch(
-              proxy
-            );
-
-          if (!response.ok) {
-
-            throw new Error(
-              "Proxy HTTP " +
-              response.status
-            );
-
-          }
-
-          const text =
-            await response.text();
-
-          await loadM3UText(
-            text
+        const proxy =
+          "https://corsproxy.io/?" +
+          encodeURIComponent(
+            url
           );
 
-        } catch (proxyError) {
-
-          console.error(
-            proxyError
+        const response =
+          await fetch(
+            proxy
           );
 
-          alert(
-            "Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida."
+        if (!response.ok) {
+
+          throw new Error(
+            "Proxy HTTP " +
+            response.status
           );
 
         }
+
+        const text =
+          await response.text();
+
+        await loadM3UText(
+          text
+        );
+
+      } catch (proxyError) {
+
+        console.error(
+          proxyError
+        );
+
+        alert(
+          "Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida."
+        );
 
       }
 
@@ -1986,7 +2180,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         new FileReader();
 
       reader.onload =
-        async function(event) {
+        async event => {
 
           await loadM3UText(
             event.target.result
@@ -1995,7 +2189,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         };
 
       reader.onerror =
-        function() {
+        () => {
 
           alert(
             "Erro ao ler o arquivo."
@@ -2011,7 +2205,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
 
     /* =====================================================
-       MODAL
+       MODAL M3U
     ===================================================== */
 
     function openM3UModal() {
@@ -2077,7 +2271,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           )
           .value;
 
-      if (!email || !password) {
+      if (
+        !email ||
+        !password
+      ) {
 
         showAuthMessage(
           "Informe e-mail e senha."
@@ -2090,6 +2287,14 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       showAuthMessage(
         "Aguarde..."
       );
+
+      const button =
+        document.getElementById(
+          "authButton"
+        );
+
+      button.disabled =
+        true;
 
       try {
 
@@ -2139,7 +2344,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           currentUser =
             data.user;
 
-          showApp();
+          await showApp();
 
         }
 
@@ -2154,13 +2359,18 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
           "Erro na autenticação."
         );
 
+      } finally {
+
+        button.disabled =
+          false;
+
       }
 
     }
 
 
     /* =====================================================
-       MOSTRAR APP
+       MOSTRAR APP — TURBO
     ===================================================== */
 
     async function showApp() {
@@ -2179,17 +2389,52 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         .style.display =
         "block";
 
-      const cloudLoaded =
-        await loadListFromCloud();
 
-      if (!cloudLoaded) {
+      /*
+       * PRIMEIRO:
+       * mostra o cache local imediatamente.
+       */
 
-        const localLoaded =
-          loadLocal();
+      const localLoaded =
+        loadLocal();
 
-        if (!localLoaded) {
 
-          loadDemo();
+      /*
+       * Se não houver cache,
+       * mostra a demonstração imediatamente.
+       */
+
+      if (!localLoaded) {
+
+        loadDemo();
+
+      }
+
+
+      /*
+       * Depois consulta o Supabase.
+       *
+       * Isso não impede o aplicativo
+       * de aparecer rapidamente.
+       */
+
+      if (currentUser) {
+
+        const cloudLoaded =
+          await loadListFromCloud();
+
+        /*
+         * Se a nuvem possuir uma lista,
+         * ela substitui o cache local.
+         */
+
+        if (
+          cloudLoaded
+        ) {
+
+          updateHero();
+
+          updateView();
 
         }
 
@@ -2204,12 +2449,23 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     async function logout() {
 
-      await sb.auth.signOut();
+      try {
+
+        await sb.auth.signOut();
+
+      } catch (error) {
+
+        console.warn(
+          error
+        );
+
+      }
 
       currentUser =
         null;
 
-      list = [];
+      list =
+        [];
 
       document
         .getElementById(
@@ -2229,7 +2485,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
 
     /* =====================================================
-       EVENTOS
+       EVENTO LOGIN
     ===================================================== */
 
     document
@@ -2241,6 +2497,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         handleAuth
       );
 
+
+    /* =====================================================
+       ALTERNAR LOGIN/CADASTRO
+    ===================================================== */
 
     document
       .getElementById(
@@ -2279,6 +2539,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       );
 
 
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
     document
       .getElementById(
         "logoutBtn"
@@ -2288,6 +2552,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         logout
       );
 
+
+    /* =====================================================
+       ABRIR LISTA
+    ===================================================== */
 
     document
       .getElementById(
@@ -2299,6 +2567,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       );
 
 
+    /* =====================================================
+       FECHAR M3U
+    ===================================================== */
+
     document
       .getElementById(
         "closeM3u"
@@ -2308,6 +2580,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         closeM3UModal
       );
 
+
+    /* =====================================================
+       CARREGAR M3U
+    ===================================================== */
 
     document
       .getElementById(
@@ -2332,23 +2608,44 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
               )
               .files[0];
 
-          if (file) {
-
-            loadM3UFile(
-              file
+          const button =
+            document.getElementById(
+              "loadM3u"
             );
 
-          } else {
+          button.disabled =
+            true;
 
-            await loadM3UUrl(
-              url
-            );
+          try {
+
+            if (file) {
+
+              loadM3UFile(
+                file
+              );
+
+            } else {
+
+              await loadM3UUrl(
+                url
+              );
+
+            }
+
+          } finally {
+
+            button.disabled =
+              false;
 
           }
 
         }
       );
 
+
+    /* =====================================================
+       PESQUISA
+    ===================================================== */
 
     document
       .getElementById(
@@ -2358,14 +2655,17 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         "input",
         event => {
 
-          searchTerm =
-            event.target.value;
-
-          updateView();
+          scheduleSearch(
+            event.target.value
+          );
 
         }
       );
 
+
+    /* =====================================================
+       FILTROS
+    ===================================================== */
 
     document
       .querySelectorAll(
@@ -2406,6 +2706,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       );
 
 
+    /* =====================================================
+       PLAYER
+    ===================================================== */
+
     document
       .getElementById(
         "closePlayer"
@@ -2416,6 +2720,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       );
 
 
+    /* =====================================================
+       HERO PLAY
+    ===================================================== */
+
     document
       .getElementById(
         "heroPlay"
@@ -2424,11 +2732,60 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         "click",
         () => {
 
-          if (list.length) {
+          if (
+            list.length
+          ) {
 
             playVideo(
               list[0].url,
               list[0].name
+            );
+
+          }
+
+        }
+      );
+
+
+    /* =====================================================
+       CLIQUE NAS CARDS
+       EVENT DELEGATION
+       MAIS RÁPIDO QUE UM EVENTO POR CARD
+    ===================================================== */
+
+    document
+      .getElementById(
+        "content"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          const card =
+            event.target.closest(
+              ".card"
+            );
+
+          if (!card) {
+            return;
+          }
+
+          const index =
+            Number(
+              card.dataset.index
+            );
+
+          const item =
+            list[index];
+
+          if (
+            item &&
+            item.url
+          ) {
+
+            playVideo(
+              item.url,
+              item.name
             );
 
           }
@@ -2450,10 +2807,36 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         event => {
 
           if (
-            event.key === "Enter"
+            event.key ===
+            "Enter"
           ) {
 
             handleAuth();
+
+          }
+
+        }
+      );
+
+
+    /* =====================================================
+       FECHAR MODAL CLICANDO FORA
+    ===================================================== */
+
+    document
+      .getElementById(
+        "m3uModal"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target.id ===
+            "m3uModal"
+          ) {
+
+            closeM3UModal();
 
           }
 
@@ -2490,6 +2873,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       } catch (error) {
 
         console.error(
+          "Erro sessão:",
           error
         );
 
@@ -2497,6 +2881,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     }
 
+
+    /* =====================================================
+       MONITORAMENTO DA SESSÃO
+    ===================================================== */
 
     sb.auth.onAuthStateChange(
       (
