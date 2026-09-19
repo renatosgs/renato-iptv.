@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Renato IPTV Turbo - Sua programação em um só lugar.">
-  <meta name="theme-color" content="#E50914">
-  <title>Renato IPTV Turbo</title>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
+  <title>Renato IPTV</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -16,14 +13,21 @@
     :root {
       --red: #E50914;
       --dark: #141414;
+      --dark2: #181818;
       --card: #222;
+      --card2: #292929;
       --text: #fff;
       --muted: #aaa;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       min-height: 100%;
       background: var(--dark);
@@ -31,17 +35,30 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    body { overflow-x: hidden; }
-    button, input { font-family: inherit; }
-    button { cursor: pointer; }
+    body {
+      overflow-x: hidden;
+    }
 
-    /* ========== LOGIN ========== */
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
     #authScreen {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.92)),
-                  radial-gradient(circle at center, #3a0000, #050505 70%);
+      background:
+        linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.92)),
+        radial-gradient(circle at center, #3a0000, #050505 70%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,7 +102,9 @@
       outline: none;
     }
 
-    .auth-box input:focus { border-color: var(--red); }
+    .auth-box input:focus {
+      border-color: var(--red);
+    }
 
     .auth-btn {
       width: 100%;
@@ -98,8 +117,9 @@
       font-size: 15px;
     }
 
-    .auth-btn:hover { filter: brightness(1.1); }
-    .auth-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .auth-btn:hover {
+      filter: brightness(1.1);
+    }
 
     .auth-switch {
       text-align: center;
@@ -122,12 +142,24 @@
       min-height: 18px;
     }
 
-    /* ========== APP ========== */
-    #app { display: none; min-height: 100vh; }
+    /* =========================
+       APP
+    ========================= */
+
+    #app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
 
     .navbar {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 60px;
       z-index: 1000;
       background: rgba(10,10,10,.97);
@@ -138,9 +170,18 @@
       border-bottom: 1px solid #252525;
     }
 
-    .logo { color: var(--red); font-size: 20px; font-weight: 900; white-space: nowrap; }
+    .logo {
+      color: var(--red);
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
 
-    .nav-actions { display: flex; align-items: center; gap: 7px; }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
 
     .nav-btn {
       border: 1px solid #3b3b3b;
@@ -151,13 +192,24 @@
       font-size: 12px;
     }
 
-    .nav-btn:hover { background: #2d2d2d; }
-    .nav-btn.primary { background: var(--red); border-color: var(--red); }
+    .nav-btn:hover {
+      background: #2d2d2d;
+    }
 
-    /* ========== SEARCH ========== */
+    .nav-btn.primary {
+      background: var(--red);
+      border-color: var(--red);
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
     .search-area {
       position: fixed;
-      top: 60px; left: 0; right: 0;
+      top: 60px;
+      left: 0;
+      right: 0;
       z-index: 900;
       background: #111;
       padding: 8px 12px;
@@ -178,18 +230,24 @@
       outline: none;
     }
 
-    #searchInput:focus { border-color: var(--red); }
+    #searchInput:focus {
+      border-color: var(--red);
+    }
 
-    /* ========== HERO ========== */
+    /* =========================
+       HERO
+    ========================= */
+
     .hero {
       margin-top: 116px;
       width: 100%;
       min-height: 270px;
       height: 43vh;
       max-height: 500px;
-      background: linear-gradient(90deg, rgba(0,0,0,.95), rgba(0,0,0,.45), rgba(0,0,0,.75)),
-                  linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.55)),
-                  #111;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.95), rgba(0,0,0,.45), rgba(0,0,0,.75)),
+        linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.55)),
+        #111;
       background-position: center;
       background-size: cover;
       display: flex;
@@ -199,7 +257,10 @@
       overflow: hidden;
     }
 
-    .hero-content { max-width: 650px; z-index: 2; }
+    .hero-content {
+      max-width: 650px;
+      z-index: 2;
+    }
 
     .hero-title {
       font-size: clamp(28px, 5vw, 58px);
@@ -208,7 +269,11 @@
       text-shadow: 0 3px 15px #000;
     }
 
-    .hero-description { color: #ddd; font-size: 14px; margin-bottom: 18px; }
+    .hero-description {
+      color: #ddd;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
 
     .hero-play {
       background: white;
@@ -220,7 +285,10 @@
       font-size: 14px;
     }
 
-    /* ========== TABS ========== */
+    /* =========================
+       TABS
+    ========================= */
+
     .tabs {
       position: sticky;
       top: 108px;
@@ -228,13 +296,15 @@
       display: flex;
       gap: 7px;
       overflow-x: auto;
-      padding: 12px;
+      padding: 12px 12px;
       background: rgba(20,20,20,.97);
       border-bottom: 1px solid #292929;
       scrollbar-width: none;
     }
 
-    .tabs::-webkit-scrollbar { display: none; }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
 
     .tab {
       flex: 0 0 auto;
@@ -246,11 +316,25 @@
       font-size: 13px;
     }
 
-    .tab.active { background: var(--red); color: #fff; border-color: var(--red); }
+    .tab.active {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
 
-    /* ========== CONTENT ========== */
-    #content { width: 100%; padding-top: 8px; contain: content; }
-    .section { width: 100%; margin-bottom: 10px; }
+    /* =========================
+       CONTENT
+    ========================= */
+
+    #content {
+      width: 100%;
+      padding-top: 8px;
+    }
+
+    .section {
+      width: 100%;
+      margin-bottom: 10px;
+    }
 
     .section-title {
       padding: 12px 12px 9px;
@@ -258,9 +342,14 @@
       font-weight: 800;
     }
 
-    .section-title span { color: var(--red); }
+    .section-title span {
+      color: var(--red);
+    }
 
-    /* ========== GRADE ========== */
+    /* =========================
+       GRADE
+    ========================= */
+
     .grid {
       width: 100%;
       display: grid !important;
@@ -280,14 +369,22 @@
     }
 
     @media (min-width: 901px) {
-      .grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; gap: 14px; }
+      .grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 14px;
+      }
     }
 
     @media (min-width: 1400px) {
-      .grid { grid-template-columns: repeat(8, minmax(0, 1fr)) !important; }
+      .grid {
+        grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+      }
     }
 
-    /* ========== CARD ========== */
+    /* =========================
+       CARD
+    ========================= */
+
     .card {
       width: 100%;
       min-width: 0;
@@ -295,11 +392,12 @@
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid #2d2d2d;
-      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+      transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
       position: relative;
       cursor: pointer;
-      content-visibility: auto;
-      contain-intrinsic-size: 220px;
     }
 
     .card:hover {
@@ -316,7 +414,10 @@
       object-fit: cover;
     }
 
-    .card-info { padding: 8px; min-height: 53px; }
+    .card-info {
+      padding: 8px;
+      min-height: 53px;
+    }
 
     .card-title {
       color: #fff;
@@ -338,7 +439,8 @@
 
     .badge {
       position: absolute;
-      top: 6px; left: 6px;
+      top: 6px;
+      left: 6px;
       background: var(--red);
       color: white;
       border-radius: 4px;
@@ -348,11 +450,27 @@
       z-index: 3;
     }
 
-    /* ========== EMPTY ========== */
-    .empty { text-align: center; color: #888; padding: 45px 20px; font-size: 14px; }
-    .empty strong { color: #fff; display: block; margin-bottom: 8px; }
+    /* =========================
+       EMPTY
+    ========================= */
 
-    /* ========== MODAL ========== */
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 45px 20px;
+      font-size: 14px;
+    }
+
+    .empty strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* =========================
+       MODAL M3U
+    ========================= */
+
     .modal {
       display: none;
       position: fixed;
@@ -373,8 +491,17 @@
       padding: 20px;
     }
 
-    .modal-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; }
-    .modal-box input[type="text"], .modal-box input[type="file"] { width: 100%; margin-bottom: 10px; }
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .modal-box input[type="text"],
+    .modal-box input[type="file"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
 
     .modal-box input[type="text"] {
       height: 42px;
@@ -386,7 +513,11 @@
       outline: none;
     }
 
-    .modal-buttons { display: flex; gap: 8px; margin-top: 10px; }
+    .modal-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
     .modal-buttons button {
       flex: 1;
@@ -397,9 +528,15 @@
       color: white;
     }
 
-    .modal-buttons .red { background: var(--red); border-color: var(--red); }
+    .modal-buttons .red {
+      background: var(--red);
+      border-color: var(--red);
+    }
 
-    /* ========== PLAYER ========== */
+    /* =========================
+       PLAYER
+    ========================= */
+
     #playerModal {
       display: none;
       position: fixed;
@@ -447,138 +584,282 @@
       font-size: 20px;
     }
 
-    #playerStatus {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.85);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      display: none;
-      z-index: 10001;
-    }
+    /* =========================
+       RESPONSIVO
+    ========================= */
 
-    /* ========== RESPONSIVO ========== */
     @media (max-width: 480px) {
-      .navbar { padding: 0 10px; }
-      .logo { font-size: 17px; }
-      .nav-btn { padding: 7px 8px; font-size: 10px; }
-      .hero { min-height: 230px; height: 34vh; padding: 25px 15px; }
-      .hero-title { font-size: 28px; }
-      .hero-description { font-size: 12px; }
-      .section-title { font-size: 17px; }
-      .card-info { padding: 6px; }
-      .card-title { font-size: 10px; }
-      .card-category { font-size: 8px; }
+
+      .navbar {
+        padding: 0 10px;
+      }
+
+      .logo {
+        font-size: 17px;
+      }
+
+      .nav-btn {
+        padding: 7px 8px;
+        font-size: 10px;
+      }
+
+      .hero {
+        min-height: 230px;
+        height: 34vh;
+        padding: 25px 15px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+      }
+
+      .hero-description {
+        font-size: 12px;
+      }
+
+      .section-title {
+        font-size: 17px;
+      }
+
+      .card-info {
+        padding: 6px;
+      }
+
+      .card-title {
+        font-size: 10px;
+      }
+
+      .card-category {
+        font-size: 8px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ========== LOGIN ========== -->
   <div id="authScreen">
     <div class="auth-box">
-      <div class="auth-logo">RENATO IPTV</div>
-      <div class="auth-subtitle">Acesse sua programação</div>
 
-      <input type="email" id="email" placeholder="E-mail" autocomplete="email">
-      <input type="password" id="password" placeholder="Senha" autocomplete="current-password">
+      <div class="auth-logo">
+        RENATO IPTV
+      </div>
 
-      <button class="auth-btn" id="authButton">Entrar</button>
+      <div class="auth-subtitle">
+        Acesse sua programação
+      </div>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="E-mail"
+        autocomplete="email"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Senha"
+        autocomplete="current-password"
+      >
+
+      <button class="auth-btn" id="authButton">
+        Entrar
+      </button>
 
       <div class="auth-switch">
-        <span id="authSwitch">Criar uma conta</span>
+        <span id="authSwitch">
+          Criar uma conta
+        </span>
       </div>
 
       <div id="authMessage"></div>
+
     </div>
   </div>
 
-  <!-- ========== APP ========== -->
   <div id="app">
+
     <nav class="navbar">
-      <div class="logo">RENATO IPTV</div>
-      <div class="nav-actions">
-        <button class="nav-btn primary" id="addListBtn">+ Lista</button>
-        <button class="nav-btn" id="logoutBtn">Sair</button>
+
+      <div class="logo">
+        RENATO IPTV
       </div>
+
+      <div class="nav-actions">
+
+        <button
+          class="nav-btn primary"
+          id="addListBtn"
+        >
+          + Lista
+        </button>
+
+        <button
+          class="nav-btn"
+          id="logoutBtn"
+        >
+          Sair
+        </button>
+
+      </div>
+
     </nav>
 
     <div class="search-area">
-      <input type="search" id="searchInput" placeholder="🔎 Pesquisar canais, filmes, séries..." autocomplete="off">
+
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="🔎 Pesquisar canais, filmes, séries..."
+      >
+
     </div>
 
     <section class="hero" id="hero">
+
       <div class="hero-content">
-        <div class="hero-title" id="heroTitle">RENATO IPTV</div>
-        <div class="hero-description" id="heroDescription">Sua programação em um só lugar.</div>
-        <button class="hero-play" id="heroPlay">▶ Assistir</button>
+
+        <div class="hero-title" id="heroTitle">
+          RENATO IPTV
+        </div>
+
+        <div class="hero-description" id="heroDescription">
+          Sua programação em um só lugar.
+        </div>
+
+        <button
+          class="hero-play"
+          id="heroPlay"
+        >
+          ▶ Assistir
+        </button>
+
       </div>
+
     </section>
 
     <div class="tabs">
-      <button class="tab active" data-filter="todos">Todos</button>
-      <button class="tab" data-filter="canais">Canais</button>
-      <button class="tab" data-filter="filmes">Filmes</button>
-      <button class="tab" data-filter="series">Séries</button>
-      <button class="tab" data-filter="novelas">Novelas</button>
+
+      <button class="tab active" data-filter="todos">
+        Todos
+      </button>
+
+      <button class="tab" data-filter="canais">
+        Canais
+      </button>
+
+      <button class="tab" data-filter="filmes">
+        Filmes
+      </button>
+
+      <button class="tab" data-filter="series">
+        Séries
+      </button>
+
+      <button class="tab" data-filter="novelas">
+        Novelas
+      </button>
+
     </div>
 
     <main id="content"></main>
+
   </div>
 
-  <!-- ========== MODAL M3U ========== -->
   <div class="modal" id="m3uModal">
-    <div class="modal-box">
-      <div class="modal-title">Adicionar lista M3U</div>
 
-      <input type="text" id="m3uUrl" placeholder="Cole aqui a URL da lista M3U/M3U8">
-      <input type="file" id="m3uFile" accept=".m3u,.m3u8,.txt">
+    <div class="modal-box">
+
+      <div class="modal-title">
+        Adicionar lista M3U
+      </div>
+
+      <input
+        type="text"
+        id="m3uUrl"
+        placeholder="Cole aqui a URL da lista M3U/M3U8"
+      >
+
+      <input
+        type="file"
+        id="m3uFile"
+        accept=".m3u,.m3u8,.txt"
+      >
 
       <div class="modal-buttons">
-        <button id="closeM3u">Cancelar</button>
-        <button class="red" id="loadM3u">Carregar lista</button>
+
+        <button id="closeM3u">
+          Cancelar
+        </button>
+
+        <button class="red" id="loadM3u">
+          Carregar lista
+        </button>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- ========== PLAYER ========== -->
   <div id="playerModal">
+
     <div class="player-top">
-      <div id="playerTitle">Reprodução</div>
-      <button id="closePlayer">×</button>
+
+      <div id="playerTitle">
+        Reprodução
+      </div>
+
+      <button id="closePlayer">
+        ×
+      </button>
+
     </div>
-    <video id="video" controls playsinline preload="none" crossorigin="anonymous"></video>
-    <div id="playerStatus"></div>
+
+    <video
+      id="video"
+      controls
+      playsinline
+      preload="metadata"
+    ></video>
+
   </div>
 
   <script>
+
     /* =====================================================
        SUPABASE
     ===================================================== */
-    const SUPABASE_URL = "https://tcsikxqgyyvewqwfudcu.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
 
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL =
+      "https://tcsikxqgyyvewqwfudcu.supabase.co";
+
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
+
+    const sb =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
 
     /* =====================================================
        VARIÁVEIS
     ===================================================== */
+
     let currentUser = null;
     let list = [];
     let currentFilter = "todos";
     let searchTerm = "";
     let hls = null;
-    let searchTimer = null;
-    let cloudLoading = false;
+
 
     /* =====================================================
        DEMO
     ===================================================== */
+
     const DEMO = `#EXTM3U
 
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/222/fff&text=Canal+1" group-title="Canais",Canal Demo 1
@@ -617,32 +898,55 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/dd0000/fff&text=Novela+3" group-title="Novelas",Novela Demo 3
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
+
     /* =====================================================
-       NORMALIZAÇÃO / ESCAPE
+       NORMALIZAÇÃO
     ===================================================== */
+
     function normalizeText(value) {
+
       return String(value || "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
+
     }
 
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
     function escapeHtml(value) {
+
       return String(value || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
     }
+
 
     /* =====================================================
        CATEGORIA
     ===================================================== */
-    function detectCategory(name, group) {
-      const text = normalizeText(String(name || "") + " " + String(group || ""));
 
-      if (text.includes("novela")) return "novelas";
+    function detectCategory(name, group) {
+
+      const text =
+        normalizeText(
+          String(name || "") +
+          " " +
+          String(group || "")
+        );
+
+      if (
+        text.includes("novela")
+      ) {
+        return "novelas";
+      }
 
       if (
         text.includes("serie") ||
@@ -650,7 +954,9 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         text.includes("temporada") ||
         text.includes("episodio") ||
         /s\d{1,2}e\d{1,2}/i.test(text)
-      ) return "series";
+      ) {
+        return "series";
+      }
 
       if (
         text.includes("filme") ||
@@ -659,812 +965,1566 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
         text.includes("movies") ||
         text.includes("film") ||
         text.includes("vod")
-      ) return "filmes";
+      ) {
+        return "filmes";
+      }
 
       return "canais";
     }
 
-    /* =====================================================
-       PREPARAR ITEM
-    ===================================================== */
-    function prepareItem(item) {
-      const name = String(item.name || "Sem nome");
-      const group = String(item.group || "");
-
-      item.name = name;
-      item.group = group;
-      item.cat = item.cat || detectCategory(name, group);
-      item.searchText = normalizeText(name + " " + group);
-
-      return item;
-    }
-
-    function prepareList(data) {
-      if (!Array.isArray(data)) return [];
-
-      return data
-        .filter(item => item && item.url)
-        .map(prepareItem);
-    }
 
     /* =====================================================
-       PARSER M3U — CORRIGIDO
-       - Ignora #EXTVLCOPT, #EXTGRP, #KODIPROP, etc.
-       - Trata corretamente fim de bloco
+       PARSER M3U
     ===================================================== */
+
     function parseM3U(text) {
-      const lines = String(text || "").split(/\r?\n/);
+
+      const lines =
+        String(text || "")
+          .split(/\r?\n/);
+
       const result = [];
+
       let item = null;
 
       for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
 
-        // Diretivas que antecedem um novo item
-        if (line.toUpperCase().startsWith("#EXTINF:")) {
-          const logoMatch = line.match(/tvg-logo\s*=\s*["']([^"']*)["']/i);
-          const groupMatch = line.match(/group-title\s*=\s*["']([^"']*)["']/i);
-          const comma = line.indexOf(",");
+        const line =
+          lines[i].trim();
 
-          const name = comma !== -1
-            ? line.substring(comma + 1).trim()
-            : "Sem nome";
+        if (!line) {
+          continue;
+        }
+
+        if (
+          line
+            .toUpperCase()
+            .startsWith("#EXTINF:")
+        ) {
+
+          const logoMatch =
+            line.match(
+              /tvg-logo\s*=\s*["']([^"']*)["']/i
+            );
+
+          const groupMatch =
+            line.match(
+              /group-title\s*=\s*["']([^"']*)["']/i
+            );
+
+          const comma =
+            line.indexOf(",");
+
+          let name = "Sem nome";
+
+          if (comma !== -1) {
+
+            name =
+              line
+                .substring(comma + 1)
+                .trim();
+
+          }
+
+          const logo =
+            logoMatch
+              ? logoMatch[1]
+              : "";
+
+          const group =
+            groupMatch
+              ? groupMatch[1]
+              : "";
 
           item = {
-            name: name || "Sem nome",
-            logo: logoMatch ? logoMatch[1] : "",
-            group: groupMatch ? groupMatch[1] : "",
-            cat: detectCategory(name, groupMatch ? groupMatch[1] : ""),
-            url: ""
+
+            name:
+              name || "Sem nome",
+
+            logo:
+              logo,
+
+            group:
+              group,
+
+            cat:
+              detectCategory(
+                name,
+                group
+              ),
+
+            url:
+              ""
+
           };
 
           continue;
         }
 
-        // Qualquer outra linha de comentário/diretiva:
-        // se não temos item ativo, ignora; se temos, também ignora
-        // (mas NÃO fecha o item — só fecha quando vem URL).
-        if (line.startsWith("#")) {
+        if (
+          line.startsWith("#")
+        ) {
           continue;
         }
 
-        // Linha de URL
-        if (item && !line.startsWith("#")) {
+        if (
+          item &&
+          !line.startsWith("#")
+        ) {
+
           item.url = line;
 
           if (item.url) {
-            result.push(prepareItem({ ...item }));
+
+            result.push({
+              ...item
+            });
+
           }
 
           item = null;
-        } else if (!item) {
-          // URL solta sem EXTINF anterior — ignora
-          continue;
         }
+
       }
 
       return result;
     }
 
+
     /* =====================================================
-       CARD — CORRIGIDO
-       Recebe o índice já pronto (evita indexOf O(n²))
+       CARD
     ===================================================== */
-    function createCard(item, index) {
-      const logo = item.logo ||
+
+    function createCard(item) {
+
+      const index =
+        list.indexOf(item);
+
+      const logo =
+        item.logo ||
         "https://dummyimage.com/300x450/222/ffffff&text=RENATO+IPTV";
 
-      const badge = item.cat === "canais"
-        ? "LIVE"
-        : item.cat.toUpperCase();
-
       return `
-        <div class="card" data-index="${index}">
-          <div class="badge">${escapeHtml(badge)}</div>
+
+        <div
+          class="card"
+          data-index="${index}"
+        >
+
+          <div class="badge">
+            ${escapeHtml(
+              item.cat === "canais"
+                ? "LIVE"
+                : item.cat.toUpperCase()
+            )}
+          </div>
+
           <img
             class="card-img"
             src="${escapeHtml(logo)}"
             alt="${escapeHtml(item.name)}"
             loading="lazy"
-            decoding="async"
             onerror="this.onerror=null;this.src='https://dummyimage.com/300x450/222/ffffff&text=IPTV';"
           >
+
           <div class="card-info">
-            <div class="card-title">${escapeHtml(item.name)}</div>
-            <div class="card-category">${escapeHtml(item.group || item.cat)}</div>
+
+            <div class="card-title">
+              ${escapeHtml(item.name)}
+            </div>
+
+            <div class="card-category">
+              ${escapeHtml(item.group || item.cat)}
+            </div>
+
           </div>
+
         </div>
+
       `;
     }
 
-    /* =====================================================
-       CATEGORIAS
-    ===================================================== */
-    const CATEGORIES = [
-      { id: "canais", title: "Canais" },
-      { id: "filmes", title: "Filmes" },
-      { id: "series", title: "Séries" },
-      { id: "novelas", title: "Novelas" }
-    ];
 
     /* =====================================================
-       RENDER — CORRIGIDO
-       Índice calculado uma vez, sem indexOf
+       RENDER
     ===================================================== */
+
     function render(data) {
-      const content = document.getElementById("content");
+
+      const content =
+        document.getElementById(
+          "content"
+        );
+
+      content.innerHTML = "";
 
       if (!data.length) {
+
         content.innerHTML = `
+
           <div class="empty">
-            <strong>Nenhum conteúdo encontrado</strong>
+
+            <strong>
+              Nenhum conteúdo encontrado
+            </strong>
+
             Tente outra pesquisa ou carregue uma lista M3U.
+
           </div>
+
         `;
+
         return;
       }
 
-      // Mapa url -> índice global (para o clique)
-      const indexMap = new Map();
-      list.forEach((it, i) => indexMap.set(it.url, i));
+      const categories = [
 
-      const buildCards = items =>
-        items.map(it => {
-          const globalIndex = indexMap.get(it.url) ?? -1;
-          return createCard(it, globalIndex);
-        }).join("");
+        {
+          id: "canais",
+          title: "Canais"
+        },
 
-      let html = "";
+        {
+          id: "filmes",
+          title: "Filmes"
+        },
 
-      if (currentFilter === "todos") {
-        for (const category of CATEGORIES) {
-          const items = data.filter(item => item.cat === category.id);
-          if (!items.length) continue;
+        {
+          id: "series",
+          title: "Séries"
+        },
 
-          html += `
-            <section class="section">
-              <div class="section-title">
-                ${category.title} <span>(${items.length})</span>
-              </div>
-              <div class="grid">${buildCards(items)}</div>
-            </section>
-          `;
+        {
+          id: "novelas",
+          title: "Novelas"
         }
-      } else {
-        const category = CATEGORIES.find(c => c.id === currentFilter);
-        const title = category ? category.title : currentFilter;
 
-        html = `
-          <section class="section">
-            <div class="section-title">
-              ${title} <span>(${data.length})</span>
-            </div>
-            <div class="grid">${buildCards(data)}</div>
-          </section>
+      ];
+
+      if (
+        currentFilter === "todos"
+      ) {
+
+        categories.forEach(
+          category => {
+
+            const items =
+              data.filter(
+                item =>
+                  item.cat ===
+                  category.id
+              );
+
+            if (!items.length) {
+              return;
+            }
+
+            const section =
+              document.createElement(
+                "section"
+              );
+
+            section.className =
+              "section";
+
+            section.innerHTML = `
+
+              <div class="section-title">
+                ${category.title}
+                <span>(${items.length})</span>
+              </div>
+
+              <div class="grid">
+                ${items
+                  .map(createCard)
+                  .join("")}
+              </div>
+
+            `;
+
+            content.appendChild(
+              section
+            );
+
+          }
+        );
+
+      } else {
+
+        const category =
+          categories.find(
+            c =>
+              c.id ===
+              currentFilter
+          );
+
+        const title =
+          category
+            ? category.title
+            : currentFilter;
+
+        const section =
+          document.createElement(
+            "section"
+          );
+
+        section.className =
+          "section";
+
+        section.innerHTML = `
+
+          <div class="section-title">
+            ${title}
+            <span>(${data.length})</span>
+          </div>
+
+          <div class="grid">
+            ${data
+              .map(createCard)
+              .join("")}
+          </div>
+
         `;
+
+        content.appendChild(
+          section
+        );
+
       }
 
-      content.innerHTML = html;
+      content
+        .querySelectorAll(".card")
+        .forEach(card => {
+
+          card.addEventListener(
+            "click",
+            () => {
+
+              const index =
+                Number(
+                  card.dataset.index
+                );
+
+              const item =
+                list[index];
+
+              if (item) {
+
+                playVideo(
+                  item.url,
+                  item.name
+                );
+
+              }
+
+            }
+          );
+
+        });
+
     }
+
 
     /* =====================================================
-       FILTRAGEM
+       FILTRAR
     ===================================================== */
-    function updateView() {
-      const normalizedSearch = normalizeText(searchTerm);
-      const filter = currentFilter;
 
-      const data = list.filter(item => {
-        const categoryOK = filter === "todos" || item.cat === filter;
-        if (!categoryOK) return false;
-        if (!normalizedSearch) return true;
-        return item.searchText.includes(normalizedSearch);
-      });
+    function updateView() {
+
+      const normalizedSearch =
+        normalizeText(
+          searchTerm
+        );
+
+      let data =
+        list.filter(
+          item => {
+
+            const text =
+              normalizeText(
+                item.name +
+                " " +
+                item.group
+              );
+
+            const categoryOK =
+              currentFilter === "todos" ||
+              item.cat ===
+              currentFilter;
+
+            const searchOK =
+              !normalizedSearch ||
+              text.includes(
+                normalizedSearch
+              );
+
+            return (
+              categoryOK &&
+              searchOK
+            );
+
+          }
+        );
 
       render(data);
+
     }
 
-    function scheduleSearch(value) {
-      searchTerm = value;
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(updateView, 80);
-    }
 
     /* =====================================================
        HERO
     ===================================================== */
+
     function updateHero() {
-      const hero = document.getElementById("hero");
-      const title = document.getElementById("heroTitle");
-      const description = document.getElementById("heroDescription");
+
+      const hero =
+        document.getElementById(
+          "hero"
+        );
+
+      const title =
+        document.getElementById(
+          "heroTitle"
+        );
+
+      const description =
+        document.getElementById(
+          "heroDescription"
+        );
 
       if (!list.length) {
+
         hero.style.backgroundImage =
           "linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.5)),linear-gradient(135deg,#300,#111)";
-        title.textContent = "RENATO IPTV";
-        description.textContent = "Sua programação em um só lugar.";
+
+        title.textContent =
+          "RENATO IPTV";
+
+        description.textContent =
+          "Sua programação em um só lugar.";
+
         return;
       }
 
-      const item = list[0];
+      const item =
+        list[0];
 
       if (item.logo) {
-        hero.style.backgroundImage = `
-          linear-gradient(90deg, rgba(0,0,0,.95), rgba(0,0,0,.5), rgba(0,0,0,.8)),
+
+        hero.style.backgroundImage =
+          `
+          linear-gradient(
+            90deg,
+            rgba(0,0,0,.95),
+            rgba(0,0,0,.5),
+            rgba(0,0,0,.8)
+          ),
           url("${item.logo}")
-        `;
+          `;
+
       }
 
-      title.textContent = item.name;
-      description.textContent = item.group || "Conteúdo disponível";
+      title.textContent =
+        item.name;
+
+      description.textContent =
+        item.group ||
+        "Conteúdo disponível";
+
     }
+
 
     /* =====================================================
-       PLAYER — CORRIGIDO
-       - Recuperação de erros HLS
-       - Status visual para o usuário
-       - Destrói corretamente
+       PLAYER
     ===================================================== */
+
     function isHlsUrl(url) {
-      return /\.m3u8(?:$|[?#])/i.test(String(url || ""));
+
+      return /\.m3u8(?:$|[?#])/i
+        .test(
+          String(url || "")
+        );
+
     }
 
-    function setPlayerStatus(text) {
-      const el = document.getElementById("playerStatus");
-      if (!text) {
-        el.style.display = "none";
-        el.textContent = "";
-      } else {
-        el.textContent = text;
-        el.style.display = "block";
+
+    function playVideo(
+      url,
+      name
+    ) {
+
+      if (!url) {
+        return;
       }
-    }
 
-    function playVideo(url, name) {
-      if (!url) return;
+      const modal =
+        document.getElementById(
+          "playerModal"
+        );
 
-      const modal = document.getElementById("playerModal");
-      const video = document.getElementById("video");
-      const title = document.getElementById("playerTitle");
+      const video =
+        document.getElementById(
+          "video"
+        );
 
-      title.textContent = name || "Reprodução";
-      modal.style.display = "flex";
+      const title =
+        document.getElementById(
+          "playerTitle"
+        );
+
+      title.textContent =
+        name || "Reprodução";
+
+      modal.style.display =
+        "flex";
 
       if (hls) {
+
         hls.destroy();
+
         hls = null;
+
       }
 
       video.pause();
-      video.removeAttribute("src");
+
+      video.removeAttribute(
+        "src"
+      );
+
       video.load();
 
-      setPlayerStatus("Carregando...");
+      if (
+        isHlsUrl(url) &&
+        window.Hls &&
+        Hls.isSupported()
+      ) {
 
-      if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
-        hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 30,
-          manifestLoadingTimeOut: 15000,
-          manifestLoadingMaxRetry: 2,
-          fragLoadingMaxRetry: 4
-        });
+        hls =
+          new Hls({
+            enableWorker: true
+          });
 
-        hls.loadSource(url);
-        hls.attachMedia(video);
+        hls.loadSource(
+          url
+        );
 
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          setPlayerStatus("");
-          video.play().catch(() => {});
-        });
+        hls.attachMedia(
+          video
+        );
 
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          console.error("Erro HLS:", data);
+        hls.on(
+          Hls.Events.MANIFEST_PARSED,
+          () => {
 
-          if (!data.fatal) return;
+            video.play()
+              .catch(() => {});
 
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              setPlayerStatus("Reconectando...");
-              hls.startLoad();
-              break;
-
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              setPlayerStatus("Recuperando mídia...");
-              hls.recoverMediaError();
-              break;
-
-            default:
-              setPlayerStatus("Não foi possível reproduzir este conteúdo.");
-              hls.destroy();
-              hls = null;
-              break;
           }
-        });
+        );
 
-      } else if (isHlsUrl(url) && video.canPlayType("application/vnd.apple.mpegurl")) {
+        hls.on(
+          Hls.Events.ERROR,
+          (
+            event,
+            data
+          ) => {
+
+            console.error(
+              "Erro HLS:",
+              data
+            );
+
+          }
+        );
+
+      } else if (
+        isHlsUrl(url) &&
+        video.canPlayType(
+          "application/vnd.apple.mpegurl"
+        )
+      ) {
+
         video.src = url;
-        video.addEventListener("loadeddata", () => setPlayerStatus(""), { once: true });
-        video.addEventListener("error", () => setPlayerStatus("Não foi possível reproduzir este conteúdo."), { once: true });
-        video.play().catch(() => {});
+
+        video.play()
+          .catch(() => {});
 
       } else {
+
         video.src = url;
-        video.addEventListener("loadeddata", () => setPlayerStatus(""), { once: true });
-        video.addEventListener("error", () => setPlayerStatus("Não foi possível reproduzir este conteúdo."), { once: true });
-        video.play().catch(() => {});
+
+        video.play()
+          .catch(() => {});
+
       }
+
     }
+
+
+    /* =====================================================
+       FECHAR PLAYER
+    ===================================================== */
 
     function closePlayer() {
-      const modal = document.getElementById("playerModal");
-      const video = document.getElementById("video");
+
+      const modal =
+        document.getElementById(
+          "playerModal"
+        );
+
+      const video =
+        document.getElementById(
+          "video"
+        );
 
       video.pause();
-      video.removeAttribute("src");
+
+      video.removeAttribute(
+        "src"
+      );
+
       video.load();
 
       if (hls) {
+
         hls.destroy();
+
         hls = null;
+
       }
 
-      setPlayerStatus("");
-      modal.style.display = "none";
+      modal.style.display =
+        "none";
+
     }
+
 
     /* =====================================================
        SALVAR LOCAL
     ===================================================== */
+
     function saveLocal() {
+
       try {
-        localStorage.setItem("renato_iptv_list", JSON.stringify(list));
+
+        localStorage.setItem(
+          "renato_iptv_list",
+          JSON.stringify(list)
+        );
+
       } catch (error) {
-        console.warn("Erro ao salvar local:", error);
-      }
-    }
 
-    function loadLocal() {
-      try {
-        const saved = localStorage.getItem("renato_iptv_list");
-        if (!saved) return false;
+        console.error(
+          "Erro ao salvar local:",
+          error
+        );
 
-        const parsed = JSON.parse(saved);
-
-        if (Array.isArray(parsed) && parsed.length) {
-          list = prepareList(parsed);
-          updateHero();
-          updateView();
-          return list.length > 0;
-        }
-      } catch (error) {
-        console.warn("Erro ao carregar local:", error);
       }
 
-      return false;
     }
+
 
     /* =====================================================
-       NUVEM — CORRIGIDO
-       - Retorna boolean indicando sucesso/falha
-       - Avisa se payload for muito grande
+       CARREGAR LOCAL
     ===================================================== */
-    async function saveListToCloud() {
-      if (!currentUser) return false;
+
+    function loadLocal() {
 
       try {
-        const payload = JSON.stringify(list);
 
-        // Limite prático: ~900 KB para evitar erro do Supabase
-        if (payload.length > 900_000) {
-          console.warn("Lista muito grande para sincronizar:", payload.length, "bytes");
+        const saved =
+          localStorage.getItem(
+            "renato_iptv_list"
+          );
+
+        if (!saved) {
           return false;
         }
 
-        const { error } = await sb
+        const parsed =
+          JSON.parse(saved);
+
+        if (
+          Array.isArray(parsed) &&
+          parsed.length
+        ) {
+
+          list = parsed;
+
+          updateHero();
+
+          updateView();
+
+          return true;
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao carregar lista local:",
+          error
+        );
+
+      }
+
+      return false;
+
+    }
+
+
+    /* =====================================================
+       SALVAR SUPABASE
+    ===================================================== */
+
+    async function saveListToCloud() {
+
+      if (!currentUser) {
+        return;
+      }
+
+      try {
+
+        const {
+          error
+        } = await sb
           .from("user_lists")
           .upsert(
             {
-              user_id: currentUser.id,
-              content: payload,
-              updated_at: new Date().toISOString()
+              user_id:
+                currentUser.id,
+
+              content:
+                JSON.stringify(list),
+
+              updated_at:
+                new Date()
+                  .toISOString()
+
             },
-            { onConflict: "user_id" }
+            {
+              onConflict:
+                "user_id"
+            }
           );
 
         if (error) {
-          console.warn("Supabase:", error.message);
-          return false;
+
+          console.warn(
+            "Não foi possível salvar no Supabase:",
+            error.message
+          );
+
         }
 
-        return true;
-
       } catch (error) {
-        console.warn("Erro Supabase:", error);
-        return false;
+
+        console.warn(
+          "Erro Supabase:",
+          error
+        );
+
       }
+
     }
 
-    async function loadListFromCloud() {
-      if (!currentUser || cloudLoading) return false;
 
-      cloudLoading = true;
+    /* =====================================================
+       CARREGAR SUPABASE
+    ===================================================== */
+
+    async function loadListFromCloud() {
+
+      if (!currentUser) {
+        return false;
+      }
 
       try {
-        const { data, error } = await sb
+
+        const {
+          data,
+          error
+        } = await sb
           .from("user_lists")
           .select("content")
-          .eq("user_id", currentUser.id)
+          .eq(
+            "user_id",
+            currentUser.id
+          )
           .maybeSingle();
 
         if (error) {
-          console.warn("Supabase:", error.message);
+
+          console.warn(
+            "Erro carregando lista:",
+            error.message
+          );
+
           return false;
+
         }
 
-        if (data && data.content) {
-          const parsed = typeof data.content === "string"
-            ? JSON.parse(data.content)
-            : data.content;
+        if (
+          data &&
+          data.content
+        ) {
 
-          if (Array.isArray(parsed) && parsed.length) {
-            list = prepareList(parsed);
+          const parsed =
+            typeof data.content === "string"
+              ? JSON.parse(data.content)
+              : data.content;
+
+          if (
+            Array.isArray(parsed) &&
+            parsed.length
+          ) {
+
+            list = parsed;
+
             saveLocal();
+
             updateHero();
+
             updateView();
-            return list.length > 0;
+
+            return true;
+
           }
+
         }
+
       } catch (error) {
-        console.warn("Erro ao carregar Supabase:", error);
-      } finally {
-        cloudLoading = false;
+
+        console.warn(
+          "Erro ao carregar Supabase:",
+          error
+        );
+
       }
 
       return false;
+
     }
 
+
     /* =====================================================
-       DEMO
+       CARREGAR DEMO
     ===================================================== */
+
     function loadDemo() {
-      const parsed = parseM3U(DEMO);
+
+      const parsed =
+        parseM3U(
+          DEMO
+        );
+
       if (parsed.length) {
-        list = parsed;
+
+        list =
+          parsed;
+
         updateHero();
+
         updateView();
+
       }
+
     }
 
+
     /* =====================================================
-       CARREGAR TEXTO M3U — CORRIGIDO
-       Avisa se sincronização falhar
+       CARREGAR TEXTO M3U
     ===================================================== */
-    async function loadM3UText(text) {
-      const parsed = parseM3U(text);
+
+    async function loadM3UText(
+      text
+    ) {
+
+      const parsed =
+        parseM3U(
+          text
+        );
 
       if (!parsed.length) {
-        alert("Não foi possível encontrar conteúdos nessa lista M3U.");
+
+        alert(
+          "Não foi possível encontrar conteúdos nessa lista M3U."
+        );
+
         return;
+
       }
 
-      list = parsed;
+      list =
+        parsed;
+
       saveLocal();
+
+      await saveListToCloud();
+
       updateHero();
+
       updateView();
+
       closeM3UModal();
 
-      const synced = await saveListToCloud();
+      alert(
+        `${parsed.length} itens carregados com sucesso.`
+      );
 
-      if (!synced && currentUser) {
-        alert(
-          `${parsed.length} itens carregados localmente.\n\n` +
-          `⚠️ Não foi possível sincronizar com a nuvem ` +
-          `(lista grande demais ou falha de rede).`
-        );
-      } else {
-        alert(`${parsed.length} itens carregados com sucesso.`);
-      }
     }
+
 
     /* =====================================================
-       CARREGARgu URL M3U — CORRIGIDO
-arde       Múltiplos proxies... com fallback
-    =================================");
+       CARREGAR URL M3U
+    ===================================================== */
 
-==================== */
-    async function fetchM3     UText(url) {
-      // Tent constativa 1: direto
-      try {
-        const res = await fetch(url, { mode: "cors" });
-        if (res.ok) return await res.text();
-      } catch (e) {
-        console.warn("Falha direta:", e);
-      }
+    async function loadM3UUrl(
+      url
+    ) {
 
-      // Proxies de fallback
-      const proxies = [
-        u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-        u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-        u => `https://thingproxy.freeboard.io/fetch/${u}`
-      ];
-
-      for (const makeProxy of proxies) {
-        try {
-          const res = await fetch(makeProxy(url));
-          if (!res.ok) continue;
-
-          const text = await res.text();
-
-          // Verifica se veio algo parecido com M3U
-          if (text && text.includes("#EXTM3U")) {
-            return text;
-          }
-        } catch (e) {
-          console.warn("Falha proxy:", e);
-        }
-      }
-
-      throw new Error("Não foi possível obter a lista M3U por nenhum método.");
-    }
-
-    async function loadM3UUrl(url) {
       if (!url) {
-        alert("Digite uma URL M3U.");
+
+        alert(
+          "Digite uma URL M3U."
+        );
+
         return;
+
       }
 
       try {
-        const text = await fetchM3UText(url);
-        await loadM3UText(text);
-      } catch (error) {
-        console.error(error);
-        alert(
-          "Não foi possível carregar a lista. O servidor pode estar " +
-          "bloqueando acesso externo (CORS) ou a URL pode estar inválida."
+
+        const response =
+          await fetch(
+            url
+          );
+
+        if (!response.ok) {
+
+          throw new Error(
+            "HTTP " +
+            response.status
+          );
+
+        }
+
+        const text =
+          await response.text();
+
+        await loadM3UText(
+          text
         );
+
+      } catch (error) {
+
+        console.warn(
+          "Falha direta:",
+          error
+        );
+
+        try {
+
+          const proxy =
+            "https://corsproxy.io/?" +
+            encodeURIComponent(
+              url
+            );
+
+          const response =
+            await fetch(
+              proxy
+            );
+
+          if (!response.ok) {
+
+            throw new Error(
+              "Proxy HTTP " +
+              response.status
+            );
+
+          }
+
+          const text =
+            await response.text();
+
+          await loadM3UText(
+            text
+          );
+
+        } catch (proxyError) {
+
+          console.error(
+            proxyError
+          );
+
+          alert(
+            "Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida."
+          );
+
+        }
+
       }
+
     }
+
 
     /* =====================================================
        ARQUIVO M3U
     ===================================================== */
-    function loadM3UFile(file) {
-      if (!file) return;
 
-      const reader = new FileReader();
+    function loadM3UFile(
+      file
+    ) {
 
-      reader.onload = async event => {
-        await loadM3UText(event.target.result);
-      };
+      if (!file) {
+        return;
+      }
 
-      reader.onerror = () => {
-        alert("Erro ao ler o arquivo.");
-      };
+      const reader =
+        new FileReader();
 
-      reader.readAsText(file);
+      reader.onload =
+        async function(event) {
+
+          await loadM3UText(
+            event.target.result
+          );
+
+        };
+
+      reader.onerror =
+        function() {
+
+          alert(
+            "Erro ao ler o arquivo."
+          );
+
+        };
+
+      reader.readAsText(
+        file
+      );
+
     }
+
 
     /* =====================================================
-       MODAL M3U
+       MODAL
     ===================================================== */
+
     function openM3UModal() {
-      document.getElementById("m3uModal").style.display = "flex";
+
+      document
+        .getElementById(
+          "m3uModal"
+        )
+        .style.display =
+        "flex";
+
     }
 
+
     function closeM3UModal() {
-      document.getElementById("m3uModal").style.display = "none";
+
+      document
+        .getElementById(
+          "m3uModal"
+        )
+        .style.display =
+        "none";
+
     }
+
 
     /* =====================================================
        AUTENTICAÇÃO
     ===================================================== */
-    let isSignup = false;
 
-    function showAuthMessage(message) {
-      document.getElementById("authMessage").textContent = message || "";
+    let isSignup =
+      false;
+
+
+    function showAuthMessage(
+      message
+    ) {
+
+      document
+        .getElementById(
+          "authMessage"
+        )
+        .textContent =
+        message || "";
+
     }
 
+
     async function handleAuth() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+
+      const email =
+        document
+          .getElementById(
+            "email"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "password"
+          )
+          .value;
 
       if (!email || !password) {
-        showAuthMessage("Informe e-mail e senha.");
+
+        showAuthMessage(
+          "Informe e-mail e senha."
+        );
+
         return;
+
       }
 
-      showAuthMessage("A button = document.getElementById("authButton");
-      button.disabled = true;
+      showAuthMessage(
+        "Aguarde..."
+      );
 
       try {
-        if (isSignup) {
-          const { data, error } = await sb.auth.signUp({ email, password });
-          if (error) throw error;
 
-          if (data.user) currentUser = data.user;
+        if (isSignup) {
+
+          const {
+            data,
+            error
+          } =
+            await sb.auth
+              .signUp({
+                email,
+                password
+              });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.user) {
+
+            currentUser =
+              data.user;
+
+          }
 
           showAuthMessage(
             "Conta criada. Verifique seu e-mail se a confirmação estiver ativada."
           );
-        } else {
-          const { data, error } = await sb.auth.signInWithPassword({ email, password });
-          if (error) throw error;
 
-          currentUser = data.user;
-          await showApp();
+        } else {
+
+          const {
+            data,
+            error
+          } =
+            await sb.auth
+              .signInWithPassword({
+                email,
+                password
+              });
+
+          if (error) {
+            throw error;
+          }
+
+          currentUser =
+            data.user;
+
+          showApp();
+
         }
+
       } catch (error) {
-        console.error(error);
-        showAuthMessage(error.message || "Erro na autenticação.");
-      } finally {
-        button.disabled = false;
+
+        console.error(
+          error
+        );
+
+        showAuthMessage(
+          error.message ||
+          "Erro na autenticação."
+        );
+
       }
+
     }
+
 
     /* =====================================================
        MOSTRAR APP
     ===================================================== */
+
     async function showApp() {
-      document.getElementById("authScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
 
-      const localLoaded = loadLocal();
+      document
+        .getElementById(
+          "authScreen"
+        )
+        .style.display =
+        "none";
 
-      if (!localLoaded) {
-        loadDemo();
-      }
+      document
+        .getElementById(
+          "app"
+        )
+        .style.display =
+        "block";
 
-      if (currentUser) {
-        const cloudLoaded = await loadListFromCloud();
-        if (cloudLoaded) {
-          updateHero();
-          updateView();
+      const cloudLoaded =
+        await loadListFromCloud();
+
+      if (!cloudLoaded) {
+
+        const localLoaded =
+          loadLocal();
+
+        if (!localLoaded) {
+
+          loadDemo();
+
         }
+
       }
+
     }
+
 
     /* =====================================================
        LOGOUT
     ===================================================== */
-    async function logout() {
-      try {
-        await sb.auth.signOut();
-      } catch (error) {
-        console.warn(error);
-      }
 
-      currentUser = null;
+    async function logout() {
+
+      await sb.auth.signOut();
+
+      currentUser =
+        null;
+
       list = [];
 
-      document.getElementById("app").style.display = "none";
-      document.getElementById("authScreen").style.display = "flex";
+      document
+        .getElementById(
+          "app"
+        )
+        .style.display =
+        "none";
+
+      document
+        .getElementById(
+          "authScreen"
+        )
+        .style.display =
+        "flex";
+
     }
+
 
     /* =====================================================
        EVENTOS
     ===================================================== */
-    document.getElementById("authButton").addEventListener("click", handleAuth);
 
-    document.getElementById("authSwitch").addEventListener("click", () => {
-      isSignup = !isSignup;
+    document
+      .getElementById(
+        "authButton"
+      )
+      .addEventListener(
+        "click",
+        handleAuth
+      );
 
-      document.getElementById("authButton").textContent =
-        isSignup ? "Criar conta" : "Entrar";
 
-      document.getElementById("authSwitch").textContent =
-        isSignup ? "Já tenho uma conta" : "Criar uma conta";
+    document
+      .getElementById(
+        "authSwitch"
+      )
+      .addEventListener(
+        "click",
+        () => {
 
-      showAuthMessage("");
-    });
+          isSignup =
+            !isSignup;
 
-    document.getElementById("logoutBtn").addEventListener("click", logout);
-    document.getElementById("addListBtn").addEventListener("click", openM3UModal);
-    document.getElementById("closeM3u").addEventListener("click", closeM3UModal);
+          document
+            .getElementById(
+              "authButton"
+            )
+            .textContent =
+            isSignup
+              ? "Criar conta"
+              : "Entrar";
 
-    document.getElementById("loadM3u").addEventListener("click", async () => {
-      const url = document.getElementById("m3uUrl").value.trim();
-      const file = document.getElementById("m3uFile").files[0];
-      const button = document.getElementById("loadM3u");
+          document
+            .getElementById(
+              "authSwitch"
+            )
+            .textContent =
+            isSignup
+              ? "Já tenho uma conta"
+              : "Criar uma conta";
 
-      button.disabled = true;
+          showAuthMessage(
+            ""
+          );
 
-      try {
-        if (file) {
-          loadM3UFile(file);
-        } else {
-          await loadM3UUrl(url);
         }
-      } finally {
-        button.disabled = false;
-      }
-    });
+      );
 
-    document.getElementById("searchInput").addEventListener("input", event => {
-      scheduleSearch(event.target.value);
-    });
 
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        currentFilter = tab.dataset.filter;
-        updateView();
-      });
-    });
+    document
+      .getElementById(
+        "logoutBtn"
+      )
+      .addEventListener(
+        "click",
+        logout
+      );
 
-    document.getElementById("closePlayer").addEventListener("click", closePlayer);
 
-    document.getElementById("heroPlay").addEventListener("click", () => {
-      if (list.length) {
-        playVideo(list[0].url, list[0].name);
-      }
-    });
+    document
+      .getElementById(
+        "addListBtn"
+      )
+      .addEventListener(
+        "click",
+        openM3UModal
+      );
 
-    // Event delegation — clique nos cards
-    document.getElementById("content").addEventListener("click", event => {
-      const card = event.target.closest(".card");
-      if (!card) return;
 
-      const index = Number(card.dataset.index);
-      const item = list[index];
+    document
+      .getElementById(
+        "closeM3u"
+      )
+      .addEventListener(
+        "click",
+        closeM3UModal
+      );
 
-      if (item && item.url) {
-        playVideo(item.url, item.name);
-      }
-    });
 
-    document.getElementById("password").addEventListener("keydown", event => {
-      if (event.key === "Enter") handleAuth();
-    });
+    document
+      .getElementById(
+        "loadM3u"
+      )
+      .addEventListener(
+        "click",
+        async () => {
 
-    document.getElementById("m3uModal").addEventListener("click", event => {
-      if (event.target.id === "m3uModal") closeM3UModal();
-    });
+          const url =
+            document
+              .getElementById(
+                "m3uUrl"
+              )
+              .value
+              .trim();
+
+          const file =
+            document
+              .getElementById(
+                "m3uFile"
+              )
+              .files[0];
+
+          if (file) {
+
+            loadM3UFile(
+              file
+            );
+
+          } else {
+
+            await loadM3UUrl(
+              url
+            );
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "searchInput"
+      )
+      .addEventListener(
+        "input",
+        event => {
+
+          searchTerm =
+            event.target.value;
+
+          updateView();
+
+        }
+      );
+
+
+    document
+      .querySelectorAll(
+        ".tab"
+      )
+      .forEach(
+        tab => {
+
+          tab.addEventListener(
+            "click",
+            () => {
+
+              document
+                .querySelectorAll(
+                  ".tab"
+                )
+                .forEach(
+                  t =>
+                    t.classList
+                      .remove(
+                        "active"
+                      )
+                );
+
+              tab.classList.add(
+                "active"
+              );
+
+              currentFilter =
+                tab.dataset.filter;
+
+              updateView();
+
+            }
+          );
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "closePlayer"
+      )
+      .addEventListener(
+        "click",
+        closePlayer
+      );
+
+
+    document
+      .getElementById(
+        "heroPlay"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          if (list.length) {
+
+            playVideo(
+              list[0].url,
+              list[0].name
+            );
+
+          }
+
+        }
+      );
+
 
     /* =====================================================
-       SESSÃO — CORRIGIDO
-       - Trata SIGNED_OUT
-       - Trata token expirado
+       ENTER NO LOGIN
     ===================================================== */
-    async function checkSession() {
-      try {
-        const { data } = await sb.auth.getSession();
 
-        if (data && data.session) {
-          currentUser = data.session.user;
-          await showApp();
+    document
+      .getElementById(
+        "password"
+      )
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            handleAuth();
+
+          }
+
         }
+      );
+
+
+    /* =====================================================
+       SUPABASE SESSION
+    ===================================================== */
+
+    async function checkSession() {
+
+      try {
+
+        const {
+          data
+        } =
+          await sb.auth
+            .getSession();
+
+        if (
+          data &&
+          data.session
+        ) {
+
+          currentUser =
+            data.session.user;
+
+          await showApp();
+
+        }
+
       } catch (error) {
-        console.error("Erro sessão:", error);
+
+        console.error(
+          error
+        );
+
       }
+
     }
 
-    sb.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        currentUser = null;
-        document.getElementById("app").style.display = "none";
-        document.getElementById("authScreen").style.display = "flex";
-        return;
-      }
 
-      if (event === "TOKEN_REFRESHED" && session) {
-        currentUser = session.user;
-        return;
-      }
+    sb.auth.onAuthStateChange(
+      (
+        event,
+        session
+      ) => {
 
-      if (session && session.user) {
-        currentUser = session.user;
+        if (
+          session &&
+          session.user
+        ) {
+
+          currentUser =
+            session.user;
+
+        }
+
       }
-    });
+    );
+
 
     /* =====================================================
        INICIALIZAÇÃO
     ===================================================== */
+
     checkSession();
 
   </script>
+
 </body>
 </html>
