@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renato IPTV - Canais, Filmes, Séries e Novelas</title>
+  <meta name="description" content="Aplicativo Renato IPTV no estilo Netflix com suporte a listas M3U e M3U8 para canais, filmes, séries e novelas.">
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Hls.js para rodar canais e vídeos .m3u8 no navegador -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+  <!-- BARRA DE NAVEGAÇÃO ESTILO NETFLIX -->
+  <header class="navbar" id="navbar">
+    <div class="nav-left">
+      <div class="brand-logo" onclick="app.setTab('inicio')">
+        RENATO <span>IPTV</span>
+      </div>
+      <ul class="nav-links">
+        <li><a class="nav-link active" data-tab="inicio" onclick="app.setTab('inicio')">Início</a></li>
+        <li><a class="nav-link" data-tab="canais" onclick="app.setTab('canais')">Canais ao Vivo</a></li>
+        <li><a class="nav-link" data-tab="filmes" onclick="app.setTab('filmes')">Filmes</a></li>
+        <li><a class="nav-link" data-tab="series" onclick="app.setTab('series')">Séries</a></li>
+        <li><a class="nav-link" data-tab="novelas" onclick="app.setTab('novelas')">Novelas</a></li>
+        <li><a class="nav-link" data-tab="favoritos" onclick="app.setTab('favoritos')">Minha Lista</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-right">
+      <!-- Pesquisa em tempo real -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Títulos, canais, novelas..." oninput="app.handleSearch(event)">
+      </div>
+
+      <!-- Botão para adicionar a lista M3U -->
+      <button class="btn-load-list" onclick="app.openModal()">
+        <span>+</span> Carregar M3U
+      </button>
+    </div>
+  </header>
+
+  <!-- BANNER DESTAQUE (HERO BANNER ESTILO NETFLIX) -->
+  <section class="hero-banner" id="heroBanner">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-tag" id="heroTag">★ DESTAQUE NO RENATO IPTV</div>
+      <h1 class="hero-title" id="heroTitle">Carregando conteúdo...</h1>
+      <div class="hero-meta">
+        <span class="badge" id="heroBadge">HD 1080p</span>
+        <span id="heroCategory">Transmissão M3U8</span>
+        <span id="heroRating">99% Relevante</span>
+      </div>
+      <p class="hero-desc" id="heroDesc">
+        Assista a milhares de canais ao vivo, filmes de sucesso, maratonas de séries e novelas no Renato IPTV.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-hero btn-play" id="heroPlayBtn" onclick="app.playHero()">
+          ▶ Assistir Agora
+        </button>
+        <button class="btn-hero btn-fav" id="heroFavBtn" onclick="app.toggleHeroFav()">
+          + Minha Lista
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEÚDO PRINCIPAL (CARROSSEIS) -->
+  <main class="main-container" id="mainContainer">
+    <!-- As fileiras serão geradas automaticamente pelo app.js -->
+  </main>
+
+  <!-- MODAL DO REPRODUTOR DE VÍDEO (PLAYER HLS) -->
+  <div class="player-modal" id="playerModal">
+    <div class="player-header" id="playerHeader">
+      <div class="player-stream-info">
+        <button class="btn-back" onclick="app.closePlayer()" title="Voltar">←</button>
+        <div>
+          <h2 class="player-title" id="playerTitle">Nome da Transmissão</h2>
+          <span class="player-category-tag" id="playerTag">CANAL AO VIVO</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn-secondary" onclick="app.toggleFullscreen()">Tela Cheia</button>
+      </div>
+    </div>
+
+    <div class="player-body" id="playerBody">
+      <div class="player-loading" id="playerLoading">
+        <div class="spinner"></div>
+        <span>Carregando transmissão...</span>
+      </div>
+
+      <div class="player-error" id="playerError">
+        <h3>Falha na Transmissão</h3>
+        <p id="playerErrorMessage">Não foi possível reproduzir este canal ou vídeo. O link pode estar offline ou bloqueado por CORS.</p>
+        <button class="btn-primary" onclick="app.closePlayer()">Voltar</button>
+      </div>
+
+      <video id="videoPlayer" controls autoplay playsinline></video>
+    </div>
+  </div>
+
+  <!-- MODAL PARA CARREGAR LISTA M3U / M3U8 -->
+  <div class="modal-overlay" id="playlistModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Adicionar Lista M3U / M3U8</h2>
+        <button class="modal-close" onclick="app.closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="playlistUrl">URL da Lista M3U ou M3U8</label>
+          <input type="url" id="playlistUrl" class="form-input" placeholder="http://exemplo.com/lista.m3u">
+          <small style="color: #888; font-size: 11px;">Insira a URL fornecida pela sua lista IPTV.</small>
+        </div>
+
+        <div class="divider-text">OU CARREGUE UM ARQUIVO DO SEU APARELHO</div>
+
+        <div class="file-dropzone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept=".m3u,.m3u8,.txt" style="display:none" onchange="app.handleFileUpload(event)">
+          <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+          <div style="font-weight: 600;">Selecione o arquivo .m3u ou .m3u8</div>
+          <div style="color: #777; font-size: 12px; margin-top: 4px;">Clique para abrir do celular ou computador</div>
+        </div>
+
+        <div class="form-group">
+          <button class="btn-secondary" onclick="app.loadDefaultPlaylist()">
+            🔄 Restaurar Canais de Demonstração
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="app.closeModal()">Cancelar</button>
+        <button class="btn-primary" onclick="app.loadPlaylistFromUrl()">Carregar Lista</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
