@@ -3,480 +3,2101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Renato IPTV</title>
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-  :root { --red:#E50914; --dark:#141414; --card:#1f1f1f; }
-  * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-  body { background:var(--dark); color:#fff; min-height:100vh; overflow-x:hidden; padding-bottom:50px; }
-  .navbar { position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#141414; z-index:100; border-bottom:1px solid #222; }
-  .logo { font-size:20px; font-weight:900; color:var(--red); letter-spacing:1px; display:flex; align-items:center; gap:5px; }
-  .logo span { color:#fff; font-size:11px; background:var(--red); padding:2px 6px; border-radius:3px; }
-  .nav-actions { display:flex; align-items:center; gap:8px; }
-  .btn-m3u { background:var(--red); color:#fff; border:none; padding:7px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px; }
-  .btn-logout { background:#2a2a2a; color:#ccc; border:1px solid #444; padding:6px 10px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer; }
-  .search-container { padding:10px 16px; background:#141414; margin-top:60px; }
-  .search-bar { width:100%; background:#222; border:1px solid #333; color:#fff; padding:10px 16px; border-radius:20px; font-size:14px; outline:none; }
-  .search-bar:focus { border-color:var(--red); }
-  .banner { height:45vh; min-height:260px; background-size:cover; background-position:center; display:flex; align-items:flex-end; padding:20px; position:relative; }
-  .banner-overlay { position:absolute; inset:0; background:linear-gradient(0deg,#141414 0%,rgba(20,20,20,0.5) 60%,transparent 100%); }
-  .banner-content { position:relative; z-index:2; max-width:600px; }
-  .banner-title { font-size:24px; font-weight:900; margin-bottom:6px; text-shadow:0 2px 4px rgba(0,0,0,0.8); }
-  .banner-desc { font-size:13px; color:#ccc; margin-bottom:12px; text-shadow:0 1px 3px rgba(0,0,0,0.8); }
-  .btn-play { background:#fff; color:#000; border:none; padding:9px 20px; font-weight:bold; border-radius:4px; cursor:pointer; font-size:14px; }
-  .tabs { display:flex; gap:8px; overflow-x:auto; padding:12px 16px; background:#181818; scrollbar-width:none; }
-  .tabs::-webkit-scrollbar { display:none; }
-  .tab { padding:7px 15px; background:#252525; border-radius:20px; font-size:13px; cursor:pointer; white-space:nowrap; border:none; color:#ccc; font-weight:500; }
-  .tab.active { background:var(--red); color:#fff; font-weight:bold; }
-  .section-title { font-size:17px; font-weight:bold; padding:16px 16px 8px; color:#eee; }
-  .carousel { display:flex; gap:12px; overflow-x:auto; padding:0 16px 16px; scrollbar-width:none; }
-  .carousel::-webkit-scrollbar { display:none; }
-  .card { flex:0 0 140px; height:210px; background:var(--card); border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; position:relative; }
-  .card-img { width:100%; height:140px; object-fit:cover; background:#262626; }
-  .card-badge { position:absolute; top:6px; left:6px; font-size:9px; background:var(--red); color:#fff; padding:2px 5px; border-radius:3px; font-weight:bold; }
-  .card-title { font-size:12px; font-weight:bold; padding:8px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .player-modal { position:fixed; inset:0; background:#000; z-index:3000; display:none; flex-direction:column; }
-  .player-modal.active { display:flex; }
-  .player-header { height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#141414; }
-  .btn-close { background:none; border:none; color:#fff; font-size:24px; cursor:pointer; }
-  video { width:100%; flex:1; background:#000; }
-  .modal-m3u { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:3500; display:none; align-items:center; justify-content:center; padding:16px; }
-  .modal-m3u.active { display:flex; }
-  .box-m3u { background:#222; padding:20px; border-radius:8px; width:100%; max-width:400px; display:flex; flex-direction:column; gap:12px; }
-  .input-m3u { background:#333; border:1px solid #444; color:#fff; padding:10px; border-radius:4px; width:100%; outline:none; }
-  .auth-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:5000; display:flex; align-items:center; justify-content:center; padding:16px; }
-  .auth-box { background:#1a1a1a; padding:30px 24px; border-radius:8px; width:100%; max-width:360px; display:flex; flex-direction:column; gap:14px; border:1px solid #2d2d2d; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
-  .auth-logo { text-align:center; font-size:24px; font-weight:900; color:var(--red); letter-spacing:1px; margin-bottom:4px; }
-  .auth-logo span { background:var(--red); color:#fff; font-size:12px; padding:2px 6px; border-radius:3px; }
-  .auth-title { text-align:center; font-size:17px; font-weight:bold; color:#ddd; margin-bottom:8px; }
-  .auth-input { background:#262626; border:1px solid #3d3d3d; color:#fff; padding:12px; border-radius:4px; font-size:14px; outline:none; width:100%; }
-  .auth-input:focus { border-color:var(--red); }
-  .btn-auth-submit { background:var(--red); color:#fff; border:none; padding:12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:15px; margin-top:4px; }
-  .btn-auth-submit:disabled { opacity:0.6; cursor:not-allowed; }
-  .auth-msg { font-size:12px; text-align:center; min-height:16px; }
-  .auth-toggle { text-align:center; font-size:13px; color:#aaa; margin-top:8px; }
-  .auth-toggle a { color:#fff; font-weight:bold; text-decoration:underline; cursor:pointer; }
+  :root {
+    --red:#E50914;
+    --dark:#141414;
+    --card:#1f1f1f;
+  }
+
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  body {
+    background:var(--dark);
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+    padding-bottom:50px;
+  }
+
+  .navbar {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    background:#141414;
+    z-index:100;
+    border-bottom:1px solid #222;
+  }
+
+  .logo {
+    font-size:20px;
+    font-weight:900;
+    color:var(--red);
+    letter-spacing:1px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+
+  .logo span {
+    color:#fff;
+    font-size:11px;
+    background:var(--red);
+    padding:2px 6px;
+    border-radius:3px;
+  }
+
+  .nav-actions {
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .btn-m3u {
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:7px 12px;
+    border-radius:4px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:12px;
+  }
+
+  .btn-logout {
+    background:#2a2a2a;
+    color:#ccc;
+    border:1px solid #444;
+    padding:6px 10px;
+    border-radius:4px;
+    font-size:11px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .search-container {
+    padding:10px 16px;
+    background:#141414;
+    margin-top:60px;
+  }
+
+  .search-bar {
+    width:100%;
+    background:#222;
+    border:1px solid #333;
+    color:#fff;
+    padding:10px 16px;
+    border-radius:20px;
+    font-size:14px;
+    outline:none;
+  }
+
+  .search-bar:focus {
+    border-color:var(--red);
+  }
+
+  .banner {
+    height:45vh;
+    min-height:260px;
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:flex-end;
+    padding:20px;
+    position:relative;
+    background-color:#222;
+  }
+
+  .banner-overlay {
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+      0deg,
+      #141414 0%,
+      rgba(20,20,20,0.5) 60%,
+      transparent 100%
+    );
+  }
+
+  .banner-content {
+    position:relative;
+    z-index:2;
+    max-width:600px;
+  }
+
+  .banner-title {
+    font-size:24px;
+    font-weight:900;
+    margin-bottom:6px;
+    text-shadow:0 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .banner-desc {
+    font-size:13px;
+    color:#ccc;
+    margin-bottom:12px;
+    text-shadow:0 1px 3px rgba(0,0,0,0.8);
+  }
+
+  .btn-play {
+    background:#fff;
+    color:#000;
+    border:none;
+    padding:9px 20px;
+    font-weight:bold;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:14px;
+  }
+
+  .tabs {
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:12px 16px;
+    background:#181818;
+    scrollbar-width:none;
+    position:sticky;
+    top:60px;
+    z-index:90;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display:none;
+  }
+
+  .tab {
+    padding:7px 15px;
+    background:#252525;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+    white-space:nowrap;
+    border:none;
+    color:#ccc;
+    font-weight:500;
+  }
+
+  .tab.active {
+    background:var(--red);
+    color:#fff;
+    font-weight:bold;
+  }
+
+  .section-title {
+    font-size:17px;
+    font-weight:bold;
+    padding:16px 16px 8px;
+    color:#eee;
+  }
+
+  /*
+    GRADE DOS CONTEÚDOS
+  */
+  .grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+    gap:12px;
+    padding:0 16px 24px;
+  }
+
+  .card {
+    background:var(--card);
+    border-radius:6px;
+    overflow:hidden;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    aspect-ratio:2 / 3;
+    transition:transform .2s, box-shadow .2s;
+  }
+
+  .card:hover {
+    transform:scale(1.03);
+    box-shadow:0 5px 20px rgba(0,0,0,.45);
+  }
+
+  .card:active {
+    transform:scale(.98);
+  }
+
+  .card-img {
+    width:100%;
+    height:70%;
+    object-fit:cover;
+    background:#262626;
+  }
+
+  .card-badge {
+    position:absolute;
+    top:6px;
+    left:6px;
+    font-size:9px;
+    background:var(--red);
+    color:#fff;
+    padding:2px 5px;
+    border-radius:3px;
+    font-weight:bold;
+    z-index:2;
+  }
+
+  .card-title {
+    font-size:12px;
+    font-weight:bold;
+    padding:8px;
+    line-height:1.2;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    flex:1;
+  }
+
+  .player-modal {
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:3000;
+    display:none;
+    flex-direction:column;
+  }
+
+  .player-modal.active {
+    display:flex;
+  }
+
+  .player-header {
+    height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    background:#141414;
+  }
+
+  .btn-close {
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+  }
+
+  video {
+    width:100%;
+    flex:1;
+    background:#000;
+  }
+
+  .modal-m3u {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    z-index:3500;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+
+  .modal-m3u.active {
+    display:flex;
+  }
+
+  .box-m3u {
+    background:#222;
+    padding:20px;
+    border-radius:8px;
+    width:100%;
+    max-width:400px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .input-m3u {
+    background:#333;
+    border:1px solid #444;
+    color:#fff;
+    padding:10px;
+    border-radius:4px;
+    width:100%;
+    outline:none;
+  }
+
+  .auth-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.95);
+    z-index:5000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+
+  .auth-box {
+    background:#1a1a1a;
+    padding:30px 24px;
+    border-radius:8px;
+    width:100%;
+    max-width:360px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    border:1px solid #2d2d2d;
+    box-shadow:0 10px 30px rgba(0,0,0,.8);
+  }
+
+  .auth-logo {
+    text-align:center;
+    font-size:24px;
+    font-weight:900;
+    color:var(--red);
+    letter-spacing:1px;
+    margin-bottom:4px;
+  }
+
+  .auth-logo span {
+    background:var(--red);
+    color:#fff;
+    font-size:12px;
+    padding:2px 6px;
+    border-radius:3px;
+  }
+
+  .auth-title {
+    text-align:center;
+    font-size:17px;
+    font-weight:bold;
+    color:#ddd;
+    margin-bottom:8px;
+  }
+
+  .auth-input {
+    background:#262626;
+    border:1px solid #3d3d3d;
+    color:#fff;
+    padding:12px;
+    border-radius:4px;
+    font-size:14px;
+    outline:none;
+    width:100%;
+  }
+
+  .auth-input:focus {
+    border-color:var(--red);
+  }
+
+  .btn-auth-submit {
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:4px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:15px;
+    margin-top:4px;
+  }
+
+  .btn-auth-submit:disabled {
+    opacity:.6;
+    cursor:not-allowed;
+  }
+
+  .auth-msg {
+    font-size:12px;
+    text-align:center;
+    min-height:16px;
+  }
+
+  .auth-toggle {
+    text-align:center;
+    font-size:13px;
+    color:#aaa;
+    margin-top:8px;
+  }
+
+  .auth-toggle a {
+    color:#fff;
+    font-weight:bold;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+
+  @media(max-width:480px) {
+    .grid {
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      padding:0 10px 20px;
+    }
+
+    .card-title {
+      font-size:11px;
+      padding:7px;
+    }
+
+    .section-title {
+      padding-left:10px;
+    }
+  }
+
+  @media(min-width:481px) and (max-width:800px) {
+    .grid {
+      grid-template-columns:repeat(4,1fr);
+    }
+  }
+
+  @media(min-width:801px) {
+    .grid {
+      grid-template-columns:repeat(6,1fr);
+    }
+  }
 </style>
 </head>
+
 <body>
 
+<!-- LOGIN -->
 <div id="authOverlay" class="auth-overlay">
   <div class="auth-box">
-    <div class="auth-logo">RENATO <span>IPTV</span></div>
-    <div id="authTitle" class="auth-title">Entrar na Conta</div>
-    <input type="email" id="authEmail" class="auth-input" placeholder="E-mail" autocomplete="email">
-    <input type="password" id="authPassword" class="auth-input" placeholder="Senha (mínimo 6 caracteres)" autocomplete="current-password">
-    <button class="btn-auth-submit" id="btnSubmitAuth" onclick="handleAuth()">Entrar</button>
+
+    <div class="auth-logo">
+      RENATO <span>IPTV</span>
+    </div>
+
+    <div id="authTitle" class="auth-title">
+      Entrar na Conta
+    </div>
+
+    <input
+      type="email"
+      id="authEmail"
+      class="auth-input"
+      placeholder="E-mail"
+      autocomplete="email"
+    >
+
+    <input
+      type="password"
+      id="authPassword"
+      class="auth-input"
+      placeholder="Senha (mínimo 6 caracteres)"
+      autocomplete="current-password"
+    >
+
+    <button
+      class="btn-auth-submit"
+      id="btnSubmitAuth"
+      onclick="handleAuth()"
+    >
+      Entrar
+    </button>
+
     <div id="authMsg" class="auth-msg"></div>
+
     <div class="auth-toggle">
       <span id="authToggleText">Novo por aqui?</span>
-      <a id="authToggleLink" onclick="toggleAuthMode()">Criar uma conta</a>
+      <a id="authToggleLink" onclick="toggleAuthMode()">
+        Criar uma conta
+      </a>
     </div>
+
   </div>
 </div>
 
+<!-- NAVBAR -->
 <div class="navbar">
-  <div class="logo">RENATO <span>IPTV</span></div>
+
+  <div class="logo">
+    RENATO <span>IPTV</span>
+  </div>
+
   <div class="nav-actions">
-    <button class="btn-m3u" onclick="openM3U()">+ Lista</button>
-    <button class="btn-logout" onclick="handleLogout()" title="Sair da conta">Sair</button>
+    <button class="btn-m3u" onclick="openM3U()">
+      + Lista
+    </button>
+
+    <button
+      class="btn-logout"
+      onclick="handleLogout()"
+      title="Sair da conta"
+    >
+      Sair
+    </button>
   </div>
+
 </div>
 
+<!-- BUSCA -->
 <div class="search-container">
-  <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar canais, filmes, séries..." oninput="handleSearch(this.value)">
+
+  <input
+    type="text"
+    id="searchInput"
+    class="search-bar"
+    placeholder="🔍 Buscar canais, filmes, séries..."
+    oninput="handleSearch(this.value)"
+  >
+
 </div>
 
+<!-- BANNER -->
 <div class="banner" id="banner">
+
   <div class="banner-overlay"></div>
+
   <div class="banner-content">
-    <div class="banner-title" id="bannerTitle">Renato IPTV</div>
-    <div class="banner-desc">Assista canais ao vivo, filmes, séries e novelas.</div>
-    <button class="btn-play" onclick="playHero()">▶ Assistir</button>
+
+    <div
+      class="banner-title"
+      id="bannerTitle"
+    >
+      Renato IPTV
+    </div>
+
+    <div class="banner-desc">
+      Assista canais ao vivo, filmes, séries e novelas.
+    </div>
+
+    <button
+      class="btn-play"
+      onclick="playHero()"
+    >
+      ▶ Assistir
+    </button>
+
   </div>
+
 </div>
 
+<!-- CATEGORIAS -->
 <div class="tabs">
-  <button class="tab active" onclick="filterCat('todos', this)">Todos</button>
-  <button class="tab" onclick="filterCat('canais', this)">📺 Canais</button>
-  <button class="tab" onclick="filterCat('filmes', this)">🍿 Filmes</button>
-  <button class="tab" onclick="filterCat('series', this)">🎬 Séries</button>
-  <button class="tab" onclick="filterCat('novelas', this)">🌹 Novelas</button>
+
+  <button
+    class="tab active"
+    onclick="filterCat('todos', this)"
+  >
+    Todos
+  </button>
+
+  <button
+    class="tab"
+    onclick="filterCat('canais', this)"
+  >
+    📺 Canais
+  </button>
+
+  <button
+    class="tab"
+    onclick="filterCat('filmes', this)"
+  >
+    🍿 Filmes
+  </button>
+
+  <button
+    class="tab"
+    onclick="filterCat('series', this)"
+  >
+    🎬 Séries
+  </button>
+
+  <button
+    class="tab"
+    onclick="filterCat('novelas', this)"
+  >
+    🌹 Novelas
+  </button>
+
 </div>
 
+<!-- CONTEÚDO -->
 <div id="content"></div>
 
+<!-- PLAYER -->
 <div class="player-modal" id="playerModal">
+
   <div class="player-header">
-    <span id="playerTitle" style="font-size:14px; font-weight:bold;">Reproduzindo</span>
-    <button class="btn-close" onclick="closePlayer()">✕</button>
+
+    <span
+      id="playerTitle"
+      style="font-size:14px;font-weight:bold;"
+    >
+      Reproduzindo
+    </span>
+
+    <button
+      class="btn-close"
+      onclick="closePlayer()"
+    >
+      ✕
+    </button>
+
   </div>
-  <video id="videoPlayer" controls autoplay playsinline></video>
+
+  <video
+    id="videoPlayer"
+    controls
+    autoplay
+    playsinline
+  ></video>
+
 </div>
 
+<!-- MODAL M3U -->
 <div class="modal-m3u" id="modalM3U">
+
   <div class="box-m3u">
-    <h3 style="font-size:16px;">Carregar Lista M3U / M3U8</h3>
-    <input type="url" id="urlM3U" class="input-m3u" placeholder="Cole o link da lista M3U">
-    <input type="file" id="fileM3U" accept=".m3u,.m3u8,.txt" onchange="uploadFile(event)">
-    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
-      <button class="btn-m3u" style="background:#444;" onclick="closeM3U()">Fechar</button>
-      <button class="btn-m3u" onclick="loadUrl()">Carregar</button>
+
+    <h3 style="font-size:16px;">
+      Carregar Lista M3U / M3U8
+    </h3>
+
+    <input
+      type="url"
+      id="urlM3U"
+      class="input-m3u"
+      placeholder="Cole o link da lista M3U"
+    >
+
+    <input
+      type="file"
+      id="fileM3U"
+      accept=".m3u,.m3u8,.txt"
+      onchange="uploadFile(event)"
+    >
+
+    <div
+      style="
+        display:flex;
+        justify-content:flex-end;
+        gap:8px;
+        margin-top:8px;
+      "
+    >
+
+      <button
+        class="btn-m3u"
+        style="background:#444;"
+        onclick="closeM3U()"
+      >
+        Fechar
+      </button>
+
+      <button
+        class="btn-m3u"
+        onclick="loadUrl()"
+      >
+        Carregar
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
 <script>
-const SUPABASE_URL = 'https://tcsikxqgyyvewqwfudcu.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg';
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* =========================================
+   SUPABASE
+========================================= */
+
+const SUPABASE_URL =
+  'https://tcsikxqgyyvewqwfudcu.supabase.co';
+
+const SUPABASE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg';
+
+const sb =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================
+   VARIÁVEIS
+========================================= */
 
 let isSignUpMode = false;
+
 let list = [];
+
 let currentFilter = 'todos';
+
 let hls = null;
+
 let hero = null;
+
 let currentUser = null;
 
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
 function esc(str) {
-  return String(str || '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  }[c]));
+
+  return String(str || '').replace(
+    /[&<>"']/g,
+    c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[c])
+  );
+
 }
+
+
+/* =========================================
+   TROCAR LOGIN / CADASTRO
+========================================= */
 
 function toggleAuthMode() {
+
   isSignUpMode = !isSignUpMode;
-  document.getElementById('authTitle').innerText = isSignUpMode ? 'Criar Conta' : 'Entrar na Conta';
-  document.getElementById('btnSubmitAuth').innerText = isSignUpMode ? 'Cadastrar' : 'Entrar';
-  document.getElementById('authToggleText').innerText = isSignUpMode ? 'Já possui conta?' : 'Novo por aqui?';
-  document.getElementById('authToggleLink').innerText = isSignUpMode ? 'Fazer login' : 'Criar uma conta';
+
+  document.getElementById('authTitle').innerText =
+    isSignUpMode
+      ? 'Criar Conta'
+      : 'Entrar na Conta';
+
+  document.getElementById('btnSubmitAuth').innerText =
+    isSignUpMode
+      ? 'Cadastrar'
+      : 'Entrar';
+
+  document.getElementById('authToggleText').innerText =
+    isSignUpMode
+      ? 'Já possui conta?'
+      : 'Novo por aqui?';
+
+  document.getElementById('authToggleLink').innerText =
+    isSignUpMode
+      ? 'Fazer login'
+      : 'Criar uma conta';
+
   document.getElementById('authMsg').innerText = '';
-  document.getElementById('authPassword').setAttribute(
-    'autocomplete',
-    isSignUpMode ? 'new-password' : 'current-password'
-  );
+
+  document
+    .getElementById('authPassword')
+    .setAttribute(
+      'autocomplete',
+      isSignUpMode
+        ? 'new-password'
+        : 'current-password'
+    );
+
 }
+
+
+/* =========================================
+   LOGIN / CADASTRO
+========================================= */
 
 async function handleAuth() {
-  const email = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const msg = document.getElementById('authMsg');
-  const btn = document.getElementById('btnSubmitAuth');
+
+  const email =
+    document
+      .getElementById('authEmail')
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById('authPassword')
+      .value;
+
+  const msg =
+    document.getElementById('authMsg');
+
+  const btn =
+    document.getElementById('btnSubmitAuth');
+
 
   if (!email || !email.includes('@')) {
+
     msg.style.color = '#ff4444';
-    msg.innerText = 'Digite um e-mail válido.';
+
+    msg.innerText =
+      'Digite um e-mail válido.';
+
     return;
   }
+
+
   if (!password || password.length < 6) {
+
     msg.style.color = '#ff4444';
-    msg.innerText = 'A senha precisa ter no mínimo 6 caracteres.';
+
+    msg.innerText =
+      'A senha precisa ter no mínimo 6 caracteres.';
+
     return;
   }
+
 
   btn.disabled = true;
+
   msg.style.color = '#aaa';
+
   msg.innerText = 'Processando...';
 
+
   try {
+
     if (isSignUpMode) {
-      const { data, error } = await sb.auth.signUp({ email, password });
+
+      const {
+        data,
+        error
+      } = await sb.auth.signUp({
+        email,
+        password
+      });
+
+
       if (error) {
+
         msg.style.color = '#ff4444';
-        msg.innerText = error.message;
+
+        msg.innerText =
+          traduzirErroAuth(error);
+
         return;
       }
+
+
       if (!data.session) {
+
         msg.style.color = '#4CAF50';
-        msg.innerText = 'Conta criada! Verifique seu e-mail para confirmar.';
-        document.getElementById('authPassword').value = '';
+
+        msg.innerText =
+          'Conta criada! Verifique seu e-mail para confirmar.';
+
+        document
+          .getElementById('authPassword')
+          .value = '';
+
         return;
       }
+
+
       msg.style.color = '#4CAF50';
-      msg.innerText = 'Conta criada com sucesso!';
-      document.getElementById('authOverlay').style.display = 'none';
+
+      msg.innerText =
+        'Conta criada com sucesso!';
+
+      document
+        .getElementById('authOverlay')
+        .style.display = 'none';
+
       await initPlayerApp();
+
     } else {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
+
+      const {
+        error
+      } = await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+
       if (error) {
+
         msg.style.color = '#ff4444';
-        msg.innerText = error.message === 'Invalid login credentials'
-          ? 'E-mail ou senha incorretos.'
-          : error.message;
+
+        msg.innerText =
+          traduzirErroAuth(error);
+
         return;
       }
-      document.getElementById('authOverlay').style.display = 'none';
+
+
+      document
+        .getElementById('authOverlay')
+        .style.display = 'none';
+
       await initPlayerApp();
     }
+
   } catch (err) {
-    msg.style.color = '#ff4444';
-    msg.innerText = 'Erro de conexão. Tente novamente.';
+
     console.error(err);
+
+    msg.style.color = '#ff4444';
+
+    msg.innerText =
+      'Erro de conexão. Tente novamente.';
+
   } finally {
+
     btn.disabled = false;
+
   }
+
 }
+
+
+/* =========================================
+   TRADUZIR ERROS
+========================================= */
+
+function traduzirErroAuth(error) {
+
+  if (!error) {
+    return 'Ocorreu um erro.';
+  }
+
+  if (
+    error.message === 'Invalid login credentials'
+  ) {
+    return 'E-mail ou senha incorretos.';
+  }
+
+  if (
+    error.message &&
+    error.message.toLowerCase().includes('already registered')
+  ) {
+    return 'Este e-mail já está cadastrado.';
+  }
+
+  return error.message || 'Ocorreu um erro.';
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
 
 async function handleLogout() {
-  await sb.auth.signOut();
-  document.getElementById('authPassword').value = '';
-  currentUser = null;
-  location.reload();
-}
 
-async function checkAuth() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    document.getElementById('authOverlay').style.display = 'none';
-    await initPlayerApp();
-  } else {
-    document.getElementById('authOverlay').style.display = 'flex';
+  try {
+    await sb.auth.signOut();
+  } catch (e) {
+    console.warn(e);
   }
 
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT' || !session) {
-      currentUser = null;
-      document.getElementById('authOverlay').style.display = 'flex';
-    } else if (event === 'SIGNED_IN' && session) {
-      currentUser = session.user;
-    }
-  });
+  document
+    .getElementById('authPassword')
+    .value = '';
+
+  currentUser = null;
+
+  location.reload();
+
 }
 
-async function loadListFromCloud() {
-  if (!currentUser) return null;
+
+/* =========================================
+   VERIFICAR LOGIN
+========================================= */
+
+async function checkAuth() {
+
   try {
-    const { data, error } = await sb
+
+    const {
+      data: { session }
+    } = await sb.auth.getSession();
+
+
+    if (session) {
+
+      currentUser = session.user;
+
+      document
+        .getElementById('authOverlay')
+        .style.display = 'none';
+
+      await initPlayerApp();
+
+    } else {
+
+      document
+        .getElementById('authOverlay')
+        .style.display = 'flex';
+
+    }
+
+
+    sb.auth.onAuthStateChange(
+      (event, session) => {
+
+        if (
+          event === 'SIGNED_OUT' ||
+          !session
+        ) {
+
+          currentUser = null;
+
+          document
+            .getElementById('authOverlay')
+            .style.display = 'flex';
+
+        } else if (
+          event === 'SIGNED_IN' &&
+          session
+        ) {
+
+          currentUser = session.user;
+
+        }
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Erro ao verificar autenticação:',
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   CARREGAR LISTA DA NUVEM
+========================================= */
+
+async function loadListFromCloud() {
+
+  if (!currentUser) {
+    return null;
+  }
+
+
+  try {
+
+    const {
+      data,
+      error
+    } = await sb
       .from('user_lists')
       .select('content')
       .eq('user_id', currentUser.id)
       .maybeSingle();
+
+
     if (error) {
-      console.warn('Erro ao buscar lista:', error.message);
+
+      console.warn(
+        'Erro ao buscar lista:',
+        error.message
+      );
+
       return null;
     }
-    return data && data.content ? data.content : null;
+
+
+    return data && data.content
+      ? data.content
+      : null;
+
   } catch (e) {
-    console.warn('Falha ao carregar lista da nuvem:', e);
+
+    console.warn(
+      'Falha ao carregar lista da nuvem:',
+      e
+    );
+
     return null;
+
   }
+
 }
+
+
+/* =========================================
+   SALVAR LISTA NA NUVEM
+========================================= */
 
 async function saveListToCloud(content) {
-  if (!currentUser) return;
-  try {
-    const { error } = await sb
-      .from('user_lists')
-      .upsert({
-        user_id: currentUser.id,
-        content: content,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
-    if (error) console.warn('Erro ao salvar lista:', error.message);
-  } catch (e) {
-    console.warn('Falha ao salvar lista na nuvem:', e);
-  }
-}
 
-const DEMO = '#EXTM3U\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" group-title="Filmes", Big Buck Bunny 4K\n' +
-'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400" group-title="Filmes", Sintel O Filme\n' +
-'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=400" group-title="Novelas", Novela: Amor e Destino Cap 01\n' +
-'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400" group-title="Novelas", Novela: Terra Dourada Cap 05\n' +
-'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400" group-title="Séries", Série: Espaço S01E01\n' +
-'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
-'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400" group-title="Canais", Red Bull TV Ao Vivo\n' +
-'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
-
-async function initPlayerApp() {
-  let content = await loadListFromCloud();
-  if (!content) {
-    content = localStorage.getItem('r_iptv');
-  }
-  if (!content) {
-    content = DEMO;
-  }
-
-  list = parse(content);
-  if (list.length > 0) {
-    hero = list[0];
-    document.getElementById('bannerTitle').textContent = hero.name;
-    if (hero.logo) {
-      document.getElementById('banner').style.backgroundImage = 'url("' + hero.logo.replace(/"/g, '') + '")';
-    }
-  }
-  render(list);
-}
-
-function parse(txt) {
-  if (!txt) return [];
-  const lines = txt.split(/\r?\n/);
-  const res = [];
-  let item = null;
-  for (let i = 0; i < lines.length; i++) {
-    let l = lines[i].trim();
-    if (!l) continue;
-    if (l.startsWith('#EXTINF:')) {
-      item = { name: 'Canal', logo: '', cat: 'canais', url: '' };
-      const lg = l.match(/tvg-logo="([^"]*)"/i);
-      if (lg) item.logo = lg[1];
-      const nm = l.match(/tvg-name="([^"]*)"/i);
-      if (nm) item.name = nm[1];
-      const gr = l.match(/group-title="([^"]*)"/i);
-      const c = l.lastIndexOf(',');
-      if (c !== -1) item.name = l.substring(c + 1).trim() || item.name;
-      const full = (item.name + ' ' + (gr ? gr[1] : '')).toLowerCase();
-      if (full.includes('novela')) item.cat = 'novelas';
-      else if (full.includes('serie') || /s\d{1,2}/i.test(full)) item.cat = 'series';
-      else if (full.includes('filme') || l.endsWith('.mp4')) item.cat = 'filmes';
-      else item.cat = 'canais';
-    } else if (!l.startsWith('#') && item) {
-      item.url = l;
-      res.push(item);
-      item = null;
-    }
-  }
-  return res;
-}
-
-function render(data) {
-  const div = document.getElementById('content');
-  div.innerHTML = '';
-  if (!data || data.length === 0) {
-    div.innerHTML = '<p style="padding:30px; text-align:center; color:#777;">Nenhum canal encontrado.</p>';
+  if (!currentUser) {
     return;
   }
-  const cats = [
-    { id: 'canais', title: '📺 Canais ao Vivo' },
-    { id: 'filmes', title: '🍿 Filmes' },
-    { id: 'series', title: '🎬 Séries' },
-    { id: 'novelas', title: '🌹 Novelas' }
-  ];
-  cats.forEach(c => {
-    const sub = data.filter(i => i.cat === c.id);
-    if (sub.length) {
-      div.innerHTML += '<div class="section-title">' + c.title + ' (' + sub.length + ')</div><div class="carousel">' +
-        sub.map(i => {
-          const safeName = esc(i.name);
-          const safeLogo = i.logo ? esc(i.logo) : 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400';
-          return '<div class="card" data-url="' + esc(encodeURI(i.url)) + '" data-name="' + safeName + '">' +
-            '<span class="card-badge">' + esc(i.cat.toUpperCase()) + '</span>' +
-            '<img class="card-img" src="' + safeLogo + '" onerror="this.onerror=null;this.src=\'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400\';">' +
-            '<div class="card-title">' + safeName + '</div>' +
-          '</div>';
-        }).join('') + '</div>';
-    }
-  });
 
-  div.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      play(card.getAttribute('data-url'), card.getAttribute('data-name'));
-    });
-  });
+
+  try {
+
+    const {
+      error
+    } = await sb
+      .from('user_lists')
+      .upsert(
+        {
+          user_id: currentUser.id,
+          content: content,
+          updated_at: new Date().toISOString()
+        },
+        {
+          onConflict: 'user_id'
+        }
+      );
+
+
+    if (error) {
+
+      console.warn(
+        'Erro ao salvar lista:',
+        error.message
+      );
+
+    }
+
+  } catch (e) {
+
+    console.warn(
+      'Falha ao salvar lista na nuvem:',
+      e
+    );
+
+  }
+
 }
+
+
+/* =========================================
+   LISTA DEMO
+========================================= */
+
+const DEMO =
+'#EXTM3U\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" group-title="Filmes",Big Buck Bunny 4K\n' +
+'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400" group-title="Filmes",Sintel O Filme\n' +
+'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=400" group-title="Novelas",Novela: Amor e Destino Cap 01\n' +
+'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400" group-title="Novelas",Novela: Terra Dourada Cap 05\n' +
+'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400" group-title="Séries",Série: Espaço S01E01\n' +
+'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\n' +
+
+'#EXTINF:-1 tvg-logo="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400" group-title="Canais",Red Bull TV Ao Vivo\n' +
+'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+
+
+/* =========================================
+   INICIAR APP
+========================================= */
+
+async function initPlayerApp() {
+
+  let content =
+    await loadListFromCloud();
+
+
+  if (!content) {
+
+    content =
+      localStorage.getItem('r_iptv');
+
+  }
+
+
+  if (!content) {
+
+    content = DEMO;
+
+  }
+
+
+  list = parse(content);
+
+
+  if (list.length > 0) {
+
+    hero = list[0];
+
+    document
+      .getElementById('bannerTitle')
+      .textContent = hero.name;
+
+
+    if (hero.logo) {
+
+      document
+        .getElementById('banner')
+        .style.backgroundImage =
+          'url("' +
+          hero.logo.replace(/"/g, '') +
+          '")';
+
+    }
+
+  }
+
+
+  render(list);
+
+}
+
+
+/* =========================================
+   PARSER M3U
+========================================= */
+
+function parse(txt) {
+
+  if (!txt) {
+    return [];
+  }
+
+
+  const lines =
+    txt.split(/\r?\n/);
+
+
+  const res = [];
+
+  let item = null;
+
+
+  for (
+    let i = 0;
+    i < lines.length;
+    i++
+  ) {
+
+    const line =
+      lines[i].trim();
+
+
+    if (!line) {
+      continue;
+    }
+
+
+    if (line.startsWith('#EXTINF:')) {
+
+      item = {
+        name:'Canal',
+        logo:'',
+        cat:'canais',
+        url:''
+      };
+
+
+      /* LOGO */
+
+      const lg =
+        line.match(
+          /tvg-logo="([^"]*)"/i
+        );
+
+      if (lg) {
+        item.logo = lg[1];
+      }
+
+
+      /* GRUPO */
+
+      const gr =
+        line.match(
+          /group-title="([^"]*)"/i
+        );
+
+
+      const group =
+        gr ? gr[1] : '';
+
+
+      /* NOME */
+
+      const comma =
+        line.lastIndexOf(',');
+
+
+      if (comma !== -1) {
+
+        const nome =
+          line
+            .substring(comma + 1)
+            .trim();
+
+        if (nome) {
+          item.name = nome;
+        }
+
+      }
+
+
+      /* CATEGORIA */
+
+      const full =
+        (
+          item.name +
+          ' ' +
+          group
+        ).toLowerCase();
+
+
+      if (
+        full.includes('novela')
+      ) {
+
+        item.cat = 'novelas';
+
+      } else if (
+        full.includes('série') ||
+        full.includes('serie') ||
+        /s\d{1,2}e\d{1,2}/i.test(full)
+      ) {
+
+        item.cat = 'series';
+
+      } else if (
+        full.includes('filme') ||
+        full.includes('movie') ||
+        full.includes('film')
+      ) {
+
+        item.cat = 'filmes';
+
+      } else {
+
+        item.cat = 'canais';
+
+      }
+
+
+    } else if (
+      !line.startsWith('#') &&
+      item
+    ) {
+
+      item.url = line;
+
+      if (item.url) {
+        res.push(item);
+      }
+
+      item = null;
+
+    }
+
+  }
+
+
+  return res;
+
+}
+
+
+/* =========================================
+   CRIAR CARD
+========================================= */
+
+function buildCard(i) {
+
+  const safeName =
+    esc(i.name);
+
+
+  const safeLogo =
+    i.logo
+      ? esc(i.logo)
+      : 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400';
+
+
+  return `
+    <div
+      class="card"
+      data-url="${esc(encodeURI(i.url))}"
+      data-name="${safeName}"
+    >
+
+      <span class="card-badge">
+        ${esc(i.cat.toUpperCase())}
+      </span>
+
+      <img
+        class="card-img"
+        src="${safeLogo}"
+        loading="lazy"
+        onerror="
+          this.onerror=null;
+          this.src='https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400';
+        "
+      >
+
+      <div class="card-title">
+        ${safeName}
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================
+   RENDERIZAR
+========================================= */
+
+function render(data) {
+
+  const div =
+    document.getElementById('content');
+
+
+  div.innerHTML = '';
+
+
+  if (
+    !data ||
+    data.length === 0
+  ) {
+
+    div.innerHTML =
+      '<p style="padding:30px;text-align:center;color:#777;">Nenhum conteúdo encontrado.</p>';
+
+    return;
+
+  }
+
+
+  /* FILTRO ESPECÍFICO */
+
+  if (
+    currentFilter !== 'todos'
+  ) {
+
+    div.innerHTML +=
+      '<div class="section-title">' +
+      data.length +
+      ' itens encontrados</div>' +
+
+      '<div class="grid">' +
+      data.map(buildCard).join('') +
+      '</div>';
+
+
+  } else {
+
+    /* TODOS */
+
+    const cats = [
+
+      {
+        id:'canais',
+        title:'📺 Canais ao Vivo'
+      },
+
+      {
+        id:'filmes',
+        title:'🍿 Filmes'
+      },
+
+      {
+        id:'series',
+        title:'🎬 Séries'
+      },
+
+      {
+        id:'novelas',
+        title:'🌹 Novelas'
+      }
+
+    ];
+
+
+    cats.forEach(c => {
+
+      const sub =
+        data.filter(
+          i => i.cat === c.id
+        );
+
+
+      if (sub.length) {
+
+        div.innerHTML +=
+          '<div class="section-title">' +
+          c.title +
+          ' (' +
+          sub.length +
+          ')</div>' +
+
+          '<div class="grid">' +
+          sub.map(buildCard).join('') +
+          '</div>';
+
+      }
+
+    });
+
+  }
+
+
+  /* EVENTO DOS CARDS */
+
+  div
+    .querySelectorAll('.card')
+    .forEach(card => {
+
+      card.addEventListener(
+        'click',
+        () => {
+
+          play(
+            card.getAttribute('data-url'),
+            card.getAttribute('data-name')
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================================
+   FILTRO
+========================================= */
 
 function filterCat(cat, btn) {
+
   currentFilter = cat;
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+
+
+  document
+    .querySelectorAll('.tab')
+    .forEach(
+      b => b.classList.remove('active')
+    );
+
+
   btn.classList.add('active');
-  render(cat === 'todos' ? list : list.filter(i => i.cat === cat));
+
+
+  render(
+    cat === 'todos'
+      ? list
+      : list.filter(
+          i => i.cat === cat
+        )
+  );
+
 }
+
+
+/* =========================================
+   BUSCA
+========================================= */
 
 function handleSearch(val) {
-  val = val.trim().toLowerCase();
-  let pool = currentFilter === 'todos' ? list : list.filter(i => i.cat === currentFilter);
-  if (!val) { render(pool); return; }
-  render(pool.filter(i => i.name.toLowerCase().includes(val)));
+
+  val =
+    val.trim().toLowerCase();
+
+
+  let pool =
+    currentFilter === 'todos'
+      ? list
+      : list.filter(
+          i => i.cat === currentFilter
+        );
+
+
+  if (!val) {
+
+    render(pool);
+
+    return;
+
+  }
+
+
+  render(
+    pool.filter(
+      i =>
+        i.name
+          .toLowerCase()
+          .includes(val)
+    )
+  );
+
 }
+
+
+/* =========================================
+   PLAYER
+========================================= */
 
 function play(url, name) {
-  try { url = decodeURI(url); } catch (e) {}
-  document.getElementById('playerTitle').textContent = name || 'Reproduzindo';
-  document.getElementById('playerModal').classList.add('active');
-  const v = document.getElementById('videoPlayer');
-  if (hls) { hls.destroy(); hls = null; }
 
-  if (url.includes('.m3u8') && window.Hls && Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(v);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => v.play().catch(() => {}));
-  } else {
-    v.src = url;
-    v.play().catch(() => {});
+  try {
+    url = decodeURI(url);
+  } catch (e) {}
+
+
+  document
+    .getElementById('playerTitle')
+    .textContent =
+      name || 'Reproduzindo';
+
+
+  document
+    .getElementById('playerModal')
+    .classList.add('active');
+
+
+  const v =
+    document.getElementById('videoPlayer');
+
+
+  if (hls) {
+
+    hls.destroy();
+
+    hls = null;
+
   }
+
+
+  v.pause();
+
+  v.removeAttribute('src');
+
+  v.load();
+
+
+  /*
+    HLS
+  */
+
+  if (
+    url.includes('.m3u8') &&
+    window.Hls &&
+    Hls.isSupported()
+  ) {
+
+    hls = new Hls();
+
+    hls.loadSource(url);
+
+    hls.attachMedia(v);
+
+
+    hls.on(
+      Hls.Events.MANIFEST_PARSED,
+      () => {
+
+        v.play().catch(
+          () => {}
+        );
+
+      }
+    );
+
+
+    hls.on(
+      Hls.Events.ERROR,
+      (event, data) => {
+
+        console.warn(
+          'Erro HLS:',
+          data
+        );
+
+      }
+    );
+
+
+  } else {
+
+    v.src = url;
+
+    v.play().catch(
+      () => {}
+    );
+
+  }
+
 }
 
-function playHero() { if (hero) play(hero.url, hero.name); }
+
+/* =========================================
+   PLAYER PRINCIPAL
+========================================= */
+
+function playHero() {
+
+  if (hero) {
+
+    play(
+      hero.url,
+      hero.name
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   FECHAR PLAYER
+========================================= */
 
 function closePlayer() {
-  const v = document.getElementById('videoPlayer');
+
+  const v =
+    document.getElementById('videoPlayer');
+
+
   v.pause();
+
   v.removeAttribute('src');
+
   v.load();
-  if (hls) { hls.destroy(); hls = null; }
-  document.getElementById('playerModal').classList.remove('active');
+
+
+  if (hls) {
+
+    hls.destroy();
+
+    hls = null;
+
+  }
+
+
+  document
+    .getElementById('playerModal')
+    .classList.remove('active');
+
 }
 
-function openM3U() { document.getElementById('modalM3U').classList.add('active'); }
-function closeM3U() { document.getElementById('modalM3U').classList.remove('active'); }
+
+/* =========================================
+   M3U
+========================================= */
+
+function openM3U() {
+
+  document
+    .getElementById('modalM3U')
+    .classList.add('active');
+
+}
+
+
+function closeM3U() {
+
+  document
+    .getElementById('modalM3U')
+    .classList.remove('active');
+
+}
+
+
+/* =========================================
+   CARREGAR URL M3U
+========================================= */
 
 async function loadUrl() {
-  const u = document.getElementById('urlM3U').value.trim();
-  if (!u) return alert('Insira a URL');
-  try {
-    let text = '';
-    try {
-      const r = await fetch(u);
-      text = await r.text();
-    } catch (e) {
-      const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(u));
-      text = await r.text();
-    }
-    await saveList(text);
-    closeM3U();
-  } catch (e) {
-    alert('Erro ao baixar lista. Tente carregar o arquivo .m3u diretamente.');
+
+  const u =
+    document
+      .getElementById('urlM3U')
+      .value
+      .trim();
+
+
+  if (!u) {
+
+    alert(
+      'Insira a URL da lista M3U.'
+    );
+
+    return;
+
   }
+
+
+  try {
+
+    let text = '';
+
+
+    try {
+
+      const r =
+        await fetch(u);
+
+      if (!r.ok) {
+        throw new Error(
+          'HTTP ' + r.status
+        );
+      }
+
+      text =
+        await r.text();
+
+
+    } catch (e) {
+
+      const proxy =
+        'https://corsproxy.io/?' +
+        encodeURIComponent(u);
+
+
+      const r =
+        await fetch(proxy);
+
+
+      if (!r.ok) {
+
+        throw new Error(
+          'Não foi possível baixar a lista.'
+        );
+
+      }
+
+
+      text =
+        await r.text();
+
+    }
+
+
+    if (
+      !text ||
+      !text.includes('#EXT')
+    ) {
+
+      alert(
+        'A URL não parece ser uma lista M3U válida.'
+      );
+
+      return;
+
+    }
+
+
+    await saveList(text);
+
+    closeM3U();
+
+
+  } catch (e) {
+
+    console.error(e);
+
+    alert(
+      'Erro ao baixar a lista M3U. Tente carregar o arquivo .m3u diretamente.'
+    );
+
+  }
+
 }
+
+
+/* =========================================
+   UPLOAD ARQUIVO
+========================================= */
 
 function uploadFile(e) {
-  const f = e.target.files[0];
-  if (!f) return;
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    await saveList(ev.target.result);
-    closeM3U();
+
+  const f =
+    e.target.files[0];
+
+
+  if (!f) {
+    return;
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    async ev => {
+
+      const content =
+        ev.target.result;
+
+
+      if (
+        !content ||
+        !content.includes('#EXT')
+      ) {
+
+        alert(
+          'O arquivo não parece ser uma lista M3U válida.'
+        );
+
+        return;
+
+      }
+
+
+      await saveList(content);
+
+      closeM3U();
+
+    };
+
+
+  reader.onerror = () => {
+
+    alert(
+      'Não foi possível ler o arquivo.'
+    );
+
   };
+
+
   reader.readAsText(f);
+
 }
+
+
+/* =========================================
+   SALVAR LISTA
+========================================= */
 
 async function saveList(txt) {
-  try { localStorage.setItem('r_iptv', txt); } catch (e) {}
-  await saveListToCloud(txt);
-  list = parse(txt);
-  if (list.length > 0) {
-    hero = list[0];
-    document.getElementById('bannerTitle').textContent = hero.name;
-    if (hero.logo) {
-      document.getElementById('banner').style.backgroundImage = 'url("' + hero.logo.replace(/"/g, '') + '")';
-    }
+
+  try {
+
+    localStorage.setItem(
+      'r_iptv',
+      txt
+    );
+
+  } catch (e) {
+
+    console.warn(
+      'Não foi possível salvar localmente:',
+      e
+    );
+
   }
+
+
+  await saveListToCloud(txt);
+
+
+  list =
+    parse(txt);
+
+
+  if (list.length > 0) {
+
+    hero =
+      list[0];
+
+
+    document
+      .getElementById('bannerTitle')
+      .textContent =
+        hero.name;
+
+
+    if (hero.logo) {
+
+      document
+        .getElementById('banner')
+        .style.backgroundImage =
+          'url("' +
+          hero.logo.replace(/"/g, '') +
+          '")';
+
+    }
+
+  }
+
+
+  currentFilter = 'todos';
+
+
+  document
+    .querySelectorAll('.tab')
+    .forEach(
+      b => b.classList.remove('active')
+    );
+
+
+  const todos =
+    document.querySelector('.tab');
+
+
+  if (todos) {
+    todos.classList.add('active');
+  }
+
+
   render(list);
+
 }
 
-window.onload = checkAuth;
+
+/* =========================================
+   TECLADO / ESC
+========================================= */
+
+document.addEventListener(
+  'keydown',
+  e => {
+
+    if (e.key === 'Escape') {
+
+      closePlayer();
+
+      closeM3U();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+window.onload =
+  checkAuth;
+
 </script>
+
 </body>
 </html>
