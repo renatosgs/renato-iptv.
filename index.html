@@ -76,9 +76,6 @@
       background: #555;
     }
 
-    /* =========================================================
-       AUTH
-    ========================================================== */
     #authScreen {
       min-height: 100vh;
       display: flex;
@@ -194,9 +191,6 @@
       line-height: 1.4;
     }
 
-    /* =========================================================
-       APP
-    ========================================================== */
     #app {
       display: none;
       min-height: 100vh;
@@ -271,9 +265,6 @@
       transform: scale(1.05);
     }
 
-    /* =========================================================
-       HERO
-    ========================================================== */
     .hero {
       position: relative;
       min-height: 330px;
@@ -359,9 +350,6 @@
       cursor: not-allowed;
     }
 
-    /* =========================================================
-       TABS
-    ========================================================== */
     .content {
       padding: 0 24px 50px;
     }
@@ -405,9 +393,6 @@
       border-color: var(--accent);
     }
 
-    /* =========================================================
-       SECTION
-    ========================================================== */
     .section-header {
       display: flex;
       align-items: center;
@@ -424,9 +409,6 @@
       font-size: 13px;
     }
 
-    /* =========================================================
-       GRID
-    ========================================================== */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -505,9 +487,6 @@
       font-size: 11px;
     }
 
-    /* =========================================================
-       EMPTY
-    ========================================================== */
     .empty {
       display: none;
       text-align: center;
@@ -523,9 +502,6 @@
       margin-bottom: 8px;
     }
 
-    /* =========================================================
-       MODALS
-    ========================================================== */
     .modal {
       position: fixed;
       inset: 0;
@@ -672,7 +648,6 @@
       display: block;
     }
 
-    /* Botão de fechar - invisível por padrão */
     .player-close {
       position: absolute;
       top: 20px;
@@ -702,7 +677,7 @@
       background: rgba(229,9,20,.9);
     }
 
-    /* Loading - APARECE APENAS NO INÍCIO */
+    /* Loading aparece apenas uma vez */
     .player-loading {
       position: absolute;
       z-index: 4;
@@ -770,6 +745,31 @@
       filter: brightness(1.1);
     }
 
+    /* =========================================================
+       *** IMPORTANTE: ESCONDE O AVISO NATIVO DE "REDE INSTÁVEL" ***
+       Alguns navegadores mostram um aviso nativo quando a rede
+       fica instável. Aqui desativamos os pseudo-elementos.
+    ========================================================== */
+    video::-webkit-media-controls-overlay-play-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls-overlay-enclosure {
+      display: none !important;
+    }
+    video::-internal-media-controls-download-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls-panel {
+      /* Mantém os controles normais visíveis */
+    }
+    /* Esconde a mensagem de status de rede nativa (Android Chrome) */
+    video::-webkit-media-controls-status-display {
+      display: none !important;
+    }
+    video::-webkit-media-controls-time-remaining-display {
+      display: none !important;
+    }
+
     @media screen and (orientation: landscape) {
       .video-container {
         width: 100%;
@@ -778,9 +778,6 @@
       }
     }
 
-    /* =========================================================
-       TOAST
-    ========================================================== */
     #toast {
       position: fixed;
       z-index: 2000;
@@ -806,9 +803,6 @@
       transform: translate(-50%, 0);
     }
 
-    /* =========================================================
-       RESPONSIVE
-    ========================================================== */
     @media (min-width: 600px) {
       .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
@@ -957,11 +951,12 @@
     </div>
   </div>
 
+  <!-- PLAYER -->
   <div id="playerModal">
     <div class="player-shell">
       <button id="playerCloseButton" class="player-close" type="button">×</button>
       <div id="playerArea" class="video-container">
-        <video id="videoPlayer" controls playsinline preload="metadata"></video>
+        <video id="videoPlayer" controls playsinline preload="auto" crossorigin="anonymous" disablepictureinpicture disableremoteplayback></video>
         <div id="playerLoading" class="player-loading">
           <div class="spinner"></div>
           <p>Carregando transmissão...</p>
@@ -1013,7 +1008,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     let lastPlayerWasHls = false;
     let toastTimer = null;
     let authMode = "login";
-    let loadingShownOnce = false; // Controle do loading inicial
+    let loadingShownOnce = false;
 
     const authScreen = document.getElementById("authScreen");
     const app = document.getElementById("app");
@@ -1449,9 +1444,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         try {
           hls.destroy();
         } catch (error) {
-          console.warn("Erro ao destruir HLS:", error);
+          console.warn("Erro aoContent destruir HLS:", error);
         }
-        hls = null;
+ =        hls = null;
       }
     }
 
@@ -1460,12 +1455,12 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         videoPlayer.pause();
       } catch {}
       videoPlayer.removeAttribute("src");
-      videoPlayer.load();
+ message;
+           player videoPlayer.load();
     }
 
-    // Loading: mostra apenas UMA VEZ no início
     function showPlayerLoading(message = "Carregando transmissão...") {
-      if (loadingShownOnce) return; // Se já apareceu, não mostra de novo
+      if (loadingShownOnce) return;
       loadingShownOnce = true;
       playerLoading.style.display = "block";
       playerLoading.querySelector("p").textContent = message;
@@ -1477,15 +1472,15 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 
     function showPlayerError(message) {
       hidePlayerLoading();
-      playerErrorText.textContent = message;
-      playerError.style.display = "flex";
+      playerErrorText.textError.style.display = "flex";
     }
 
     function hidePlayerError() {
       playerError.style.display = "none";
     }
 
-    // *** EVENTOS DO VÍDEO - SEM MENSAGENS, APENAS CONTROLE ***
+    // *** EVENTOS DO VÍDEO - TOTALMENTE SILENCIOSOS ***
+    // Removemos/desativamos qualquer evento que possa disparar mensagens
     function prepareVideoEvents() {
       videoPlayer.onplaying = () => {
         hidePlayerLoading();
@@ -1494,12 +1489,27 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       videoPlayer.oncanplay = () => {
         hidePlayerLoading();
       };
-      videoPlayer.onwaiting = () => {
-        // Silencioso - não mostra nada
+      videoPlayer.oncanplaythrough = () => {
+        hidePlayerLoading();
       };
-      videoPlayer.onstalled = () => {
-        // Silencioso - não mostra nada
-      };
+
+      // Silenciosos: não fazem nada
+      videoPlayer.onwaiting = null;
+      videoPlayer.onstalled = null;
+      videoPlayer.onsuspend = null;
+      videoPlayer.onpause = null;
+      videoPlayer.onratechange = null;
+      videoPlayer.onseeking = null;
+      videoPlayer.onseeked = null;
+      videoPlayer.ontimeupdate = null;
+      videoPlayer.onprogress = null;
+      videoPlayer.onloadstart = null;
+      videoPlayer.ondurationchange = null;
+      videoPlayer.onloadedmetadata = null;
+      videoPlayer.onloadeddata = null;
+      videoPlayer.onabort = null;
+      videoPlayer.onemptied = null;
+
       videoPlayer.onerror = () => {
         if (hls || !playerModal || !playerModal.classList.contains("active")) {
           return;
@@ -1517,9 +1527,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         }
         showPlayerError(message);
       };
-      videoPlayer.onended = () => {
-        // Silencioso
-      };
+      videoPlayer.onended = null;
     }
 
     async function safePlay() {
@@ -1533,38 +1541,26 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    // =========================================================
-    // HLS - CONFIGURADO PARA MÁXIMA QUALIDADE
-    // =========================================================
+    // *** HLS CONFIGURADO COM ALTA QUALIDADE E SILENCIOSO ***
     function startHlsPlayer(url) {
       if (!window.Hls || !Hls.isSupported()) {
         return false;
       }
 
       const instance = new Hls({
-        // *** QUALIDADE MÁXIMA ***
-        // -1 = seleciona automaticamente o melhor nível disponível
         startLevel: -1,
-        // Não limita a qualidade ao tamanho do player
         capLevelToPlayerSize: false,
-        // Não limita o nível máximo
         capLevelOnFPSDrop: false,
-
-        // *** BUFFER GRANDE PARA AGUENTAR MELHOR AS INSTABILIDADES ***
-        maxBufferLength: 60,           // 60 segundos de buffer
-        maxMaxBufferLength: 120,       // Máximo 120 segundos
-        maxBufferSize: 60 * 1000 * 1000, // 60 MB de buffer
+        maxBufferLength: 60,
+        maxMaxBufferLength: 120,
+        maxBufferSize: 60 * 1000 * 1000,
         maxBufferHole: 0.5,
-        backBufferLength: 30,          // 30 segundos para trás
-
-        // *** ABR (Adaptive Bitrate) - SEMPRE BUSCA A MELHOR QUALIDADE ***
-        abrEwmaDefaultEstimate: 5000000, // 5 Mbps de estimativa inicial
+        backBufferLength: 30,
+        abrEwmaDefaultEstimate: 5000000,
         abrBandWidthFactor: 0.95,
         abrBandWidthUpFactor: 0.9,
         abrMaxWithRealBitrate: false,
         startFragPrefetch: true,
-
-        // *** RECUPERAÇÃO AUTOMÁTICA EM CASO DE ERRO ***
         manifestLoadingMaxRetry: 6,
         manifestLoadingRetryDelay: 1000,
         manifestLoadingMaxRetryTimeout: 64000,
@@ -1574,15 +1570,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         fragLoadingMaxRetry: 6,
         fragLoadingRetryDelay: 1000,
         fragLoadingMaxRetryTimeout: 64000,
-
-        // *** LATÊNCIA BAIXA PARA CANAIS AO VIVO ***
-        lowLatencyMode: false, // Desativado para dar prioridade a qualidade
-
-        // *** PERFORMANCE ***
+        lowLatencyMode: false,
         enableWorker: true,
         enableSoftwareAES: true,
-
-        // *** TIMEOUT ***
         fragLoadingTimeOut: 20000,
         manifestLoadingTimeOut: 10000,
         levelLoadingTimeOut: 10000
@@ -1603,11 +1593,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         safePlay();
       });
 
-      // *** FORÇA A MELHOR QUALIDADE APÓS CARREGAR ***
       instance.on(Hls.Events.LEVEL_LOADED, () => {
         if (hls !== instance) return;
         try {
-          // Seleciona o último nível (geralmente o de maior qualidade)
           const levels = instance.levels;
           if (levels && levels.length > 0) {
             const bestLevel = levels.length - 1;
@@ -1618,15 +1606,20 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         }
       });
 
+      // *** ERROS SILENCIOSOS: RECONECTA SEM MOSTRAR NADA ***
       instance.on(Hls.Events.ERROR, (_event, data) => {
         if (hls !== instance) return;
+
+        // Erros não fatais: silenciosos
         if (!data.fatal) {
           return;
         }
+
+        // Erro de rede: reconecta silenciosamente
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-          if (hlsRetryCount < 10) { // Aumentado para 10 tentativas
+          if (hlsRetryCount < 20) {
             hlsRetryCount++;
-            const delay = 1000 * Math.min(hlsRetryCount, 5);
+            const delay = 500 * Math.min(hlsRetryCount, 8);
             clearTimeout(hlsRetryTimer);
             hlsRetryTimer = setTimeout(() => {
               if (hls !== instance) return;
@@ -1641,8 +1634,10 @@ https://test-streams.mux.dev/test_001/stream.m3u8
           }
           return;
         }
+
+        // Erro de mídia: recupera silenciosamente
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-          if (mediaRecoveryAttempts < 5) { // Aumentado para 5
+          if (mediaRecoveryAttempts < 5) {
             mediaRecoveryAttempts++;
             try {
               instance.recoverMediaError();
@@ -1654,6 +1649,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
           }
           return;
         }
+
         showPlayerError("O player encontrou um erro fatal nessa transmissão.");
       });
 
@@ -1691,7 +1687,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 
       hidePlayerError();
 
-      // *** RESETA O CONTROLE DO LOADING PARA MOSTRAR SÓ UMA VEZ ***
+      // Reseta o controle do loading
       loadingShownOnce = false;
       showPlayerLoading();
 
