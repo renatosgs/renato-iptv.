@@ -171,20 +171,58 @@
     }
     .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
-    /* PLAYER */
+    /* ============================================
+       PLAYER - ABRE JÁ EM MODO PAISAGEM (GIRADO)
+    ============================================ */
     #playerModal {
       display: none; position: fixed; inset: 0; z-index: 10000;
-      background: #000; align-items: center; justify-content: center; flex-direction: column;
+      background: #000; overflow: hidden;
     }
-    
-    #video { 
-      width: 100%; 
+
+    .video-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #video {
+      display: block;
+      background: #000;
+      transition: transform 0.3s ease;
+    }
+
+    /* --- MODO PADRÃO: ABRE GIRADO (PAISAGEM) --- */
+    /* O vídeo é rotacionado 90° e redimensionado para ocupar toda a tela */
+    #video.mode-rotated {
+      width: 100vh;
+      height: 100vw;
+      object-fit: contain;
+      transform: rotate(90deg);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      margin-left: -50vh;
+      margin-top: -50vw;
+    }
+    #video.mode-rotated.fit-cover {
+      object-fit: cover;
+    }
+
+    /* --- MODO NORMAL: retrato (caso usuário queira) --- */
+    #video.mode-normal {
+      width: 100%;
       height: 100%;
-      background: #000; 
-      transition: object-fit 0.3s ease;
+      object-fit: contain;
+      position: relative;
+      transform: none;
     }
-    #video.fit-contain { object-fit: contain; }
-    #video.fit-cover { object-fit: cover; }
+    #video.mode-normal.fit-cover {
+      object-fit: cover;
+    }
 
     .player-top {
       width: 100%; min-height: 55px; display: flex; align-items: center;
@@ -192,15 +230,16 @@
       position: absolute; top: 0; left: 0; z-index: 10;
     }
     #playerTitle {
-      color: white; font-weight: bold; font-size: 14px; max-width: 60%;
+      color: white; font-weight: bold; font-size: 14px; max-width: 45%;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .player-buttons { display: flex; align-items: center; gap: 10px; }
-    .btn-toggle-fit {
+    .player-buttons { display: flex; align-items: center; gap: 8px; }
+    .btn-player {
       background: #333; color: white; border: 1px solid #555;
-      padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: bold;
+      padding: 6px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;
     }
-    .btn-toggle-fit:hover { background: #444; }
+    .btn-player:hover { background: #444; }
+    .btn-player.active { background: var(--red); border-color: var(--red); }
     #closePlayer {
       border: 0; background: var(--red); color: white; width: 38px;
       height: 38px; border-radius: 50%; font-size: 20px;
@@ -285,11 +324,14 @@
     <div class="player-top">
       <div id="playerTitle">Reprodução</div>
       <div class="player-buttons">
-        <button class="btn-toggle-fit" id="toggleFitBtn">📺 Esticar Tela</button>
+        <button class="btn-player active" id="rotateBtn">🔄 Girar</button>
+        <button class="btn-player" id="toggleFitBtn">📺 Esticar</button>
         <button id="closePlayer">×</button>
       </div>
     </div>
-    <video id="video" class="fit-contain" controls playsinline preload="metadata"></video>
+    <div class="video-container">
+      <video id="video" class="mode-rotated" controls playsinline preload="metadata"></video>
+    </div>
   </div>
 
   <script>
@@ -301,6 +343,8 @@
     let currentFilter = "todos";
     let searchTerm = "";
     let hls = null;
+    let isRotated = true;    // Agora começa como TRUE (girado/paisagem)
+    let isFitCover = false;
 
     /* =====================================================
        DEMO
@@ -478,56 +522,43 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
-       ROTACIONAR TELA
+       CONTROLE DE ORIENTAÇÃO DO VÍDEO
     ===================================================== */
-    async function rotateScreenLandscape() {
-      try {
-        // Tenta travar a orientação em paisagem
-        if (screen.orientation && screen.orientation.lock) {
-          await screen.orientation.lock('landscape');
-        }
-      } catch (e) {
-        console.warn("Não foi possível travar a orientação da tela:", e);
-      }
+    function applyVideoClasses() {
+      const video = document.getElementById("video");
+      video.classList.remove("mode-normal", "mode-rotated", "fit-cover");
+      video.classList.add(isRotated ? "mode-rotated" : "mode-normal");
+      if (isFitCover) video.classList.add("fit-cover");
     }
 
-    async function unlockScreen() {
-      try {
-        if (screen.orientation && screen.orientation.unlock) {
-          screen.orientation.unlock();
-        }
-      } catch (e) {
-        console.warn("Não foi possível destravar a orientação:", e);
+    function toggleRotate() {
+      isRotated = !isRotated;
+      const btn = document.getElementById("rotateBtn");
+      if (isRotated) {
+        btn.classList.add("active");
+        btn.textContent = "🔄 Girar";
+        // Tenta travar a tela em paisagem
+        try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape'); } catch(e){}
+      } else {
+        btn.classList.remove("active");
+        btn.textContent = "🔄 Girar";
+        // Destrava a orientação
+        try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch(e){}
       }
+      applyVideoClasses();
     }
 
-    async function requestFullscreen() {
-      const elem = document.getElementById("playerModal");
-      try {
-        if (elem.requestFullscreen) {
-          await elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          await elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          await elem.msRequestFullscreen();
-        }
-      } catch (e) {
-        console.warn("Fullscreen não suportado ou negado:", e);
+    function toggleFit() {
+      isFitCover = !isFitCover;
+      const btn = document.getElementById("toggleFitBtn");
+      if (isFitCover) {
+        btn.classList.add("active");
+        btn.textContent = "🔲 Proporção";
+      } else {
+        btn.classList.remove("active");
+        btn.textContent = "📺 Esticar";
       }
-    }
-
-    async function exitFullscreen() {
-      try {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          await document.msExitFullscreen();
-        }
-      } catch (e) {
-        console.warn("Erro ao sair da tela cheia:", e);
-      }
+      applyVideoClasses();
     }
 
     /* =====================================================
@@ -543,19 +574,34 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       const video = document.getElementById("video");
       const title = document.getElementById("playerTitle");
       title.textContent = name || "Reprodução";
-      modal.style.display = "flex";
-      
-      // Tenta entrar em tela cheia e girar a tela
-      await requestFullscreen();
-      await rotateScreenLandscape();
+      modal.style.display = "block";
+
+      // FORÇA O MODO GIRADO AO ABRIR
+      isRotated = true;
+      isFitCover = false;
+      document.getElementById("rotateBtn").classList.add("active");
+      document.getElementById("rotateBtn").textContent = "🔄 Girar";
+      document.getElementById("toggleFitBtn").classList.remove("active");
+      document.getElementById("toggleFitBtn").textContent = "📺 Esticar";
+      applyVideoClasses();
+
+      // Tenta entrar em tela cheia e travar a orientação em paisagem
+      try {
+        const elem = document.getElementById("playerModal");
+        if (elem.requestFullscreen) await elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
+      } catch(e) { console.warn("Fullscreen não suportado:", e); }
+
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock('landscape');
+        }
+      } catch(e) { console.warn("Rotação de tela não suportada:", e); }
 
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
       video.removeAttribute("src");
       video.load();
-      
-      video.className = "fit-contain";
-      document.getElementById("toggleFitBtn").textContent = "📺 Esticar Tela";
 
       if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
         hls = new Hls({ enableWorker: true });
@@ -580,27 +626,22 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       video.load();
       if (hls) { hls.destroy(); hls = null; }
       modal.style.display = "none";
-      
-      // Destrava a orientação e sai da tela cheia ao fechar
-      await unlockScreen();
-      await exitFullscreen();
-    }
 
-    /* =====================================================
-       ALTERNAR MODO DE TELA CHEIA
-    ===================================================== */
-    function toggleFit() {
-      const video = document.getElementById("video");
-      const btn = document.getElementById("toggleFitBtn");
-      if (video.classList.contains("fit-contain")) {
-        video.classList.remove("fit-contain");
-        video.classList.add("fit-cover");
-        btn.textContent = "🔲 Manter Proporção";
-      } else {
-        video.classList.remove("fit-cover");
-        video.classList.add("fit-contain");
-        btn.textContent = "📺 Esticar Tela";
-      }
+      // Destrava a orientação do celular
+      try {
+        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+      } catch(e) {}
+
+      // Sai da tela cheia
+      try {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+      } catch(e) {}
+
+      // Reseta estados
+      isRotated = true;
+      isFitCover = false;
+      applyVideoClasses();
     }
 
     /* =====================================================
@@ -786,6 +827,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     });
 
     document.getElementById("closePlayer").addEventListener("click", closePlayer);
+    document.getElementById("rotateBtn").addEventListener("click", toggleRotate);
     document.getElementById("toggleFitBtn").addEventListener("click", toggleFit);
 
     document.getElementById("heroPlay").addEventListener("click", () => {
