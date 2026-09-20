@@ -176,21 +176,40 @@
       display: none; position: fixed; inset: 0; z-index: 10000;
       background: #000; align-items: center; justify-content: center; flex-direction: column;
     }
+    
+    /* Classe que controla o modo de exibição do vídeo */
     #video { 
       width: 100%; 
-      height: 100%; /* Alterado de max-height para height para ocupar tudo */
-      object-fit: cover; /* Faz o vídeo preencher a tela, cortando as bordas se necessário */
+      height: 100%;
       background: #000; 
+      transition: object-fit 0.3s ease;
     }
+    /* Modo padrão: mantém proporção (faixas pretas) */
+    #video.fit-contain {
+      object-fit: contain;
+    }
+    /* Modo esticado: preenche a tela toda (corta bordas) */
+    #video.fit-cover {
+      object-fit: cover;
+    }
+
     .player-top {
       width: 100%; min-height: 55px; display: flex; align-items: center;
-      justify-content: space-between; padding: 0 15px; background: #111;
-      position: absolute; top: 0; left: 0; z-index: 10; /* Fixa o topo sobre o vídeo */
+      justify-content: space-between; padding: 0 15px; background: rgba(17,17,17,0.9);
+      position: absolute; top: 0; left: 0; z-index: 10;
     }
     #playerTitle {
-      color: white; font-weight: bold; font-size: 14px; max-width: 80%;
+      color: white; font-weight: bold; font-size: 14px; max-width: 60%;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
+    .player-buttons {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-toggle-fit {
+      background: #333; color: white; border: 1px solid #555;
+      padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: bold;
+    }
+    .btn-toggle-fit:hover { background: #444; }
     #closePlayer {
       border: 0; background: var(--red); color: white; width: 38px;
       height: 38px; border-radius: 50%; font-size: 20px;
@@ -274,9 +293,12 @@
   <div id="playerModal">
     <div class="player-top">
       <div id="playerTitle">Reprodução</div>
-      <button id="closePlayer">×</button>
+      <div class="player-buttons">
+        <button class="btn-toggle-fit" id="toggleFitBtn">📺 Esticar Tela</button>
+        <button id="closePlayer">×</button>
+      </div>
     </div>
-    <video id="video" controls playsinline preload="metadata"></video>
+    <video id="video" class="fit-contain" controls playsinline preload="metadata"></video>
   </div>
 
   <script>
@@ -366,7 +388,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
-       CARD (CORRIGIDO)
+       CARD
     ===================================================== */
     function createCard(item) {
       const index = list.indexOf(item);
@@ -478,10 +500,16 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       const title = document.getElementById("playerTitle");
       title.textContent = name || "Reprodução";
       modal.style.display = "flex";
+      
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
       video.removeAttribute("src");
       video.load();
+      
+      // Sempre começa no modo "contain" (mantém proporção)
+      video.className = "fit-contain";
+      document.getElementById("toggleFitBtn").textContent = "📺 Esticar Tela";
+
       if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
         hls = new Hls({ enableWorker: true });
         hls.loadSource(url);
@@ -505,6 +533,23 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       video.load();
       if (hls) { hls.destroy(); hls = null; }
       modal.style.display = "none";
+    }
+
+    /* =====================================================
+       ALTERNAR MODO DE TELA CHEIA
+    ===================================================== */
+    function toggleFit() {
+      const video = document.getElementById("video");
+      const btn = document.getElementById("toggleFitBtn");
+      if (video.classList.contains("fit-contain")) {
+        video.classList.remove("fit-contain");
+        video.classList.add("fit-cover");
+        btn.textContent = "🔲 Manter Proporção";
+      } else {
+        video.classList.remove("fit-cover");
+        video.classList.add("fit-contain");
+        btn.textContent = "📺 Esticar Tela";
+      }
     }
 
     /* =====================================================
@@ -598,7 +643,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     function closeM3UModal() { document.getElementById("m3uModal").style.display = "none"; }
 
     /* =====================================================
-       AUTENTICAÇÃO SIMPLIFICADA (SEM SUPABASE)
+       AUTENTICAÇÃO SIMPLIFICADA
     ===================================================== */
     let isSignup = false;
 
@@ -607,17 +652,14 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     async function handleAuth() {
-      const email = document.getElementByIdis("email").value.trim();
-      const password = document.getElementById("Signpassword").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
       if (!email || !password) {
-up        showAuthMessage(";
-Informe e-mail e senha.");
+        showAuthMessage("Informe e-mail e senha.");
         return;
-           }
+      }
 
-      // AQUI N documentÃO TEM MAIS VERIFICAÇÃO DE API KEY.
-      // QUALQUER E-MAIL E SENHA FUNCIONAM.
       currentUser = { id: "local_" + Date.now(), email: email };
       
       if (isSignup) {
@@ -658,7 +700,8 @@ Informe e-mail e senha.");
     document.getElementById("authButton").addEventListener("click", handleAuth);
 
     document.getElementById("authSwitch").addEventListener("click", () => {
-      isSignup = !.getElementById("authButton").textContent = isSignup ? "Criar conta" : "Entrar";
+      isSignup = !isSignup;
+      document.getElementById("authButton").textContent = isSignup ? "Criar conta" : "Entrar";
       document.getElementById("authSwitch").textContent = isSignup ? "Já tenho uma conta" : "Criar uma conta";
       showAuthMessage("");
     });
@@ -692,6 +735,7 @@ Informe e-mail e senha.");
     });
 
     document.getElementById("closePlayer").addEventListener("click", closePlayer);
+    document.getElementById("toggleFitBtn").addEventListener("click", toggleFit);
 
     document.getElementById("heroPlay").addEventListener("click", () => {
       if (list.length) playVideo(list[0].url, list[0].name);
@@ -704,8 +748,6 @@ Informe e-mail e senha.");
     /* =====================================================
        INICIALIZAÇÃO
     ===================================================== */
-    // Não precisa mais verificar sessão do Supabase.
-    // O app começa na tela de login e aceita qualquer credencial.
     console.log("RENATO IPTV carregado - Modo Local (sem API Key)");
   </script>
 </body>
