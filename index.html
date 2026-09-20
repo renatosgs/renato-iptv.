@@ -932,7 +932,7 @@
     <div class="player-shell">
       <button id="playerCloseButton" class="player-close" type="button">×</button>
       <div id="playerArea" class="video-container">
-        <video id="videoPlayer" controls playsinline preload="metadata" crossorigin="anonymous" disablepictureinpicture disableremoteplayback></video>
+        <video id="videoPlayer" controls playsinline preload="auto" crossorigin="anonymous" disablepictureinpicture disableremoteplayback></video>
         <div id="playerLoading" class="player-loading">
           <div class="spinner"></div>
           <p>Carregando transmissão...</p>
@@ -985,6 +985,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     let toastTimer = null;
     let authMode = "login";
     let loadingShownOnce = false;
+    let stallDetectionTimer = null;
 
     const authScreen = document.getElementById("authScreen");
     const app = document.getElementById("app");
@@ -1416,6 +1417,10 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     function destroyHls() {
       clearTimeout(hlsRetryTimer);
       hlsRetryTimer = null;
+      if (stallDetectionTimer) {
+        clearInterval(stallDetectionTimer);
+        stallDetectionTimer = null;
+      }
       if (hls) {
         try {
           hls.destroy();
@@ -1432,6 +1437,10 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       } catch {}
       videoPlayer.removeAttribute("src");
       videoPlayer.load();
+      // Libera buffer da memória
+      try {
+        videoPlayer.querySelectorAll("source").forEach(s => s.remove());
+      } catch {}
     }
 
     function showPlayerLoading(message = "Carregando transmissão...") {
@@ -1453,6 +1462,37 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 
     function hidePlayerError() {
       playerError.style.display = "none";
+    }
+
+    // *** DETECÇÃO DE TRAVAMENTO - recarrega se travar ***
+    function startStallDetection() {
+      let lastTime = 0;
+      let stallCount = 0;
+      if (stallDetectionTimer) clearInterval(stallDetectionTimer);
+      stallDetectionTimer = setInterval(() => {
+        if (!playerModal.classList.contains("active")) return;
+        if (videoPlayer.paused) return;
+        const now = videoPlayer.currentTime;
+        if (now === lastTime) {
+          stallCount++;
+          if (stallCount >= 5) {
+            // 5 segundos travado = recarrega
+            console.warn("Travamento detectado - recarregando...");
+            stallCount = 0;
+            if (hls) {
+              try {
+                hls.startLoad();
+              } catch (e) {}
+            } else if (currentVideoUrl) {
+              videoPlayer.load();
+              videoPlayer.play().catch(() => {});
+            }
+          }
+        } else {
+          stallCount = 0;
+          lastTime = now;
+        }
+      }, 1000);
     }
 
     function prepareVideoEvents() {
@@ -1513,50 +1553,93 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     }
 
     // =========================================================
-    // HLS - CONFIGURAÇÃO OTIMIZADA PARA NÃO TRAVAR
+    // HLS - CONFIGURADO PARA 8 GB COM PROTEÇÃO AUTOMÁTICA
     // =========================================================
     function startHlsPlayer(url) {
       if (!window.Hls || !Hls.isSupported()) {
         return false;
       }
 
+      // *** TENTA 8 GB, MAS COM PROTEÇÃO ***
+      // Se o navegador reclamar, reduz automaticamente
+      let bufferLength = 480;         // 8 minutos à frente
+      let bufferSize = 8000 * 1000 * 1000; // 8 GB de buffer
+      let maxBuffer = 1600;           // 26 minutos máximo
+      let backBuffer = 300;           // 5 minutos para trás
+
+      try {
+        // Testa se o navegador aguenta (detecção de dispositivo)
+        const memInfo = navigator.deviceMemory || navigator.hardwareConcurrency || 4;
+
+        // deviceMemory retorna em GB. Se for <= 4, reduz o buffer
+        if (navigator.deviceMemory) {
+          if (navigator.deviceMemory <= 2) {
+            bufferLength = 30;
+            bufferSize = 50 * 1000 * 1000;
+            maxBuffer = 60;
+            backBuffer = 15;
+            console.warn("Dispositivo com pouca memória - buffer reduzido para 50 MB");
+          } else if (navigator.deviceMemory <= 4) {
+            bufferLength = 120;
+            bufferSize = 200 * 1000 * 1000;
+            maxBuffer = 300;
+            backBuffer = 60;
+            console.warn("Dispositivo médio - buffer de 200 MB");
+          } else if (navigator.deviceMemory <= 8) {
+            bufferLength = 480;
+            bufferSize = 8000 * 1000 * 1000;
+            maxBuffer = 1600;
+            backBuffer = 300;
+            console.warn("Dispositivo com 8GB - buffer máximo de 8 GB");
+          } else {
+            bufferLength = 600;
+            bufferSize = 8000 * 1000 * 1000;
+            maxBuffer = 1800;
+            backBuffer = 400;
+            console.warn("Dispositivo top - buffer de 8 GB");
+          }
+        }
+      } catch (e) {
+        console.warn("Não foi possível detectar memória:", e);
+      }
+
       const instance = new Hls({
-        // *** DEIXA O PLAYER ESCOLHER A MELHOR QUALIDADE AUTOMATICAMENTE ***
-        // (não força mais nível máximo)
-        startLevel: -1,                  // Auto (começa no nível que o player achar melhor)
-        capLevelToPlayerSize: true,      // Limita ao tamanho do player (evita baixar 4K em tela pequena)
-        capLevelOnFPSDrop: true,         // Reduz qualidade se o FPS cair (evita travar)
+        // *** QUALIDADE MÁXIMA ***
+        startLevel: -1,
+        capLevelToPlayerSize: false,
+        capLevelOnFPSDrop: false,
 
-        // *** BUFFER EQUILIBRADO - NEM POUCO NEM MUITO ***
-        maxBufferLength: 30,             // 30 segundos à frente
-        maxMaxBufferLength: 60,          // Máximo 60 segundos
-        maxBufferSize: 30 * 1000 * 1000, // 30 MB de buffer (bem leve)
+        // *** BUFFER MÁXIMO (ATÉ 8 GB SE O CELULAR AGUENTAR) ***
+        maxBufferLength: bufferLength,
+        maxMaxBufferLength: maxBuffer,
+        maxBufferSize: bufferSize,
         maxBufferHole: 0.5,
-        backBufferLength: 15,            // 15 segundos para trás
+        backBufferLength: backBuffer,
 
-        // *** ABR (Adaptive Bitrate) - ADAPTAÇÃO RÁPIDA ***
-        abrEwmaDefaultEstimate: 2000000, // Estimativa inicial de 2 Mbps (mais realista)
-        abrBandWidthFactor: 0.9,         // Conservador para não travar
-        abrBandWidthUpFactor: 0.8,       // Sobe qualidade devagar
+        // *** ABR (Adaptive Bitrate) - QUALIDADE MÁXIMA ***
+        abrEwmaDefaultEstimate: 8000000,
+        abrBandWidthFactor: 0.95,
+        abrBandWidthUpFactor: 0.9,
         abrMaxWithRealBitrate: false,
+        startFragPrefetch: true,
 
-        // *** LEITURA ***
-        startFragPrefetch: false,        // NÃO pré-carrega (evita sobrecarga)
-
-        // *** RECUPERAÇÃO MODERADA ***
-        manifestLoadingMaxRetry: 5,
-        manifestLoadingRetryDelay: 1000,
-        levelLoadingMaxRetry: 5,
-        levelLoadingRetryDelay: 1000,
-        fragLoadingMaxRetry: 5,
-        fragLoadingRetryDelay: 1000,
+        // *** RECUPERAÇÃO ***
+        manifestLoadingMaxRetry: 10,
+        manifestLoadingRetryDelay: 500,
+        manifestLoadingMaxRetryTimeout: 64000,
+        levelLoadingMaxRetry: 10,
+        levelLoadingRetryDelay: 500,
+        levelLoadingMaxRetryTimeout: 64000,
+        fragLoadingMaxRetry: 10,
+        fragLoadingRetryDelay: 500,
+        fragLoadingMaxRetryTimeout: 64000,
 
         // *** TIMEOUTS ***
-        fragLoadingTimeOut: 20000,
-        manifestLoadingTimeOut: 10000,
-        levelLoadingTimeOut: 10000,
+        fragLoadingTimeOut: 30000,
+        manifestLoadingTimeOut: 15000,
+        levelLoadingTimeOut: 15000,
 
-        // *** LATÊNCIA BAIXA DESATIVADA ***
+        // *** LATÊNCIA ***
         lowLatencyMode: false,
 
         // *** PERFORMANCE ***
@@ -1577,6 +1660,22 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         if (hls !== instance) return;
         hidePlayerLoading();
         safePlay();
+        // Inicia detecção de travamento após o vídeo começar
+        startStallDetection();
+      });
+
+      // *** FORÇA A MELHOR QUALIDADE ***
+      instance.on(Hls.Events.LEVEL_LOADED, () => {
+        if (hls !== instance) return;
+        try {
+          const levels = instance.levels;
+          if (levels && levels.length > 0) {
+            const bestLevel = levels.length - 1;
+            instance.currentLevel = bestLevel;
+          }
+        } catch (error) {
+          console.warn("Não foi possível forçar a melhor qualidade:", error);
+        }
       });
 
       // *** ERROS SILENCIOSOS ***
@@ -1585,9 +1684,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         if (!data.fatal) return;
 
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-          if (hlsRetryCount < 5) {
+          if (hlsRetryCount < 15) {
             hlsRetryCount++;
-            const delay = 1000 * Math.min(hlsRetryCount, 3);
+            const delay = 500 * Math.min(hlsRetryCount, 5);
             clearTimeout(hlsRetryTimer);
             hlsRetryTimer = setTimeout(() => {
               if (hls !== instance) return;
@@ -1603,7 +1702,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
           return;
         }
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-          if (mediaRecoveryAttempts < 2) {
+          if (mediaRecoveryAttempts < 5) {
             mediaRecoveryAttempts++;
             try {
               instance.recoverMediaError();
@@ -1626,6 +1725,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       videoPlayer.src = url;
       videoPlayer.load();
       safePlay();
+      startStallDetection();
     }
 
     function startDirectVideo(url) {
@@ -1633,6 +1733,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       videoPlayer.src = url;
       videoPlayer.load();
       safePlay();
+      startStallDetection();
     }
 
     async function openPlayer(url, title, item = null) {
@@ -1674,19 +1775,42 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       startDirectVideo(url);
     }
 
+    // *** FECHA E LIMPA TUDO ***
     async function closePlayer() {
+      // Para o vídeo e destrói o HLS (libera toda a memória)
       destroyHls();
       resetVideo();
+
+      // Limpa o buffer manualmente (força o navegador a liberar)
+      try {
+        videoPlayer.src = "";
+        videoPlayer.load();
+      } catch (e) {}
+
+      // Limpa cache do vídeo (se suportado)
+      try {
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.metadata = null;
+        }
+      } catch (e) {}
+
       hidePlayerError();
       hidePlayerLoading();
       playerModal.classList.remove("active");
       playerModal.style.display = "none";
       document.body.classList.remove("player-open");
       playerCloseButton.classList.remove("visible");
+
       currentVideoUrl = "";
       currentVideoTitle = "";
       currentVideoItem = null;
+
       await unlockOrientation();
+
+      // Força garbage collection se disponível
+      if (window.gc) {
+        try { window.gc(); } catch (e) {}
+      }
     }
 
     function retryCurrentPlayer() {
