@@ -171,15 +171,21 @@
     }
     .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
-    /* PLAYER */
+    /* PLAYER - AJUSTADO PARA TELA INTEIRA */
     #playerModal {
       display: none; position: fixed; inset: 0; z-index: 10000;
       background: #000; align-items: center; justify-content: center; flex-direction: column;
     }
-    #video { width: 100%; max-height: 85vh; background: #000; }
+    #video { 
+      width: 100%; 
+      height: 100%; /* Alterado de max-height para height para ocupar tudo */
+      object-fit: cover; /* Faz o vídeo preencher a tela, cortando as bordas se necessário */
+      background: #000; 
+    }
     .player-top {
       width: 100%; min-height: 55px; display: flex; align-items: center;
       justify-content: space-between; padding: 0 15px; background: #111;
+      position: absolute; top: 0; left: 0; z-index: 10; /* Fixa o topo sobre o vídeo */
     }
     #playerTitle {
       color: white; font-weight: bold; font-size: 14px; max-width: 80%;
@@ -360,7 +366,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
-       CARD
+       CARD (CORRIGIDO)
     ===================================================== */
     function createCard(item) {
       const index = list.indexOf(item);
@@ -372,16 +378,16 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
             onerror="this.onerror=null;this.src='https://dummyimage.com/300x450/222/ffffff&text=IPTV';">
           <div class="card-info">
             <div class="card-title">${escapeHtml(item.name)}</div>
-            <div class="card-category">${escapeHtml(item.group || item.c   at)}</div>
+            <div class="card-category">${escapeHtml(item.group || item.cat)}</div>
           </div>
-        function </div>`;
+        </div>`;
     }
 
- close    /* =====================================================
-M       RENDER
-    =================================3==================== */
+    /* =====================================================
+       RENDER
+    ===================================================== */
     function render(data) {
-     U const content = document.getElementById("content");
+      const content = document.getElementById("content");
       content.innerHTML = "";
       if (!data.length) {
         content.innerHTML = `<div class="empty"><strong>Nenhum conteúdo encontrado</strong>Tente outra pesquisa ou carregue uma lista M3U.</div>`;
@@ -589,7 +595,7 @@ M       RENDER
        MODAL
     ===================================================== */
     function openM3UModal() { document.getElementById("m3uModal").style.display = "flex"; }
-Modal() { document.getElementById("m3uModal").style.display = "none"; }
+    function closeM3UModal() { document.getElementById("m3uModal").style.display = "none"; }
 
     /* =====================================================
        AUTENTICAÇÃO SIMPLIFICADA (SEM SUPABASE)
@@ -601,15 +607,16 @@ Modal() { document.getElementById("m3uModal").style.display = "none"; }
     }
 
     async function handleAuth() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const email = document.getElementByIdis("email").value.trim();
+      const password = document.getElementById("Signpassword").value;
 
       if (!email || !password) {
-        showAuthMessage("Informe e-mail e senha.");
+up        showAuthMessage(";
+Informe e-mail e senha.");
         return;
-      }
+           }
 
-      // AQUI NÃO TEM MAIS VERIFICAÇÃO DE API KEY.
+      // AQUI N documentÃO TEM MAIS VERIFICAÇÃO DE API KEY.
       // QUALQUER E-MAIL E SENHA FUNCIONAM.
       currentUser = { id: "local_" + Date.now(), email: email };
       
@@ -651,8 +658,7 @@ Modal() { document.getElementById("m3uModal").style.display = "none"; }
     document.getElementById("authButton").addEventListener("click", handleAuth);
 
     document.getElementById("authSwitch").addEventListener("click", () => {
-      isSignup = !isSignup;
-      document.getElementById("authButton").textContent = isSignup ? "Criar conta" : "Entrar";
+      isSignup = !.getElementById("authButton").textContent = isSignup ? "Criar conta" : "Entrar";
       document.getElementById("authSwitch").textContent = isSignup ? "Já tenho uma conta" : "Criar uma conta";
       showAuthMessage("");
     });
