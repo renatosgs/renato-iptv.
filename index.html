@@ -2,20 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-
-<meta
-name=“viewport”
-content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no”
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#050505">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RENATO IPTV</title>
+
   <!-- =========================================================
        CDN
   ========================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   <style>
     /* =========================================================
        RESET
@@ -91,6 +89,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
     ::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+
     /* =========================================================
        AUTH
     ========================================================== */
@@ -209,6 +208,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       font-size: 13px;
       line-height: 1.4;
     }
+
     /* =========================================================
        APP
     ========================================================== */
@@ -281,6 +281,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
     .icon-btn:hover {
       background: #222;
     }
+
     /* =========================================================
        HERO
     ========================================================== */
@@ -368,6 +369,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       opacity: .45;
       cursor: not-allowed;
     }
+
     /* =========================================================
        TABS
     ========================================================== */
@@ -408,6 +410,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       background: var(--accent);
       border-color: var(--accent);
     }
+
     /* =========================================================
        SECTION
     ========================================================== */
@@ -426,6 +429,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       color: var(--muted);
       font-size: 13px;
     }
+
     /* =========================================================
        GRID
     ========================================================== */
@@ -508,6 +512,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       color: #858585;
       font-size: 11px;
     }
+
     /* =========================================================
        EMPTY
     ========================================================== */
@@ -525,6 +530,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       color: white;
       margin-bottom: 8px;
     }
+
     /* =========================================================
        MODALS
     ========================================================== */
@@ -619,6 +625,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       text-align: center;
       font-size: 12px;
     }
+
     /* =========================================================
        PLAYER
     ========================================================== */
@@ -760,6 +767,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       color: white;
       font-weight: 800;
     }
+
     /* =========================================================
        TOAST
     ========================================================== */
@@ -787,6 +795,7 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
       opacity: 1;
       transform: translate(-50%, 0);
     }
+
     /* =========================================================
        RESPONSIVE
     ========================================================== */
@@ -861,410 +870,187 @@ content=“width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalab
   </style>
 </head>
 <body>
+
   <!-- =========================================================
        AUTH
   ========================================================== -->
   <section id="authScreen">
-<div class="auth-box">
-  <div class="auth-logo">
-    <div class="logo-main">
-      RENATO <span>IPTV</span>
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="logo-main">
+          RENATO <span>IPTV</span>
+        </div>
+        <p>Entre para acessar sua programação</p>
+      </div>
+      <div class="auth-tabs">
+        <button id="loginTab" class="auth-tab active" type="button">
+          Entrar
+        </button>
+        <button id="signupTab" class="auth-tab" type="button">
+          Criar conta
+        </button>
+      </div>
+      <div class="field">
+        <label for="emailInput">E-mail</label>
+        <input id="emailInput" type="email" autocomplete="email" placeholder="seuemail@email.com">
+      </div>
+      <div class="field">
+        <label for="passwordInput">Senha</label>
+        <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Digite sua senha">
+      </div>
+      <button id="authButton" class="auth-button" type="button">
+        Entrar
+      </button>
+      <div id="authMessage"></div>
     </div>
-    <p>Entre para acessar sua programação</p>
-  </div>
-  <div class="auth-tabs">
-    <button
-      id="loginTab"
-      class="auth-tab active"
-      type="button"
-    >
-      Entrar
-    </button>
-    <button
-      id="signupTab"
-      class="auth-tab"
-      type="button"
-    >
-      Criar conta
-    </button>
-  </div>
-  <div class="field">
-    <label for="emailInput">
-      E-mail
-    </label>
-    <input
-      id="emailInput"
-      type="email"
-      autocomplete="email"
-      placeholder="seuemail@email.com"
-    >
-  </div>
-  <div class="field">
-    <label for="passwordInput">
-      Senha
-    </label>
-    <input
-      id="passwordInput"
-      type="password"
-      autocomplete="current-password"
-      placeholder="Digite sua senha"
-    >
-  </div>
-  <button
-    id="authButton"
-    class="auth-button"
-    type="button"
-  >
-    Entrar
-  </button>
-  <div id="authMessage"></div>
-</div>
   </section>
+
   <!-- =========================================================
        APP
   ========================================================== -->
   <main id="app">
-<nav class="navbar">
-  <div class="brand">
-    RENATO <span>IPTV</span>
-  </div>
-  <div class="search-box">
-    <span class="search-icon">
-      🔎
-    </span>
-    <input
-      id="searchInput"
-      type="search"
-      placeholder="Buscar canais, filmes, séries..."
-      autocomplete="off"
-    >
-  </div>
-  <div class="nav-actions">
-    <button
-      id="m3uOpenButton"
-      class="icon-btn"
-      type="button"
-      title="Adicionar lista"
-    >
-      ＋
-    </button>
-    <button
-      id="logoutButton"
-      class="icon-btn"
-      type="button"
-      title="Sair"
-    >
-      ⇥
-    </button>
-  </div>
-</nav>
-<!-- =======================================================
-     HERO
-======================================================== -->
-<section class="hero">
-  <div
-    id="heroBg"
-    class="hero-bg"
-  ></div>
-  <div class="hero-gradient"></div>
-  <div class="hero-content">
-    <div class="hero-kicker">
-      RENATO IPTV
-    </div>
-    <h1 id="heroTitle">
-      Sua programação
-    </h1>
-    <p
-      id="heroDescription"
-      class="hero-description"
-    >
-      Carregue sua lista M3U e organize seus canais,
-      filmes e séries em uma interface simples e rápida.
-    </p>
-    <div class="hero-buttons">
-      <button
-        id="heroPlayButton"
-        class="primary-btn"
-        type="button"
-        disabled
-      >
-        ▶ Assistir
-      </button>
-      <button
-        id="heroListButton"
-        class="secondary-btn"
-        type="button"
-      >
-        ＋ Adicionar lista
-      </button>
-    </div>
-  </div>
-</section>
-<!-- =======================================================
-     CONTENT
-======================================================== -->
-<section class="content">
-  <div class="tabs-wrap">
-    <div class="tabs">
-      <button
-        class="tab active"
-        data-category="todos"
-        type="button"
-      >
-        Todos
-      </button>
-      <button
-        class="tab"
-        data-category="canais"
-        type="button"
-      >
-        Canais
-      </button>
-      <button
-        class="tab"
-        data-category="filmes"
-        type="button"
-      >
-        Filmes
-      </button>
-      <button
-        class="tab"
-        data-category="series"
-        type="button"
-      >
-        Séries
-      </button>
-      <button
-        class="tab"
-        data-category="novelas"
-        type="button"
-      >
-        Novelas
-      </button>
-    </div>
-  </div>
-  <div class="section-header">
-    <div class="section-title">
-      Conteúdo
-    </div>
-    <div
-      id="sectionCount"
-      class="section-count"
-    >
-      0 itens
-    </div>
-  </div>
-  <div
-    id="grid"
-    class="grid"
-  ></div>
-  <div
-    id="empty"
-    class="empty"
-  >
-    <div class="empty-icon">
-      📺
-    </div>
-    <h3>
-      Nenhum conteúdo encontrado
-    </h3>
-    <p>
-      Adicione uma lista M3U para começar.
-    </p>
-  </div>
-</section>
+    <nav class="navbar">
+      <div class="brand">
+        RENATO <span>IPTV</span>
+      </div>
+      <div class="search-box">
+        <span class="search-icon">🔎</span>
+        <input id="searchInput" type="search" placeholder="Buscar canais, filmes, séries..." autocomplete="off">
+      </div>
+      <div class="nav-actions">
+        <button id="m3uOpenButton" class="icon-btn" type="button" title="Adicionar lista">＋</button>
+        <button id="logoutButton" class="icon-btn" type="button" title="Sair">⇥</button>
+      </div>
+    </nav>
+
+    <!-- =======================================================
+         HERO
+    ======================================================== -->
+    <section class="hero">
+      <div id="heroBg" class="hero-bg"></div>
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <div class="hero-kicker">RENATO IPTV</div>
+        <h1 id="heroTitle">Sua programação</h1>
+        <p id="heroDescription" class="hero-description">
+          Carregue sua lista M3U e organize seus canais,
+          filmes e séries em uma interface simples e rápida.
+        </p>
+        <div class="hero-buttons">
+          <button id="heroPlayButton" class="primary-btn" type="button" disabled>
+            ▶ Assistir
+          </button>
+          <button id="heroListButton" class="secondary-btn" type="button">
+            ＋ Adicionar lista
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         CONTENT
+    ======================================================== -->
+    <section class="content">
+      <div class="tabs-wrap">
+        <div class="tabs">
+          <button class="tab active" data-category="todos" type="button">Todos</button>
+          <button class="tab" data-category="canais" type="button">Canais</button>
+          <button class="tab" data-category="filmes" type="button">Filmes</button>
+          <button class="tab" data-category="series" type="button">Séries</button>
+          <button class="tab" data-category="novelas" type="button">Novelas</button>
+        </div>
+      </div>
+      <div class="section-header">
+        <div class="section-title">Conteúdo</div>
+        <div id="sectionCount" class="section-count">0 itens</div>
+      </div>
+      <div id="grid" class="grid"></div>
+      <div id="empty" class="empty">
+        <div class="empty-icon">📺</div>
+        <h3>Nenhum conteúdo encontrado</h3>
+        <p>Adicione uma lista M3U para começar.</p>
+      </div>
+    </section>
   </main>
+
   <!-- =========================================================
        M3U MODAL
   ========================================================== -->
-  <div
-    id="m3uModal"
-    class="modal"
-  >
-<div class="modal-box">
-  <div class="modal-header">
-    <h2>
-      Adicionar lista
-    </h2>
-    <button
-      id="m3uCloseButton"
-      class="close-btn"
-      type="button"
-    >
-      ×
-    </button>
+  <div id="m3uModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Adicionar lista</h2>
+        <button id="m3uCloseButton" class="close-btn" type="button">×</button>
+      </div>
+      <div class="modal-section">
+        <h3>URL da lista M3U</h3>
+        <p>Cole uma URL HTTP ou HTTPS que disponibilize uma lista M3U/M3U8.</p>
+        <input id="m3uUrl" type="url" placeholder="https://exemplo.com/lista.m3u">
+        <button id="loadUrlButton" class="modal-action" type="button">Carregar URL</button>
+      </div>
+      <div class="modal-section">
+        <h3>Arquivo M3U</h3>
+        <p>Selecione um arquivo .m3u ou .m3u8 armazenado no seu aparelho.</p>
+        <input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain">
+        <button id="loadFileButton" class="modal-action secondary" type="button">Carregar arquivo</button>
+      </div>
+      <div class="modal-section">
+        <h3>Testar aplicativo</h3>
+        <p>Carrega uma pequena lista de demonstração para verificar se o aplicativo está funcionando.</p>
+        <button id="demoButton" class="modal-action secondary" type="button">Carregar demonstração</button>
+      </div>
+      <div id="m3uMessage"></div>
+    </div>
   </div>
-  <div class="modal-section">
-    <h3>
-      URL da lista M3U
-    </h3>
-    <p>
-      Cole uma URL HTTP ou HTTPS que disponibilize
-      uma lista M3U/M3U8.
-    </p>
-    <input
-      id="m3uUrl"
-      type="url"
-      placeholder="https://exemplo.com/lista.m3u"
-    >
-    <button
-      id="loadUrlButton"
-      class="modal-action"
-      type="button"
-    >
-      Carregar URL
-    </button>
-  </div>
-  <div class="modal-section">
-    <h3>
-      Arquivo M3U
-    </h3>
-    <p>
-      Selecione um arquivo .m3u ou .m3u8 armazenado
-      no seu aparelho.
-    </p>
-    <input
-      id="m3uFile"
-      type="file"
-      accept=".m3u,.m3u8,text/plain"
-    >
-    <button
-      id="loadFileButton"
-      class="modal-action secondary"
-      type="button"
-    >
-      Carregar arquivo
-    </button>
-  </div>
-  <div class="modal-section">
-    <h3>
-      Testar aplicativo
-    </h3>
-    <p>
-      Carrega uma pequena lista de demonstração
-      para verificar se o aplicativo está funcionando.
-    </p>
-    <button
-      id="demoButton"
-      class="modal-action secondary"
-      type="button"
-    >
-      Carregar demonstração
-    </button>
-  </div>
-  <div id="m3uMessage"></div>
-</div>
-  </div>
+
   <!-- =========================================================
        PLAYER
   ========================================================== -->
-  <div
-    id="playerModal"
-    class="modal"
-  >
-<div class="player-shell">
-  <div class="player-top">
-    <div
-      id="playerTitle"
-      class="player-title"
-    >
-      Reprodutor
-    </div>
-    <div class="player-tools">
-      <button
-        id="pipButton"
-        class="player-tool"
-        type="button"
-        title="Picture-in-Picture"
-      >
-        ▣
-      </button>
-      <button
-        id="fullscreenButton"
-        class="player-tool"
-        type="button"
-        title="Tela cheia"
-      >
-        ⛶
-      </button>
-      <button
-        id="playerCloseButton"
-        class="player-tool"
-        type="button"
-        title="Fechar"
-      >
-        ×
-      </button>
-    </div>
-  </div>
-  <div
-    id="playerArea"
-    class="player-area"
-  >
-    <video
-      id="videoPlayer"
-      controls
-      playsinline
-      preload="metadata"
-    ></video>
-    <div
-      id="playerLoading"
-      class="player-loading"
-    >
-      <div class="spinner"></div>
-      <p>
-        Carregando transmissão...
-      </p>
-    </div>
-    <div
-      id="playerMessage"
-      class="player-message"
-    ></div>
-    <div
-      id="playerError"
-      class="player-error"
-    >
-      <div class="player-error-box">
-        <div class="error-icon">
-          ⚠️
+  <div id="playerModal" class="modal">
+    <div class="player-shell">
+      <div class="player-top">
+        <div id="playerTitle" class="player-title">Reprodutor</div>
+        <div class="player-tools">
+          <button id="pipButton" class="player-tool" type="button" title="Picture-in-Picture">▣</button>
+          <button id="fullscreenButton" class="player-tool" type="button" title="Tela cheia">⛶</button>
+          <button id="playerCloseButton" class="player-tool" type="button" title="Fechar">×</button>
         </div>
-        <h3>
-          Não foi possível reproduzir
-        </h3>
-        <p id="playerErrorText">
-          O endereço da transmissão não respondeu.
-        </p>
-        <button
-          id="retryPlayerButton"
-          class="retry-player"
-          type="button"
-        >
-          Tentar novamente
-        </button>
+      </div>
+      <div id="playerArea" class="player-area">
+        <video id="videoPlayer" controls playsinline preload="metadata"></video>
+        <div id="playerLoading" class="player-loading">
+          <div class="spinner"></div>
+          <p>Carregando transmissão...</p>
+        </div>
+        <div id="playerMessage" class="player-message"></div>
+        <div id="playerError" class="player-error">
+          <div class="player-error-box">
+            <div class="error-icon">⚠️</div>
+            <h3>Não foi possível reproduzir</h3>
+            <p id="playerErrorText">O endereço da transmissão não respondeu.</p>
+            <button id="retryPlayerButton" class="retry-player" type="button">Tentar novamente</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-  </div>
+
   <!-- =========================================================
        TOAST
   ========================================================== -->
   <div id="toast"></div>
+
   <script>
     "use strict";
+
     /* =========================================================
        SUPABASE
     ========================================================== */
-    const SUPABASE_URL =
-      "https://tcsikxqgyyvewqwfudcu.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0Y3Npa3hxZ3l5dmV3cXdmdWRjdSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5Nzk2NTQ4LCJleHAiOjIxMDUzNzI1NDh9.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
+    const SUPABASE_URL = "https://tcsikxqgyyvewqwfudcu.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0Y3Npa3hxZ3l5dmV3cXdmdWRjdSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5Nzk2NTQ4LCJleHAiOjIxMDUzNzI1NDh9.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
     const TABLE_NAME = "user_lists";
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     /* =========================================================
        DEMO
     ========================================================== */
@@ -1276,6 +1062,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 #EXTINF:-1 tvg-id="demo-3" tvg-logo="https://dummyimage.com/600x338/333/fff&text=FILME" group-title="Filmes",Filme Demo
 #EXTINF:-1 tvg-id="demo-4" tvg-logo="https://dummyimage.com/600x338/444/fff&text=SERIE" group-title="Séries",Série Demo
 `;
+
     /* =========================================================
        ESTADO
     ========================================================== */
@@ -1295,89 +1082,51 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     let lastPlayerWasHls = false;
     let toastTimer = null;
     let authMode = "login";
+
     /* =========================================================
        ELEMENTOS
     ========================================================== */
-    const authScreen =
-      document.getElementById("authScreen");
-    const app =
-      document.getElementById("app");
-    const loginTab =
-      document.getElementById("loginTab");
-    const signupTab =
-      document.getElementById("signupTab");
-    const emailInput =
-      document.getElementById("emailInput");
-    const passwordInput =
-      document.getElementById("passwordInput");
-    const authButton =
-      document.getElementById("authButton");
-    const authMessage =
-      document.getElementById("authMessage");
-    const logoutButton =
-      document.getElementById("logoutButton");
-    const m3uModal =
-      document.getElementById("m3uModal");
-    const m3uOpenButton =
-      document.getElementById("m3uOpenButton");
-    const m3uCloseButton =
-      document.getElementById("m3uCloseButton");
-    const m3uUrl =
-      document.getElementById("m3uUrl");
-    const m3uFile =
-      document.getElementById("m3uFile");
-    const loadUrlButton =
-      document.getElementById("loadUrlButton");
-    const loadFileButton =
-      document.getElementById("loadFileButton");
-    const demoButton =
-      document.getElementById("demoButton");
-    const m3uMessage =
-      document.getElementById("m3uMessage");
-    const searchInput =
-      document.getElementById("searchInput");
-    const grid =
-      document.getElementById("grid");
-    const empty =
-      document.getElementById("empty");
-    const sectionCount =
-      document.getElementById("sectionCount");
-    const heroBg =
-      document.getElementById("heroBg");
-    const heroTitle =
-      document.getElementById("heroTitle");
-    const heroDescription =
-      document.getElementById("heroDescription");
-    const heroPlayButton =
-      document.getElementById("heroPlayButton");
-    const heroListButton =
-      document.getElementById("heroListButton");
-    const playerModal =
-      document.getElementById("playerModal");
-    const playerArea =
-      document.getElementById("playerArea");
-    const videoPlayer =
-      document.getElementById("videoPlayer");
-    const playerTitle =
-      document.getElementById("playerTitle");
-    const playerCloseButton =
-      document.getElementById("playerCloseButton");
-    const fullscreenButton =
-      document.getElementById("fullscreenButton");
-    const pipButton =
-      document.getElementById("pipButton");
-    const playerLoading =
-      document.getElementById("playerLoading");
-    const playerMessage =
-      document.getElementById("playerMessage");
-    const playerError =
-      document.getElementById("playerError");
-    const playerErrorText =
-      document.getElementById("playerErrorText");
-    const retryPlayerButton =
-      document.getElementById("retryPlayerButton");
-    const toast =
-      document.getElementById("toast");
+    const authScreen = document.getElementById("authScreen");
+    const app = document.getElementById("app");
+    const loginTab = document.getElementById("loginTab");
+    const signupTab = document.getElementById("signupTab");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const authButton = document.getElementById("authButton");
+    const authMessage = document.getElementById("authMessage");
+    const logoutButton = document.getElementById("logoutButton");
+    const m3uModal = document.getElementById("m3uModal");
+    const m3uOpenButton = document.getElementById("m3uOpenButton");
+    const m3uCloseButton = document.getElementById("m3uCloseButton");
+    const m3uUrl = document.getElementById("m3uUrl");
+    const m3uFile = document.getElementById("m3uFile");
+    const loadUrlButton = document.getElementById("loadUrlButton");
+    const loadFileButton = document.getElementById("loadFileButton");
+    const demoButton = document.getElementById("demoButton");
+    const m3uMessage = document.getElementById("m3uMessage");
+    const searchInput = document.getElementById("searchInput");
+    const grid = document.getElementById("grid");
+    const empty = document.getElementById("empty");
+    const sectionCount = document.getElementById("sectionCount");
+    const heroBg = document.getElementById("heroBg");
+    const heroTitle = document.getElementById("heroTitle");
+    const heroDescription = document.getElementById("heroDescription");
+    const heroPlayButton = document.getElementById("heroPlayButton");
+    const heroListButton = document.getElementById("heroListButton");
+    const playerModal = document.getElementById("playerModal");
+    const playerArea = document.getElementById("playerArea");
+    const videoPlayer = document.getElementById("videoPlayer");
+    const playerTitle = document.getElementById("playerTitle");
+    const playerCloseButton = document.getElementById("playerCloseButton");
+    const fullscreenButton = document.getElementById("fullscreenButton");
+    const pipButton = document.getElementById("pipButton");
+    const playerLoading = document.getElementById("playerLoading");
+    const playerMessage = document.getElementById("playerMessage");
+    const playerError = document.getElementById("playerError");
+    const playerErrorText = document.getElementById("playerErrorText");
+    const retryPlayerButton = document.getElementById("retryPlayerButton");
+    const toast = document.getElementById("toast");
+
     /* =========================================================
        UTILITÁRIOS
     ========================================================== */
@@ -1389,6 +1138,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
+
     function normalizeText(value) {
       return String(value || "")
         .normalize("NFD")
@@ -1396,17 +1146,16 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         .toLowerCase()
         .trim();
     }
+
     function isHttpUrl(value) {
       try {
         const url = new URL(value);
-        return (
-          url.protocol === "http:" ||
-          url.protocol === "https:"
-        );
+        return url.protocol === "http:" || url.protocol === "https:";
       } catch {
         return false;
       }
     }
+
     function isHlsUrl(url) {
       const value = String(url || "").toLowerCase();
       return (
@@ -1415,6 +1164,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         value.includes("application/x-mpegurl")
       );
     }
+
     function showToast(message) {
       clearTimeout(toastTimer);
       toast.textContent = message;
@@ -1423,238 +1173,129 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         toast.classList.remove("show");
       }, 3000);
     }
+
     function setButtonLoading(button, loading, text) {
-      if (!button) {
-        return;
-      }
+      if (!button) return;
       button.disabled = loading;
       if (loading) {
-        button.dataset.originalText =
-          button.textContent;
-        button.textContent =
-          text || "Carregando...";
+        button.dataset.originalText = button.textContent;
+        button.textContent = text || "Carregando...";
       } else {
-        button.textContent =
-          button.dataset.originalText ||
-          button.textContent;
+        button.textContent = button.dataset.originalText || button.textContent;
       }
     }
+
     /* =========================================================
        CATEGORIA
     ========================================================== */
     function detectCategory(title, group) {
-      const text =
-        normalizeText(
-          `${title || ""} ${group || ""}`
-        );
-      if (
-        text.includes("novela") ||
-        text.includes("novelas")
-      ) {
-        return "novelas";
-      }
-      if (
-        text.includes("serie") ||
-        text.includes("series") ||
-        text.includes("season") ||
-        text.includes("temporada")
-      ) {
-        return "series";
-      }
-      if (
-        text.includes("filme") ||
-        text.includes("filmes") ||
-        text.includes("movie")
-      ) {
-        return "filmes";
-      }
+      const text = normalizeText(`${title || ""} ${group || ""}`);
+      if (text.includes("novela") || text.includes("novelas")) return "novelas";
+      if (text.includes("serie") || text.includes("series") || text.includes("season") || text.includes("temporada")) return "series";
+      if (text.includes("filme") || text.includes("filmes") || text.includes("movie")) return "filmes";
       return "canais";
     }
+
     /* =========================================================
        M3U PARSER
     ========================================================== */
     function parseM3U(text) {
-      const lines =
-        String(text || "")
-          .replace(/\r/g, "")
-          .split("\n");
+      const lines = String(text || "").replace(/\r/g, "").split("\n");
       const items = [];
       let currentInfo = null;
       for (let i = 0; i < lines.length; i++) {
-        const raw =
-          lines[i].trim();
-        if (!raw) {
-          continue;
-        }
-        if (
-          raw.startsWith("#EXTINF")
-        ) {
+        const raw = lines[i].trim();
+        if (!raw) continue;
+        if (raw.startsWith("#EXTINF")) {
           currentInfo = raw;
           continue;
         }
-        if (
-          raw.startsWith("#")
-        ) {
-          continue;
-        }
-        if (
-          currentInfo &&
-          isHttpUrl(raw)
-        ) {
-          const info =
-            currentInfo;
-          const commaIndex =
-            info.indexOf(",");
-          let title =
-            commaIndex >= 0
-              ? info
-                  .slice(commaIndex + 1)
-                  .trim()
-              : "Sem título";
-          if (!title) {
-            title = "Sem título";
-          }
-          const logoMatch =
-            info.match(
-              /tvg-logo\s*=\s*["']([^"']+)["']/i
-            );
-          const groupMatch =
-            info.match(
-              /group-title\s*=\s*["']([^"']*)["']/i
-            );
-          const idMatch =
-            info.match(
-              /tvg-id\s*=\s*["']([^"']*)["']/i
-            );
-          const logo =
-            logoMatch
-              ? logoMatch[1].trim()
-              : "";
-          const group =
-            groupMatch
-              ? groupMatch[1].trim()
-              : "";
-          const id =
-            idMatch
-              ? idMatch[1].trim()
-              : `${items.length}-${Date.now()}`;
+        if (raw.startsWith("#")) continue;
+        if (currentInfo && isHttpUrl(raw)) {
+          const info = currentInfo;
+          const commaIndex = info.indexOf(",");
+          let title = commaIndex >= 0 ? info.slice(commaIndex + 1).trim() : "Sem título";
+          if (!title) title = "Sem título";
+          const logoMatch = info.match(/tvg-logo\s*=\s*["']([^"']+)["']/i);
+          const groupMatch = info.match(/group-title\s*=\s*["']([^"']*)["']/i);
+          const idMatch = info.match(/tvg-id\s*=\s*["']([^"']*)["']/i);
+          const logo = logoMatch ? logoMatch[1].trim() : "";
+          const group = groupMatch ? groupMatch[1].trim() : "";
+          const id = idMatch ? idMatch[1].trim() : `${items.length}-${Date.now()}`;
           items.push({
             id,
             title,
             url: raw,
             logo,
             group,
-            category:
-              detectCategory(title, group)
+            category: detectCategory(title, group)
           });
           currentInfo = null;
-        }
+3        }
       }
       return items;
-    }
+u    }
+
     /* =========================================================
-       RENDER
+       RMessageENDER
     ========================================================== */
-    function getFilteredItems() {
-      const normalizedSearch =
-        normalizeText(searchTerm);
+    function.text getFilteredItems() {
+      const normalizedSearchContent = = normalizeText(searchTerm);
       return list.filter(item => {
-        const categoryMatch =
-          currentCategory === "todos" ||
-          item.category === currentCategory;
-        if (!categoryMatch) {
-          return false;
-        }
-        if (!normalizedSearch) {
-          return true;
-        }
-        const searchable =
-          normalizeText(
-            `${item.title} ${item.group} ${item.category}`
-          );
-        return searchable.includes(
-          normalizedSearch
-        );
+        const categoryMatch = currentCategory === "todos" || item.category === currentCategory;
+        if (!categoryMatch) return false;
+        if (!normalizedSearch) return true;
+        const searchable = normalizeText(`${item.title} ${item.group} ${item.category}`);
+        return searchable.includes(normalizedSearch);
       });
     }
+
     function render() {
-      filteredList =
-        getFilteredItems();
+      filteredList = getFilteredItems();
       grid.innerHTML = "";
-      sectionCount.textContent =
-        `${filteredList.length} ${
-          filteredList.length === 1
-            ? "item"
-            : "itens"
-        }`;
+      sectionCount.textContent = `${filteredList.length} ${filteredList.length === 1 ? "item" : "itens"}`;
       if (!filteredList.length) {
         empty.style.display = "block";
       } else {
         empty.style.display = "none";
-        const fragment =
-          document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
         filteredList.forEach(item => {
-          const card =
-            createCard(item);
+          const card = createCard(item);
           fragment.appendChild(card);
         });
         grid.appendChild(fragment);
       }
       updateHero();
     }
+
     function createCard(item) {
-      const card =
-        document.createElement("article");
+      const card = document.createElement("article");
       card.className = "card";
-      const image =
-        item.logo && isHttpUrl(item.logo)
-          ? item.logo
-          : "https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV";
+      const image = item.logo && isHttpUrl(item.logo)
+        ? item.logo
+        : "https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV";
       card.innerHTML = `
         <div class="card-image">
-          <img
-            src="${escapeHtml(image)}"
-            alt="${escapeHtml(item.title)}"
-            loading="lazy"
-            referrerpolicy="no-referrer"
-          >
+          <img src="${escapeHtml(image)}" alt="${escapeHtml(item.title)}" loading="lazy" referrerpolicy="no-referrer">
           <div class="card-play">
-            <div class="play-circle">
-              ▶
-            </div>
+            <div class="play-circle">▶</div>
           </div>
         </div>
         <div class="card-info">
-          <div class="card-title">
-            ${escapeHtml(item.title)}
-          </div>
-          <div class="card-category">
-            ${escapeHtml(getCategoryLabel(item.category))}
-          </div>
+          <div class="card-title">${escapeHtml(item.title)}</div>
+          <div class="card-category">${escapeHtml(getCategoryLabel(item.category))}</div>
         </div>
       `;
-      const img =
-        card.querySelector("img");
-      img.addEventListener(
-        "error",
-        () => {
-          img.src =
-            "https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV";
-        },
-        { once: true }
-      );
-      card.addEventListener(
-        "click",
-        () => {
-          openPlayer(
-            item.url,
-            item.title,
-            item
-          );
-        }
-      );
+      const img = card.querySelector("img");
+      img.addEventListener("error", () => {
+        img.src = "https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV";
+      }, { once: true });
+      card.addEventListener("click", () => {
+        openPlayer(item.url, item.title, item);
+      });
       return card;
     }
+
     function getCategoryLabel(category) {
       const labels = {
         canais: "Canais",
@@ -1664,230 +1305,124 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       };
       return labels[category] || "Conteúdo";
     }
+
     /* =========================================================
        HERO
     ========================================================== */
     function updateHero() {
-      const item =
-        filteredList[0] ||
-        list[0] ||
-        null;
-      currentHeroItem =
-        item;
-      heroBg.style.backgroundImage =
-        "none";
+      const item = filteredList[0] || list[0] || null;
+      currentHeroItem = item;
+      heroBg.style.backgroundImage = "none";
       if (!item) {
-        heroTitle.textContent =
-          "Sua programação";
-        heroDescription.textContent =
-          "Carregue sua lista M3U e organize seus canais, filmes e séries em uma interface simples e rápida.";
-        heroPlayButton.disabled =
-          true;
+        heroTitle.textContent = "Sua programação";
+        heroDescription.textContent = "Carregue sua lista M3U e organize seus canais, filmes e séries em uma interface simples e rápida.";
+        heroPlayButton.disabled = true;
         return;
       }
-      heroTitle.textContent =
-        item.title;
-      heroDescription.textContent =
-        `${getCategoryLabel(item.category)}${
-          item.group
-            ? ` • ${item.group}`
-            : ""
-        }`;
-      if (
-        item.logo &&
-        isHttpUrl(item.logo)
-      ) {
-        heroBg.style.backgroundImage =
-          `url("${item.logo.replaceAll('"', '\\"')}")`;
+      heroTitle.textContent = item.title;
+      heroDescription.textContent = `${getCategoryLabel(item.category)}${item.group ? ` • ${item.group}` : ""}`;
+      if (item.logo && isHttpUrl(item.logo)) {
+        heroBg.style.backgroundImage = `url("${item.logo.replaceAll('"', '\\"')}")`;
       }
-      heroPlayButton.disabled =
-        !isHttpUrl(item.url);
+      heroPlayButton.disabled = !isHttpUrl(item.url);
     }
+
     /* =========================================================
        LOCAL STORAGE
     ========================================================== */
-    const LOCAL_STORAGE_KEY =
-      "renato_iptv_list";
+    const LOCAL_STORAGE_KEY = "renato_iptv_list";
+
     function saveLocal() {
       try {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify(list)
-        );
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
       } catch (error) {
-        console.warn(
-          "Não foi possível salvar localmente:",
-          error
-        );
+        console.warn("Não foi possível salvar localmente:", error);
       }
     }
+
     function loadLocal() {
       try {
-        const saved =
-          localStorage.getItem(
-            LOCAL_STORAGE_KEY
-          );
-        if (!saved) {
-          return false;
-        }
-        const parsed =
-          JSON.parse(saved);
-        if (
-          !Array.isArray(parsed)
-        ) {
-          return false;
-        }
-        list =
-          parsed.filter(
-            item =>
-              item &&
-              typeof item.title === "string" &&
-              isHttpUrl(item.url)
-          );
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (!saved) return false;
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed)) return false;
+        list = parsed.filter(item => item && typeof item.title === "string" && isHttpUrl(item.url));
         render();
         return list.length > 0;
       } catch (error) {
-        console.warn(
-          "Erro ao carregar lista local:",
-          error
-        );
+        console.warn("Erro ao carregar lista local:", error);
         return false;
       }
     }
+
     /* =========================================================
        SUPABASE - LISTA
     ========================================================== */
     async function saveCloud() {
-      if (!currentUser) {
-        return;
-      }
+      if (!currentUser) return;
       try {
-        const {
-          error
-        } =
-          await supabaseClient
-            .from(TABLE_NAME)
-            .upsert(
-              {
-                user_id: currentUser.id,
-                content: list,
-                updated_at:
-                  new Date().toISOString()
-              },
-              {
-                onConflict: "user_id"
-              }
-            );
+        const { error } = await supabaseClient
+          .from(TABLE_NAME)
+          .upsert(
+            {
+              user_id: currentUser.id,
+              content: list,
+              updated_at: new Date().toISOString()
+            },
+            { onConflict: "user_id" }
+          );
         if (error) {
-          console.warn(
-            "Não foi possível salvar no Supabase:",
-            error
-          );
-          showToast(
-            "Lista salva no aparelho, mas o armazenamento online apresentou um erro."
-          );
+          console.warn("Não foi possível salvar no Supabase:", error);
+          showToast("Lista salva no aparelho, mas o armazenamento online apresentou um erro.");
           return;
         }
-        showToast(
-          "Lista salva com sucesso."
-        );
+        showToast("Lista salva com sucesso.");
       } catch (error) {
-        console.warn(
-          "Erro Supabase:",
-          error
-        );
-        showToast(
-          "Lista salva localmente."
-        );
+        console.warn("Erro Supabase:", error);
+        showToast("Lista salva localmente.");
       }
     }
+
     async function loadCloud() {
-      if (!currentUser) {
-        return false;
-      }
+      if (!currentUser) return false;
       try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from(TABLE_NAME)
-            .select("content")
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .maybeSingle();
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("content")
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
         if (error) {
-          console.warn(
-            "Erro ao buscar lista online:",
-            error
-          );
+          console.warn("Erro ao buscar lista online:", error);
           return false;
         }
-        if (
-          data &&
-          Array.isArray(data.content) &&
-          data.content.length
-        ) {
-          list =
-            data.content.filter(
-              item =>
-                item &&
-                typeof item.title === "string" &&
-                isHttpUrl(item.url)
-            );
+        if (data && Array.isArray(data.content) && data.content.length) {
+          list = data.content.filter(item => item && typeof item.title === "string" && isHttpUrl(item.url));
           saveLocal();
           render();
           return true;
         }
       } catch (error) {
-        console.warn(
-          "Erro ao carregar Supabase:",
-          error
-        );
+        console.warn("Erro ao carregar Supabase:", error);
       }
       return false;
     }
+
     /* =========================================================
        DEFINIR LISTA
     ========================================================== */
-    async function setList(
-      newList,
-      saveOnline = true
-    ) {
-      if (
-        !Array.isArray(newList) ||
-        !newList.length
-      ) {
-        showToast(
-          "Nenhum conteúdo válido foi encontrado."
-        );
+    async function setList(newList, saveOnline = true) {
+      if (!Array.isArray(newList) || !newList.length) {
+        showToast("Nenhum conteúdo válido foi encontrado.");
         return false;
       }
-      list =
-        newList.map(
-          (item, index) => ({
-            id:
-              item.id ||
-              `${Date.now()}-${index}`,
-            title:
-              item.title ||
-              "Sem título",
-            url:
-              item.url,
-            logo:
-              item.logo || "",
-            group:
-              item.group || "",
-            category:
-              item.category ||
-              detectCategory(
-                item.title,
-                item.group
-              )
-          })
-        );
+      list = newList.map((item, index) => ({
+        id: item.id || `${Date.now()}-${index}`,
+        title: item.title || "Sem título",
+        url: item.url,
+        logo: item.logo || "",
+        group: item.group || "",
+        category: item.category || detectCategory(item.title, item.group)
+      }));
       saveLocal();
       render();
       if (saveOnline) {
@@ -1895,528 +1430,296 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
       return true;
     }
+
     /* =========================================================
        IMPORTAR M3U
     ========================================================== */
-    async function importM3UText(
-      text,
-      sourceName = "lista"
-    ) {
-      const parsed =
-        parseM3U(text);
+    async function importM3UText(text, sourceName = "lista") {
+      const parsed = parseM3U(text);
       if (!parsed.length) {
-        m3uMessage.textContent =
-          "Não encontrei itens M3U válidos nessa lista.";
+        m3uMessage.textContent = "Não encontrei itens M3U válidos nessa lista.";
         return false;
       }
-      m3uMessage.textContent =
-        `Encontrados ${parsed.length} itens.`;
-      const success =
-        await setList(
-          parsed,
-          true
-        );
+      m3uMessage.textContent = `Encontrados ${parsed.length} itens.`;
+      const success = await setList(parsed, true);
       if (success) {
         closeM3UModal();
-        showToast(
-          `${parsed.length} itens carregados de ${sourceName}.`
-        );
+        showToast(`${parsed.length} itens carregados de ${sourceName}.`);
       }
       return success;
     }
+
     async function loadM3UFromUrl() {
-      const url =
-        m3uUrl.value.trim();
+      const url = m3uUrl.value.trim();
       if (!isHttpUrl(url)) {
-        m3uMessage.textContent =
-          "Digite uma URL HTTP ou HTTPS válida.";
+        m "Digite uma URL HTTP ou HTTPS válida.";
         return;
       }
-      setButtonLoading(
-        loadUrlButton,
-        true,
-        "Carregando..."
-      );
-      m3uMessage.textContent =
-        "Baixando lista...";
+      setButtonLoading(loadUrlButton, true, "Carregando...");
+      m3uMessage.textContent = "Baixando lista...";
       try {
         let response;
         try {
-          response =
-            await fetch(
-              url,
-              {
-                method: "GET",
-                cache: "no-store"
-              }
-            );
+          response = await fetch(url, { method: "GET", cache: "no-store" });
         } catch {
           response = null;
         }
-        /*
-         * Algumas listas bloqueiam CORS.
-         * Nesse caso tentamos um proxy público.
-         */
-        if (
-          !response ||
-          !response.ok
-        ) {
-          const proxyUrl =
-            "https://corsproxy.io/?" +
-            encodeURIComponent(url);
-          response =
-            await fetch(
-              proxyUrl,
-              {
-                method: "GET",
-                cache: "no-store"
-              }
-            );
+        if (!response || !response.ok) {
+          const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+          response = await fetch(proxyUrl, { method: "GET", cache: "no-store" });
         }
         if (!response.ok) {
-          throw new Error(
-            `HTTP ${response.status}`
-          );
+          throw new Error(`HTTP ${response.status}`);
         }
-        const text =
-          await response.text();
-        await importM3UText(
-          text,
-          "URL"
-        );
+        const text = await response.text();
+        await importM3UText(text, "URL");
       } catch (error) {
-        console.error(
-          "Erro ao carregar M3U:",
-          error
-        );
-        m3uMessage.textContent =
-          "Não foi possível carregar essa URL. O servidor pode bloquear CORS ou estar indisponível.";
+        console.error("Erro ao carregar M3U:", error);
+        m3uMessage.textContent = "Não foi possível carregar essa URL. O servidor pode bloquear CORS ou estar indisponível.";
       } finally {
-        setButtonLoading(
-          loadUrlButton,
-          false
-        );
+        setButtonLoading(loadUrlButton, false);
       }
     }
+
     async function loadM3UFromFile() {
-      const file =
-        m3uFile.files[0];
+      const file = m3uFile.files[0];
       if (!file) {
-        m3uMessage.textContent =
-          "Selecione um arquivo M3U.";
+        m3uMessage.textContent = "Selecione um arquivo M3U.";
         return;
       }
-      setButtonLoading(
-        loadFileButton,
-        true,
-        "Lendo..."
-      );
+      setButtonLoading(loadFileButton, true, "Lendo...");
       try {
-        const text =
-          await file.text();
-        await importM3UText(
-          text,
-          file.name
-        );
+        const text = await file.text();
+        await importM3UText(text, file.name);
       } catch (error) {
-        console.error(
-          "Erro no arquivo:",
-          error
-        );
-        m3uMessage.textContent =
-          "Não foi possível ler o arquivo.";
+        console.error("Erro no arquivo:", error);
+        m3uMessage.textContent = "Não foi possível ler o arquivo.";
       } finally {
-        setButtonLoading(
-          loadFileButton,
-          false
-        );
+        setButtonLoading(loadFileButton, false);
       }
     }
+
     async function loadDemo() {
-      setButtonLoading(
-        demoButton,
-        true,
-        "Carregando..."
-      );
+      setButtonLoading(demoButton, true, "Carregando...");
       try {
-        await importM3UText(
-          DEMO_M3U,
-          "demonstração"
-        );
+        await importM3UText(DEMO_M3U, "demonstração");
       } finally {
-        setButtonLoading(
-          demoButton,
-          false
-        );
+        setButtonLoading(demoButton, false);
       }
     }
+
     /* =========================================================
        PLAYER - CONTROLE
     ========================================================== */
     function destroyHls() {
-      clearTimeout(
-        hlsRetryTimer
-      );
+      clearTimeout(hlsRetryTimer);
       hlsRetryTimer = null;
       if (hls) {
         try {
           hls.destroy();
         } catch (error) {
-          console.warn(
-            "Erro ao destruir HLS:",
-            error
-          );
+          console.warn("Erro ao destruir HLS:", error);
         }
         hls = null;
       }
     }
+
     function resetVideo() {
       try {
         videoPlayer.pause();
       } catch {}
-      videoPlayer.removeAttribute(
-        "src"
-      );
+      videoPlayer.removeAttribute("src");
       videoPlayer.load();
     }
-    function showPlayerLoading(
-      message = "Carregando transmissão..."
-    ) {
-      playerLoading.style.display =
-        "block";
-      playerLoading.querySelector("p")
-        .textContent =
-          message;
+
+    function showPlayerLoading(message = "Carregando transmissão...") {
+      playerLoading.style.display = "block";
+      playerLoading.querySelector("p").textContent = message;
     }
+
     function hidePlayerLoading() {
-      playerLoading.style.display =
-        "none";
+      playerLoading.style.display = "none";
     }
-    function showPlayerMessage(
-      message
-    ) {
-      playerMessage.textContent =
-        message;
-      playerMessage.style.display =
-        "block";
+
+    function showPlayerMessage(message) {
+      playerMessage.textContent = message;
+      playerMessage.style.display = "block";
     }
+
     function hidePlayerMessage() {
-      playerMessage.style.display =
-        "none";
+      playerMessage.style.display = "none";
     }
-    function showPlayerError(
-      message
-    ) {
+
+    function showPlayerError(message) {
       hidePlayerLoading();
-      playerErrorText.textContent =
-        message;
-      playerError.style.display =
-        "flex";
+      playerErrorText.textContent = message;
+      playerError.style.display = "flex";
     }
+
     function hidePlayerError() {
-      playerError.style.display =
-        "none";
+      playerError.style.display = "none";
     }
+
     function prepareVideoEvents() {
-      videoPlayer.onplaying =
-        () => {
-          hidePlayerLoading();
-          hidePlayerMessage();
-          hidePlayerError();
-        };
-      videoPlayer.oncanplay =
-        () => {
-          hidePlayerLoading();
-        };
-      videoPlayer.onwaiting =
-        () => {
-          if (
-            playerError.style.display !==
-            "flex"
-          ) {
-            showPlayerMessage(
-              "Carregando transmissão..."
-            );
+      videoPlayer.onplaying = () => {
+        hidePlayerLoading();
+        hidePlayerMessage();
+        hidePlayerError();
+      };
+      videoPlayer.oncanplay = () => {
+        hidePlayerLoading();
+      };
+      videoPlayer.onwaiting = () => {
+        if (playerError.style.display !== "flex") {
+          showPlayerMessage("Carregando transmissão...");
+        }
+      };
+      videoPlayer.onstalled = () => {
+        if (playerError.style.display !== "flex") {
+          showPlayerMessage("A transmissão está instável. Tentando continuar...");
+        }
+      };
+      videoPlayer.onerror = () => {
+        if (hls || !playerModal || playerModal.style.display !== "flex") {
+          return;
+        }
+        const error = videoPlayer.error;
+        let message = "O navegador não conseguiu reproduzir esta transmissão.";
+        if (error) {
+          if (error.code === MediaError.MEDIA_ERR_NETWORK) {
+            message = "Erro de rede durante a transmissão.";
+          } else if (error.code === MediaError.MEDIA_ERR_DECODE) {
+            message = "O formato da transmissão não pôde ser decodificado.";
+          } else if (error.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+            message = "Este formato ou endereço não é compatível com o navegador.";
           }
-        };
-      videoPlayer.onstalled =
-        () => {
-          if (
-            playerError.style.display !==
-            "flex"
-          ) {
-            showPlayerMessage(
-              "A transmissão está instável. Tentando continuar..."
-            );
-          }
-        };
-      videoPlayer.onerror =
-        () => {
-          /*
-           * Quando HLS.js está ativo,
-           * o próprio HLS.js controla os erros.
-           */
-          if (
-            hls ||
-            !playerModal ||
-            playerModal.style.display !== "flex"
-          ) {
-            return;
-          }
-          const error =
-            videoPlayer.error;
-          let message =
-            "O navegador não conseguiu reproduzir esta transmissão.";
-          if (error) {
-            if (
-              error.code ===
-              MediaError.MEDIA_ERR_NETWORK
-            ) {
-              message =
-                "Erro de rede durante a transmissão.";
-            } else if (
-              error.code ===
-              MediaError.MEDIA_ERR_DECODE
-            ) {
-              message =
-                "O formato da transmissão não pôde ser decodificado.";
-            } else if (
-              error.code ===
-              MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED
-            ) {
-              message =
-                "Este formato ou endereço não é compatível com o navegador.";
-            }
-          }
-          showPlayerError(
-            message
-          );
-        };
-      videoPlayer.onended =
-        () => {
-          showPlayerMessage(
-            "A transmissão foi encerrada."
-          );
-        };
+        }
+        showPlayerError(message);
+      };
+      videoPlayer.onended = () => {
+        showPlayerMessage("A transmissão foi encerrada.");
+      };
     }
+
     async function safePlay() {
       try {
-        const result =
-          videoPlayer.play();
-        if (
-          result &&
-          typeof result.catch === "function"
-        ) {
+        const result = videoPlayer.play();
+        if (result && typeof result.catch === "function") {
           await result;
         }
       } catch (error) {
-        /*
-         * Autoplay pode ser bloqueado
-         * pelo navegador. Isso não significa
-         * que a transmissão esteja quebrada.
-         */
         hidePlayerLoading();
-        showPlayerMessage(
-          "Toque no botão ▶ do player para iniciar."
-        );
+        showPlayerMessage("Toque no botão ▶ do player para iniciar.");
       }
     }
+
     /* =========================================================
        PLAYER HLS
     ========================================================== */
     function startHlsPlayer(url) {
-      if (
-        !window.Hls ||
-        !Hls.isSupported()
-      ) {
+      if (!window.Hls || !Hls.isSupported()) {
         return false;
       }
-      const instance =
-        new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 30,
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
-          manifestLoadingMaxRetry: 2,
-          levelLoadingMaxRetry: 2,
-          fragLoadingMaxRetry: 2,
-          fragLoadingRetryDelay: 1000
-        });
-      hls =
-        instance;
-      lastPlayerWasHls =
-        true;
-      instance.attachMedia(
-        videoPlayer
-      );
-      instance.on(
-        Hls.Events.MEDIA_ATTACHED,
-        () => {
-          if (
-            hls !== instance
-          ) {
-            return;
+      const instance = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+        backBufferLength: 30,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        manifestLoadingMaxRetry: 2,
+        levelLoadingMaxRetry: 2,
+        fragLoadingMaxRetry: 2,
+        fragLoadingRetryDelay: 1000
+      });
+      hls = instance;
+      lastPlayerWasHls = true;
+      instance.attachMedia(videoPlayer);
+      instance.on(Hls.Events.MEDIA_ATTACHED, () => {
+        if (hls !== instance) return;
+        instance.loadSource(url);
+      });
+      instance.on(Hls.Events.MANIFEST_PARSED, () => {
+        if (hls !== instance) return;
+        hidePlayerLoading();
+        safePlay();
+      });
+      instance.on(Hls.Events.ERROR, (_event, data) => {
+        if (hls !== instance) return;
+        if (!data.fatal) {
+          if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+            showPlayerMessage("Aguardando dados da transmissão...");
           }
-          instance.loadSource(
-            url
-          );
+          return;
         }
-      );
-      instance.on(
-        Hls.Events.MANIFEST_PARSED,
-        () => {
-          if (
-            hls !== instance
-          ) {
-            return;
-          }
-          hidePlayerLoading();
-          safePlay();
-        }
-      );
-      instance.on(
-        Hls.Events.ERROR,
-        (_event, data) => {
-          if (
-            hls !== instance
-          ) {
-            return;
-          }
-          if (!data.fatal) {
-            if (
-              data.details ===
-              Hls.ErrorDetails.BUFFER_STALLED_ERROR
-            ) {
-              showPlayerMessage(
-                "Aguardando dados da transmissão..."
-              );
-            }
-            return;
-          }
-          if (
-            data.type ===
-            Hls.ErrorTypes.NETWORK_ERROR
-          ) {
-            if (
-              hlsRetryCount < 3
-            ) {
-              hlsRetryCount++;
-              const delay =
-                1500 *
-                hlsRetryCount;
-              showPlayerMessage(
-                `Reconectando à transmissão... (${hlsRetryCount}/3)`
-              );
-              clearTimeout(
-                hlsRetryTimer
-              );
-              hlsRetryTimer =
-                setTimeout(
-                  () => {
-                    if (
-                      hls !== instance
-                    ) {
-                      return;
-                    }
-                    try {
-                      instance.startLoad();
-                    } catch (error) {
-                      console.warn(
-                        error
-                      );
-                    }
-                  },
-                  delay
-                );
-            } else {
-              showPlayerError(
-                "A transmissão não respondeu após várias tentativas. Verifique se o endereço M3U8 está online."
-              );
-            }
-            return;
-          }
-          if (
-            data.type ===
-            Hls.ErrorTypes.MEDIA_ERROR
-          ) {
-            if (
-              mediaRecoveryAttempts < 2
-            ) {
-              mediaRecoveryAttempts++;
-              showPlayerMessage(
-                "Recuperando o player..."
-              );
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+          if (hlsRetryCount < 3) {
+            hlsRetryCount++;
+            const delay = 1500 * hlsRetryCount;
+            showPlayerMessage(`Reconectando à transmissão... (${hlsRetryCount}/3)`);
+            clearTimeout(hlsRetryTimer);
+            hlsRetryTimer = setTimeout(() => {
+              if (hls !== instance) return;
               try {
-                instance.recoverMediaError();
+                instance.startLoad();
               } catch (error) {
-                console.warn(
-                  error
-                );
+                console.warn(error);
               }
-            } else {
-              showPlayerError(
-                "O navegador não conseguiu decodificar essa transmissão."
-              );
-            }
-            return;
+            }, delay);
+          } else {
+            showPlayerError("A transmissão não respondeu após várias tentativas. Verifique se o endereço M3U8 está online.");
           }
-          showPlayerError(
-            "O player encontrou um erro fatal nessa transmissão."
-          );
+          return;
         }
-      );
+        if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+          if (mediaRecoveryAttempts < 2) {
+            mediaRecoveryAttempts++;
+            showPlayerMessage("Recuperando o player...");
+            try {
+              instance.recoverMediaError();
+            } catch (error) {
+              console.warn(error);
+            }
+          } else {
+            showPlayerError("O navegador não conseguiu decodificar essa transmissão.");
+          }
+          return;
+        }
+        showPlayerError("O player encontrou um erro fatal nessa transmissão.");
+      });
       return true;
     }
+
     /* =========================================================
        PLAYER NATIVO
     ========================================================== */
     function startNativeHls(url) {
-      lastPlayerWasHls =
-        true;
-      videoPlayer.src =
-        url;
+      lastPlayerWasHls = true;
+      videoPlayer.src = url;
       videoPlayer.load();
       safePlay();
     }
+
     function startDirectVideo(url) {
-      lastPlayerWasHls =
-        false;
-      videoPlayer.src =
-        url;
+      lastPlayerWasHls = false;
+      videoPlayer.src = url;
       videoPlayer.load();
       safePlay();
     }
+
     /* =========================================================
        ABRIR PLAYER
     ========================================================== */
-    function openPlayer(
-      url,
-      title,
-      item = null
-    ) {
-      if (
-        !isHttpUrl(url)
-      ) {
-        showToast(
-          "O endereço dessa transmissão não é válido."
-        );
+    function openPlayer(url, title, item = null) {
+      if (!isHttpUrl(url)) {
+        showToast("O endereço dessa transmissão não é válido.");
         return;
       }
-      currentVideoUrl =
-        url;
-      currentVideoTitle =
-        title ||
-        "Reprodutor";
-      currentVideoItem =
-        item;
-      playerTitle.textContent =
-        currentVideoTitle;
-      playerModal.style.display =
-        "flex";
-      document.body.classList.add(
-        "player-open"
-      );
+      currentVideoUrl = url;
+      currentVideoTitle = title || "Reprodutor";
+      currentVideoItem = item;
+      playerTitle.textContent = currentVideoTitle;
+      playerModal.style.display = "flex";
+      document.body.classList.add("player-open");
       hidePlayerError();
       hidePlayerMessage();
       showPlayerLoading();
@@ -2425,48 +1728,24 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       hlsRetryCount = 0;
       mediaRecoveryAttempts = 0;
       prepareVideoEvents();
-      /*
-       * HLS.js
-       */
-      if (
-        isHlsUrl(url) &&
-        window.Hls &&
-        Hls.isSupported()
-      ) {
-        const started =
-          startHlsPlayer(url);
-        if (started) {
-          return;
-        }
+      if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
+        const started = startHlsPlayer(url);
+        if (started) return;
       }
-      /*
-       * HLS nativo:
-       * principalmente Safari/iPhone/iPad.
-       */
-      if (
-        isHlsUrl(url) &&
-        videoPlayer.canPlayType(
-          "application/vnd.apple.mpegurl"
-        )
-      ) {
+      if (isHlsUrl(url) && videoPlayer.canPlayType("application/vnd.apple.mpegurl")) {
         startNativeHls(url);
         return;
       }
-      /*
-       * Arquivos de vídeo diretos.
-       */
       startDirectVideo(url);
     }
+
     /* =========================================================
        FECHAR PLAYER
     ========================================================== */
     function closePlayer() {
       try {
-        if (
-          document.fullscreenElement
-        ) {
-          document.exitFullscreen()
-            .catch(() => {});
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
         }
       } catch {}
       destroyHls();
@@ -2474,309 +1753,151 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       hidePlayerError();
       hidePlayerLoading();
       hidePlayerMessage();
-      playerModal.style.display =
-        "none";
-      document.body.classList.remove(
-        "player-open"
-      );
-      currentVideoUrl =
-        "";
-      currentVideoTitle =
-        "";
-      currentVideoItem =
-        null;
+      playerModal.style.display = "none";
+      document.body.classList.remove("player-open");
+      currentVideoUrl = "";
+      currentVideoTitle = "";
+      currentVideoItem = null;
     }
+
     /* =========================================================
        RETRY PLAYER
     ========================================================== */
     function retryCurrentPlayer() {
-      if (
-        !currentVideoUrl
-      ) {
-        return;
-      }
-      const url =
-        currentVideoUrl;
-      const title =
-        currentVideoTitle;
-      const item =
-        currentVideoItem;
-      openPlayer(
-        url,
-        title,
-        item
-      );
+      if (!currentVideoUrl) return;
+      openPlayer(currentVideoUrl, currentVideoTitle, currentVideoItem);
     }
+
     /* =========================================================
        FULLSCREEN
     ========================================================== */
     async function toggleFullscreen() {
       try {
-        if (
-          document.fullscreenElement
-        ) {
+        if (document.fullscreenElement) {
           await document.exitFullscreen();
           return;
         }
-        if (
-          playerArea.requestFullscreen
-        ) {
+        if (playerArea.requestFullscreen) {
           await playerArea.requestFullscreen();
           return;
         }
-        if (
-          videoPlayer.requestFullscreen
-        ) {
+        if (videoPlayer.requestFullscreen) {
           await videoPlayer.requestFullscreen();
           return;
         }
-        /*
-         * Safari iOS
-         */
-        if (
-          typeof videoPlayer.webkitEnterFullscreen ===
-          "function"
-        ) {
+        if (typeof videoPlayer.webkitEnterFullscreen === "function") {
           videoPlayer.webkitEnterFullscreen();
         }
       } catch (error) {
-        console.warn(
-          "Tela cheia indisponível:",
-          error
-        );
+        console.warn("Tela cheia indisponível:", error);
       }
     }
+
     /* =========================================================
        PICTURE IN PICTURE
     ========================================================== */
     async function togglePictureInPicture() {
       try {
-        if (
-          document.pictureInPictureElement
-        ) {
+        if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
           return;
         }
-        if (
-          document.pictureInPictureEnabled &&
-          videoPlayer.requestPictureInPicture
-        ) {
+        if (document.pictureInPictureEnabled && videoPlayer.requestPictureInPicture) {
           await videoPlayer.requestPictureInPicture();
         } else {
-          showToast(
-            "Picture-in-Picture não é compatível neste navegador."
-          );
+          showToast("Picture-in-Picture não é compatível neste navegador.");
         }
       } catch (error) {
-        console.warn(
-          "PiP indisponível:",
-          error
-        );
+        console.warn("PiP indisponível:", error);
       }
     }
+
     /* =========================================================
        AUTH
     ========================================================== */
-    function setAuthMode(
-      mode
-    ) {
-      authMode =
-        mode;
-      const signup =
-        mode === "signup";
-      loginTab.classList.toggle(
-        "active",
-        !signup
-      );
-      signupTab.classList.toggle(
-        "active",
-        signup
-      );
-      authButton.textContent =
-        signup
-          ? "Criar conta"
-          : "Entrar";
-      authMessage.textContent =
-        "";
-      passwordInput.autocomplete =
-        signup
-          ? "new-password"
-          : "current-password";
+    function setAuthMode(mode) {
+      authMode = mode;
+      const signup = mode === "signup";
+      loginTab.classList.toggle("active", !signup);
+      signupTab.classList.toggle("active", signup);
+      authButton.textContent = signup ? "Criar conta" : "Entrar";
+      authMessage.textContent = "";
+      passwordInput.autocomplete = signup ? "new-password" : "current-password";
     }
-    function friendlyAuthError(
-      error
-    ) {
-      const message =
-        String(
-          error?.message || ""
-        ).toLowerCase();
-      if (
-        message.includes(
-          "invalid login credentials"
-        )
-      ) {
-        return "E-mail ou senha incorretos.";
-      }
-      if (
-        message.includes(
-          "user already registered"
-        )
-      ) {
-        return "Este e-mail já possui uma conta.";
-      }
-      if (
-        message.includes(
-          "password should be at least"
-        )
-      ) {
-        return "A senha precisa ter pelo menos 6 caracteres.";
-      }
-      if (
-        message.includes(
-          "email not confirmed"
-        )
-      ) {
-        return "Confirme seu e-mail antes de entrar.";
-      }
-      if (
-        message.includes(
-          "rate limit"
-        )
-      ) {
-        return "Muitas tentativas. Aguarde alguns minutos.";
-      }
-      return (
-        error?.message ||
-        "Não foi possível concluir a operação."
-      );
+
+    function friendlyAuthError(error) {
+      const message = String(error?.message || "").toLowerCase();
+      if (message.includes("invalid login credentials")) return "E-mail ou senha incorretos.";
+      if (message.includes("user already registered")) return "Este e-mail já possui uma conta.";
+      if (message.includes("password should be at least")) return "A senha precisa ter pelo menos 6 caracteres.";
+      if (message.includes("email not confirmed")) return "Confirme seu e-mail antes de entrar.";
+      if (message.includes("rate limit")) return "Muitas tentativas. Aguarde alguns minutos.";
+      return error?.message || "Não foi possível concluir a operação.";
     }
+
     async function handleAuth() {
-      const email =
-        emailInput.value.trim();
-      const password =
-        passwordInput.value;
-      if (
-        !email ||
-        !email.includes("@")
-      ) {
-        authMessage.textContent =
-          "Digite um e-mail válido.";
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      if (!email || !email.includes("@")) {
+        authMessage.textContent = "Digite um e-mail válido.";
         return;
       }
-      if (
-        password.length < 6
-      ) {
-        authMessage.textContent =
-          "A senha deve ter pelo menos 6 caracteres.";
+      if (password.length < 6) {
+        authMessage.textContent = "A senha deve ter pelo menos 6 caracteres.";
         return;
       }
-      setButtonLoading(
-        authButton,
-        true,
-        authMode === "signup"
-          ? "Criando..."
-          : "Entrando..."
-      );
-      authMessage.textContent =
-        "Aguarde...";
+      setButtonLoading(authButton, true, authMode === "signup" ? "Criando..." : "Entrando...");
+      authMessage.textContent = "Aguarde...";
       try {
-        if (
-          authMode === "signup"
-        ) {
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-              email,
-              password
-            });
-          if (error) {
-            throw error;
-          }
-          if (
-            data?.session
-          ) {
-            currentUser =
-              data.user;
+        if (authMode === "signup") {
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) throw error;
+          if (data?.session) {
+            currentUser = data.user;
             await showApp();
-            authMessage.textContent =
-              "";
+            authMessage.textContent = "";
           } else {
-            authMessage.textContent =
-              "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
+            authMessage.textContent = "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
           }
         } else {
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
-          if (error) {
-            throw error;
-          }
-          currentUser =
-            data.user;
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          currentUser = data.user;
           await showApp();
         }
       } catch (error) {
-        console.error(
-          "Erro de autenticação:",
-          error
-        );
-        authMessage.textContent =
-          friendlyAuthError(
-            error
-          );
+        console.error("Erro de autenticação:", error);
+        authMessage.textContent = friendlyAuthError(error);
       } finally {
-        setButtonLoading(
-          authButton,
-          false
-        );
+        setButtonLoading(authButton, false);
       }
     }
+
     /* =========================================================
        SHOW APP
     ========================================================== */
     async function showApp() {
-      authScreen.style.display =
-        "none";
-      app.style.display =
-        "block";
-      /*
-       * Primeiro tenta a lista online.
-       */
-      const loadedCloud =
-        await loadCloud();
-      /*
-       * Se não houver lista online,
-       * tenta a lista local.
-       */
+      authScreen.style.display = "none";
+      app.style.display = "block";
+      const loadedCloud = await loadCloud();
       if (!loadedCloud) {
-        const loadedLocal =
-          loadLocal();
+        const loadedLocal = loadLocal();
         if (!loadedLocal) {
           list = [];
           render();
         }
       }
     }
+
     function showAuth() {
-      app.style.display =
-        "none";
-      authScreen.style.display =
-        "flex";
-      currentUser =
-        null;
-      list =
-        [];
-      filteredList =
-        [];
+      app.style.display = "none";
+      authScreen.style.display = "flex";
+      currentUser = null;
+      list = [];
+      filteredList = [];
       render();
     }
+
     /* =========================================================
        LOGOUT
     ========================================================== */
@@ -2784,300 +1905,155 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       try {
         await supabaseClient.auth.signOut();
       } catch (error) {
-        console.warn(
-          error
-        );
+        console.warn(error);
       }
       closePlayer();
       showAuth();
-      showToast(
-        "Você saiu da conta."
-      );
+      showToast("Você saiu da conta.");
     }
+
     /* =========================================================
        MODAL M3U
     ========================================================== */
     function openM3UModal() {
-      m3uModal.style.display =
-        "flex";
-      m3uMessage.textContent =
-        "";
-      setTimeout(
-        () => {
-          m3uUrl.focus();
-        },
-        50
-      );
+      m3uModal.style.display = "flex";
+      m3uMessage.textContent = "";
+      setTimeout(() => {
+        m3uUrl.focus();
+      }, 50);
     }
+
     function closeM3UModal() {
-      m3uModal.style.display =
-        "none";
+      m3uModal.style.display = "none";
     }
+
     /* =========================================================
        EVENTOS AUTH
     ========================================================== */
-    loginTab.addEventListener(
-      "click",
-      () => {
-        setAuthMode(
-          "login"
-        );
-      }
-    );
-    signupTab.addEventListener(
-      "click",
-      () => {
-        setAuthMode(
-          "signup"
-        );
-      }
-    );
-    authButton.addEventListener(
-      "click",
-      handleAuth
-    );
-    emailInput.addEventListener(
-      "keydown",
-      event => {
-        if (
-          event.key === "Enter"
-        ) {
-          handleAuth();
-        }
-      }
-    );
-    passwordInput.addEventListener(
-      "keydown",
-      event => {
-        if (
-          event.key === "Enter"
-        ) {
-          handleAuth();
-        }
-      }
-    );
-    logoutButton.addEventListener(
-      "click",
-      logout
-    );
+    loginTab.addEventListener("click", () => setAuthMode("login"));
+    signupTab.addEventListener("click", () => setAuthMode("signup"));
+    authButton.addEventListener("click", handleAuth);
+    emailInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") handleAuth();
+    });
+    passwordInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") handleAuth();
+    });
+    logoutButton.addEventListener("click", logout);
+
     /* =========================================================
        EVENTOS M3U
     ========================================================== */
-    m3uOpenButton.addEventListener(
-      "click",
-      openM3UModal
-    );
-    heroListButton.addEventListener(
-      "click",
-      openM3UModal
-    );
-    m3uCloseButton.addEventListener(
-      "click",
-      closeM3UModal
-    );
-    loadUrlButton.addEventListener(
-      "click",
-      loadM3UFromUrl
-    );
-    loadFileButton.addEventListener(
-      "click",
-      loadM3UFromFile
-    );
-    demoButton.addEventListener(
-      "click",
-      loadDemo
-    );
-    m3uUrl.addEventListener(
-      "keydown",
-      event => {
-        if (
-          event.key === "Enter"
-        ) {
-          loadM3UFromUrl();
-        }
-      }
-    );
+    m3uOpenButton.addEventListener("click", openM3UModal);
+    heroListButton.addEventListener("click", openM3UModal);
+    m3uCloseButton.addEventListener("click", closeM3UModal);
+    loadUrlButton.addEventListener("click", loadM3UFromUrl);
+    loadFileButton.addEventListener("click", loadM3UFromFile);
+    demoButton.addEventListener("click", loadDemo);
+    m3uUrl.addEventListener("keydown", event => {
+      if (event.key === "Enter") loadM3UFromUrl();
+    });
+
     /* =========================================================
        TABS
     ========================================================== */
-    document
-      .querySelectorAll(".tab")
-      .forEach(button => {
-        button.addEventListener(
-          "click",
-          () => {
-            document
-              .querySelectorAll(".tab")
-              .forEach(tab => {
-                tab.classList.remove(
-                  "active"
-                );
-              });
-            button.classList.add(
-              "active"
-            );
-            currentCategory =
-              button.dataset.category ||
-              "todos";
-            render();
-          }
-        );
+    document.querySelectorAll(".tab").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(tab => {
+          tab.classList.remove("active");
+        });
+        button.classList.add("active");
+        currentCategory = button.dataset.category || "todos";
+        render();
       });
+    });
+
     /* =========================================================
        BUSCA
     ========================================================== */
-    searchInput.addEventListener(
-      "input",
-      event => {
-        searchTerm =
-          event.target.value;
-        render();
-      }
-    );
+    searchInput.addEventListener("input", event => {
+      searchTerm = event.target.value;
+      render();
+    });
+
     /* =========================================================
        HERO PLAY
     ========================================================== */
-    heroPlayButton.addEventListener(
-      "click",
-      () => {
-        if (
-          currentHeroItem
-        ) {
-          openPlayer(
-            currentHeroItem.url,
-            currentHeroItem.title,
-            currentHeroItem
-          );
-        }
+    heroPlayButton.addEventListener("click", () => {
+      if (currentHeroItem) {
+        openPlayer(currentHeroItem.url, currentHeroItem.title, currentHeroItem);
       }
-    );
+    });
+
     /* =========================================================
        PLAYER EVENTOS
     ========================================================== */
-    playerCloseButton.addEventListener(
-      "click",
-      closePlayer
-    );
-    fullscreenButton.addEventListener(
-      "click",
-      toggleFullscreen
-    );
-    pipButton.addEventListener(
-      "click",
-      togglePictureInPicture
-    );
-    retryPlayerButton.addEventListener(
-      "click",
-      retryCurrentPlayer
-    );
-    document.addEventListener(
-      "fullscreenchange",
-      () => {
-        fullscreenButton.textContent =
-          document.fullscreenElement
-            ? "×"
-            : "⛶";
-      }
-    );
+    playerCloseButton.addEventListener("click", closePlayer);
+    fullscreenButton.addEventListener("click", toggleFullscreen);
+    pipButton.addEventListener("click", togglePictureInPicture);
+    retryPlayerButton.addEventListener("click", retryCurrentPlayer);
+    document.addEventListener("fullscreenchange", () => {
+      fullscreenButton.textContent = document.fullscreenElement ? "×" : "⛶";
+    });
+
     /* =========================================================
        TECLADO
     ========================================================== */
-    document.addEventListener(
-      "keydown",
-      event => {
-        if (
-          event.key !== "Escape"
-        ) {
-          return;
-        }
-        if (
-          playerModal.style.display ===
-          "flex"
-        ) {
-          closePlayer();
-          return;
-        }
-        if (
-          m3uModal.style.display ===
-          "flex"
-        ) {
-          closeM3UModal();
-        }
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      if (playerModal.style.display === "flex") {
+        closePlayer();
+        return;
       }
-    );
+      if (m3uModal.style.display === "flex") {
+        closeM3UModal();
+      }
+    });
+
     /* =========================================================
        CLICK FORA DO MODAL
     ========================================================== */
-    m3uModal.addEventListener(
-      "click",
-      event => {
-        if (
-          event.target ===
-          m3uModal
-        ) {
-          closeM3UModal();
-        }
+    m3uModal.addEventListener("click", event => {
+      if (event.target === m3uModal) {
+        closeM3UModal();
       }
-    );
+    });
+
     /* =========================================================
        SUPABASE SESSION
     ========================================================== */
-    supabaseClient.auth.onAuthStateChange(
-      async (
-        event,
-        session
-      ) => {
-        if (
-          session?.user
-        ) {
-          currentUser =
-            session.user;
-        }
-        if (
-          event === "SIGNED_OUT"
-        ) {
-          showAuth();
-        }
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        currentUser = session.user;
       }
-    );
+      if (event === "SIGNED_OUT") {
+        showAuth();
+      }
+    });
+
     /* =========================================================
        INICIALIZAÇÃO
     ========================================================== */
     async function initializeApp() {
       try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.getSession();
+        const { data, error } = await supabaseClient.auth.getSession();
         if (error) {
-          console.warn(
-            "Erro ao verificar sessão:",
-            error
-          );
+          console.warn("Erro ao verificar sessão:", error);
           showAuth();
           return;
         }
-        if (
-          data?.session?.user
-        ) {
-          currentUser =
-            data.session.user;
+        if (data?.session?.user) {
+          currentUser = data.session.user;
           await showApp();
         } else {
           showAuth();
         }
       } catch (error) {
-        console.error(
-          "Erro na inicialização:",
-          error
-        );
+        console.error("Erro na inicialização:", error);
         showAuth();
       }
     }
-    /*
-     * Começa o aplicativo.
-     */
+
     initializeApp();
   </script>
 </body>
