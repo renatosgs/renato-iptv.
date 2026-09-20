@@ -172,7 +172,7 @@
     .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
     /* ============================================
-       PLAYER - ABRE JÁ EM MODO PAISAGEM (GIRADO)
+       PLAYER - TELA CHEIA TOTAL
     ============================================ */
     #playerModal {
       display: none; position: fixed; inset: 0; z-index: 10000;
@@ -186,57 +186,31 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      background: #000;
     }
 
+    /* Vídeo em tela cheia total (preenche tudo) */
     #video {
       display: block;
       background: #000;
-      transition: transform 0.3s ease;
-    }
-
-    /* --- MODO PADRÃO: ABRE GIRADO (PAISAGEM) --- */
-    /* O vídeo é rotacionado 90° e redimensionado para ocupar toda a tela */
-    #video.mode-rotated {
-      width: 100vh;
-      height: 100vw;
-      object-fit: contain;
-      transform: rotate(90deg);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform-origin: center center;
-      margin-left: -50vh;
-      margin-top: -50vw;
-    }
-    #video.mode-rotated.fit-cover {
-      object-fit: cover;
-    }
-
-    /* --- MODO NORMAL: retrato (caso usuário queira) --- */
-    #video.mode-normal {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      position: relative;
-      transform: none;
-    }
-    #video.mode-normal.fit-cover {
       object-fit: cover;
     }
 
     .player-top {
       width: 100%; min-height: 55px; display: flex; align-items: center;
-      justify-content: space-between; padding: 0 15px; background: rgba(17,17,17,0.9);
+      justify-content: space-between; padding: 0 15px; background: rgba(17,17,17,0.75);
       position: absolute; top: 0; left: 0; z-index: 10;
     }
     #playerTitle {
-      color: white; font-weight: bold; font-size: 14px; max-width: 45%;
+      color: white; font-weight: bold; font-size: 14px; max-width: 50%;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .player-buttons { display: flex; align-items: center; gap: 8px; }
     .btn-player {
       background: #333; color: white; border: 1px solid #555;
-      padding: 6px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;
+      padding: 8px 12px; border-radius: 4px; font-size: 12px; font-weight: bold;
     }
     .btn-player:hover { background: #444; }
     .btn-player.active { background: var(--red); border-color: var(--red); }
@@ -324,13 +298,12 @@
     <div class="player-top">
       <div id="playerTitle">Reprodução</div>
       <div class="player-buttons">
-        <button class="btn-player active" id="rotateBtn">🔄 Girar</button>
-        <button class="btn-player" id="toggleFitBtn">📺 Esticar</button>
+        <button class="btn-player" id="rotateBtn">🔄 Girar Tela</button>
         <button id="closePlayer">×</button>
       </div>
     </div>
     <div class="video-container">
-      <video id="video" class="mode-rotated" controls playsinline preload="metadata"></video>
+      <video id="video" controls playsinline preload="metadata"></video>
     </div>
   </div>
 
@@ -343,8 +316,6 @@
     let currentFilter = "todos";
     let searchTerm = "";
     let hls = null;
-    let isRotated = true;    // Agora começa como TRUE (girado/paisagem)
-    let isFitCover = false;
 
     /* =====================================================
        DEMO
@@ -522,43 +493,45 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
-       CONTROLE DE ORIENTAÇÃO DO VÍDEO
+       GIRAR TELA (ROTAÇÃO AUTOMÁTICA E MANUAL)
     ===================================================== */
-    function applyVideoClasses() {
-      const video = document.getElementById("video");
-      video.classList.remove("mode-normal", "mode-rotated", "fit-cover");
-      video.classList.add(isRotated ? "mode-rotated" : "mode-normal");
-      if (isFitCover) video.classList.add("fit-cover");
+    async function rotateToLandscape() {
+      // Tenta entrar em tela cheia primeiro (necessário para a API de orientação)
+      try {
+        const elem = document.getElementById("playerModal");
+        if (elem.requestFullscreen) await elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
+      } catch(e) { console.warn("Fullscreen não suportado:", e); }
+
+      // Tenta travar a orientação em paisagem
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock('landscape');
+        }
+      } catch(e) { console.warn("Rotação de tela não suportada:", e); }
     }
 
-    function toggleRotate() {
-      isRotated = !isRotated;
-      const btn = document.getElementById("rotateBtn");
-      if (isRotated) {
-        btn.classList.add("active");
-        btn.textContent = "🔄 Girar";
-        // Tenta travar a tela em paisagem
-        try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape'); } catch(e){}
-      } else {
-        btn.classList.remove("active");
-        btn.textContent = "🔄 Girar";
-        // Destrava a orientação
-        try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch(e){}
-      }
-      applyVideoClasses();
+    async function unlockRotation() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+      } catch(e) {}
+      try {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+      } catch(e) {}
     }
 
-    function toggleFit() {
-      isFitCover = !isFitCover;
-      const btn = document.getElementById("toggleFitBtn");
-      if (isFitCover) {
-        btn.classList.add("active");
-        btn.textContent = "🔲 Proporção";
-      } else {
-        btn.classList.remove("active");
-        btn.textContent = "📺 Esticar";
-      }
-      applyVideoClasses();
+    async function toggleRotate() {
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          // Se já está em paisagem, tenta voltar para retrato
+          if (window.screen.orientation.type && window.screen.orientation.type.startsWith('landscape')) {
+            await screen.orientation.lock('portrait');
+          } else {
+            await screen.orientation.lock('landscape');
+          }
+        }
+      } catch(e) { console.warn("Não foi possível girar:", e); }
     }
 
     /* =====================================================
@@ -576,27 +549,8 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       title.textContent = name || "Reprodução";
       modal.style.display = "block";
 
-      // FORÇA O MODO GIRADO AO ABRIR
-      isRotated = true;
-      isFitCover = false;
-      document.getElementById("rotateBtn").classList.add("active");
-      document.getElementById("rotateBtn").textContent = "🔄 Girar";
-      document.getElementById("toggleFitBtn").classList.remove("active");
-      document.getElementById("toggleFitBtn").textContent = "📺 Esticar";
-      applyVideoClasses();
-
-      // Tenta entrar em tela cheia e travar a orientação em paisagem
-      try {
-        const elem = document.getElementById("playerModal");
-        if (elem.requestFullscreen) await elem.requestFullscreen();
-        else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
-      } catch(e) { console.warn("Fullscreen não suportado:", e); }
-
-      try {
-        if (screen.orientation && screen.orientation.lock) {
-          await screen.orientation.lock('landscape');
-        }
-      } catch(e) { console.warn("Rotação de tela não suportada:", e); }
+      // GIRA A TELA AUTOMATICAMENTE AO DAR PLAY
+      await rotateToLandscape();
 
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
@@ -626,22 +580,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       video.load();
       if (hls) { hls.destroy(); hls = null; }
       modal.style.display = "none";
-
-      // Destrava a orientação do celular
-      try {
-        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-      } catch(e) {}
-
-      // Sai da tela cheia
-      try {
-        if (document.exitFullscreen) await document.exitFullscreen();
-        else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
-      } catch(e) {}
-
-      // Reseta estados
-      isRotated = true;
-      isFitCover = false;
-      applyVideoClasses();
+      await unlockRotation();
     }
 
     /* =====================================================
@@ -828,7 +767,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     document.getElementById("closePlayer").addEventListener("click", closePlayer);
     document.getElementById("rotateBtn").addEventListener("click", toggleRotate);
-    document.getElementById("toggleFitBtn").addEventListener("click", toggleFit);
 
     document.getElementById("heroPlay").addEventListener("click", () => {
       if (list.length) playVideo(list[0].url, list[0].name);
