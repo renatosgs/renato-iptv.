@@ -3,2528 +3,704 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Renato IPTV</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   <style>
     :root {
       --red: #E50914;
       --dark: #141414;
-      --dark2: #181818;
       --card: #222;
-      --card2: #292929;
       --text: #fff;
       --muted: #aaa;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; background: var(--dark); color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+    body { overflow-x: hidden; }
+    button, input { font-family: inherit; }
+    button { cursor: pointer; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      width: 100%;
-      min-height: 100%;
-      background: var(--dark);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      overflow-x: hidden;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* =========================
-       LOGIN
-    ========================= */
-
+    /* LOGIN */
     #authScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background:
-        linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.92)),
-        radial-gradient(circle at center, #3a0000, #050505 70%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.92)), radial-gradient(circle at center, #3a0000, #050505 70%);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-
     .auth-box {
-      width: 100%;
-      max-width: 390px;
-      background: rgba(20,20,20,.96);
-      border: 1px solid #333;
-      border-radius: 14px;
-      padding: 28px 22px;
+      width: 100%; max-width: 390px; background: rgba(20,20,20,.96);
+      border: 1px solid #333; border-radius: 14px; padding: 28px 22px;
       box-shadow: 0 20px 70px rgba(0,0,0,.6);
     }
-
-    .auth-logo {
-      text-align: center;
-      color: var(--red);
-      font-size: 30px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .auth-subtitle {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 25px;
-      font-size: 14px;
-    }
-
+    .auth-logo { text-align: center; color: var(--red); font-size: 30px; font-weight: 900; margin-bottom: 8px; }
+    .auth-subtitle { text-align: center; color: #aaa; margin-bottom: 25px; font-size: 14px; }
     .auth-box input {
-      width: 100%;
-      height: 46px;
-      border: 1px solid #444;
-      border-radius: 7px;
-      background: #111;
-      color: #fff;
-      padding: 0 13px;
-      margin-bottom: 12px;
-      outline: none;
+      width: 100%; height: 46px; border: 1px solid #444; border-radius: 7px;
+      background: #111; color: #fff; padding: 0 13px; margin-bottom: 12px; outline: none;
     }
-
-    .auth-box input:focus {
-      border-color: var(--red);
-    }
-
+    .auth-box input:focus { border-color: var(--red); }
     .auth-btn {
-      width: 100%;
-      height: 46px;
-      border: 0;
-      border-radius: 7px;
-      background: var(--red);
-      color: white;
-      font-weight: bold;
-      font-size: 15px;
+      width: 100%; height: 46px; border: 0; border-radius: 7px;
+      background: var(--red); color: white; font-weight: bold; font-size: 15px;
     }
+    .auth-btn:hover { filter: brightness(1.1); }
+    .auth-switch { text-align: center; color: #aaa; margin-top: 18px; font-size: 13px; }
+    .auth-switch span { color: var(--red); cursor: pointer; font-weight: bold; }
+    #authMessage { text-align: center; font-size: 13px; margin-top: 12px; color: #ff7777; min-height: 18px; }
 
-    .auth-btn:hover {
-      filter: brightness(1.1);
-    }
+    /* APP */
+    #app { display: none; min-height: 100vh; }
 
-    .auth-switch {
-      text-align: center;
-      color: #aaa;
-      margin-top: 18px;
-      font-size: 13px;
-    }
-
-    .auth-switch span {
-      color: var(--red);
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #authMessage {
-      text-align: center;
-      font-size: 13px;
-      margin-top: 12px;
-      color: #ff7777;
-      min-height: 18px;
-    }
-
-    /* =========================
-       APP
-    ========================= */
-
-    #app {
-      display: none;
-      min-height: 100vh;
-    }
-
-    /* =========================
-       NAVBAR
-    ========================= */
-
+    /* NAVBAR */
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      z-index: 1000;
-      background: rgba(10,10,10,.97);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid #252525;
+      position: fixed; top: 0; left: 0; right: 0; height: 60px; z-index: 1000;
+      background: rgba(10,10,10,.97); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #252525;
     }
-
-    .logo {
-      color: var(--red);
-      font-size: 20px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
+    .logo { color: var(--red); font-size: 20px; font-weight: 900; white-space: nowrap; }
+    .nav-actions { display: flex; align-items: center; gap: 7px; }
     .nav-btn {
-      border: 1px solid #3b3b3b;
-      background: #202020;
-      color: white;
-      border-radius: 6px;
-      padding: 8px 11px;
-      font-size: 12px;
+      border: 1px solid #3b3b3b; background: #202020; color: white;
+      border-radius: 6px; padding: 8px 11px; font-size: 12px;
     }
+    .nav-btn:hover { background: #2d2d2d; }
+    .nav-btn.primary { background: var(--red); border-color: var(--red); }
 
-    .nav-btn:hover {
-      background: #2d2d2d;
-    }
-
-    .nav-btn.primary {
-      background: var(--red);
-      border-color: var(--red);
-    }
-
-    /* =========================
-       SEARCH
-    ========================= */
-
+    /* SEARCH */
     .search-area {
-      position: fixed;
-      top: 60px;
-      left: 0;
-      right: 0;
-      z-index: 900;
-      background: #111;
-      padding: 8px 12px;
-      border-bottom: 1px solid #252525;
+      position: fixed; top: 60px; left: 0; right: 0; z-index: 900;
+      background: #111; padding: 8px 12px; border-bottom: 1px solid #252525;
     }
-
     #searchInput {
-      width: 100%;
-      max-width: 650px;
-      display: block;
-      margin: auto;
-      height: 40px;
-      border: 1px solid #333;
-      border-radius: 20px;
-      background: #202020;
-      color: #fff;
-      padding: 0 17px;
-      outline: none;
+      width: 100%; max-width: 650px; display: block; margin: auto; height: 40px;
+      border: 1px solid #333; border-radius: 20px; background: #202020;
+      color: #fff; padding: 0 17px; outline: none;
     }
+    #searchInput:focus { border-color: var(--red); }
 
-    #searchInput:focus {
-      border-color: var(--red);
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
+    /* HERO */
     .hero {
-      margin-top: 116px;
-      width: 100%;
-      min-height: 270px;
-      height: 43vh;
-      max-height: 500px;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.95), rgba(0,0,0,.45), rgba(0,0,0,.75)),
-        linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.55)),
-        #111;
-      background-position: center;
-      background-size: cover;
-      display: flex;
-      align-items: flex-end;
-      padding: 35px 25px;
-      position: relative;
-      overflow: hidden;
+      margin-top: 116px; width: 100%; min-height: 270px; height: 43vh; max-height: 500px;
+      background: linear-gradient(90deg, rgba(0,0,0,.95), rgba(0,0,0,.45), rgba(0,0,0,.75)),
+                  linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.55)), #111;
+      background-position: center; background-size: cover;
+      display: flex; align-items: flex-end; padding: 35px 25px;
+      position: relative; overflow: hidden;
     }
-
-    .hero-content {
-      max-width: 650px;
-      z-index: 2;
-    }
-
-    .hero-title {
-      font-size: clamp(28px, 5vw, 58px);
-      font-weight: 900;
-      margin-bottom: 10px;
-      text-shadow: 0 3px 15px #000;
-    }
-
-    .hero-description {
-      color: #ddd;
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
-
+    .hero-content { max-width: 650px; z-index: 2; }
+    .hero-title { font-size: clamp(28px, 5vw, 58px); font-weight: 900; margin-bottom: 10px; text-shadow: 0 3px 15px #000; }
+    .hero-description { color: #ddd; font-size: 14px; margin-bottom: 18px; }
     .hero-play {
-      background: white;
-      color: #111;
-      border: none;
-      border-radius: 5px;
-      padding: 11px 20px;
-      font-weight: bold;
-      font-size: 14px;
+      background: white; color: #111; border: none; border-radius: 5px;
+      padding: 11px 20px; font-weight: bold; font-size: 14px;
     }
 
-    /* =========================
-       TABS
-    ========================= */
-
+    /* TABS */
     .tabs {
-      position: sticky;
-      top: 108px;
-      z-index: 800;
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding: 12px 12px;
-      background: rgba(20,20,20,.97);
-      border-bottom: 1px solid #292929;
-      scrollbar-width: none;
+      position: sticky; top: 108px; z-index: 800; display: flex; gap: 7px;
+      overflow-x: auto; padding: 12px 12px; background: rgba(20,20,20,.97);
+      border-bottom: 1px solid #292929; scrollbar-width: none;
     }
-
-    .tabs::-webkit-scrollbar {
-      display: none;
-    }
-
+    .tabs::-webkit-scrollbar { display: none; }
     .tab {
-      flex: 0 0 auto;
-      border: 1px solid #383838;
-      background: #222;
-      color: #bbb;
-      border-radius: 18px;
-      padding: 8px 14px;
-      font-size: 13px;
+      flex: 0 0 auto; border: 1px solid #383838; background: #222; color: #bbb;
+      border-radius: 18px; padding: 8px 14px; font-size: 13px;
     }
+    .tab.active { background: var(--red); color: #fff; border-color: var(--red); }
 
-    .tab.active {
-      background: var(--red);
-      color: #fff;
-      border-color: var(--red);
-    }
+    /* CONTENT */
+    #content { width: 100%; padding-top: 8px; }
+    .section { width: 100%; margin-bottom: 10px; }
+    .section-title { padding: 12px 12px 9px; font-size: 19px; font-weight: 800; }
+    .section-title span { color: var(--red); }
 
-    /* =========================
-       CONTENT
-    ========================= */
-
-    #content {
-      width: 100%;
-      padding-top: 8px;
-    }
-
-    .section {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    .section-title {
-      padding: 12px 12px 9px;
-      font-size: 19px;
-      font-weight: 800;
-    }
-
-    .section-title span {
-      color: var(--red);
-    }
-
-    /* =========================
-       GRADE
-    ========================= */
-
+    /* GRADE */
     .grid {
-      width: 100%;
-      display: grid !important;
+      width: 100%; display: grid !important;
       grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-      gap: 10px;
-      padding: 0 10px 25px;
-      align-items: start;
+      gap: 10px; padding: 0 10px 25px; align-items: start;
     }
-
     @media (min-width: 601px) {
-      .grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 12px;
-        padding-left: 16px;
-        padding-right: 16px;
-      }
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px; padding-left: 16px; padding-right: 16px; }
     }
-
     @media (min-width: 901px) {
-      .grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-        gap: 14px;
-      }
+      .grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; gap: 14px; }
     }
-
     @media (min-width: 1400px) {
-      .grid {
-        grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
-      }
+      .grid { grid-template-columns: repeat(8, minmax(0, 1fr)) !important; }
     }
 
-    /* =========================
-       CARD
-    ========================= */
-
+    /* CARD */
     .card {
-      width: 100%;
-      min-width: 0;
-      background: var(--card);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #2d2d2d;
-      transition:
-        transform .18s ease,
-        border-color .18s ease,
-        box-shadow .18s ease;
-      position: relative;
-      cursor: pointer;
+      width: 100%; min-width: 0; background: var(--card); border-radius: 8px;
+      overflow: hidden; border: 1px solid #2d2d2d;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      position: relative; cursor: pointer;
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: #555;
-      box-shadow: 0 8px 25px rgba(0,0,0,.45);
-    }
-
-    .card-img {
-      display: block;
-      width: 100%;
-      aspect-ratio: 2 / 2.7;
-      background: #111;
-      object-fit: cover;
-    }
-
-    .card-info {
-      padding: 8px;
-      min-height: 53px;
-    }
-
+    .card:hover { transform: translateY(-4px); border-color: #555; box-shadow: 0 8px 25px rgba(0,0,0,.45); }
+    .card-img { display: block; width: 100%; aspect-ratio: 2 / 2.7; background: #111; object-fit: cover; }
+    .card-info { padding: 8px; min-height: 53px; }
     .card-title {
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 1.25;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      color: #fff; font-size: 12px; font-weight: bold; line-height: 1.25;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
-
-    .card-category {
-      color: #888;
-      font-size: 10px;
-      margin-top: 4px;
-      text-transform: uppercase;
-    }
-
+    .card-category { color: #888; font-size: 10px; margin-top: 4px; text-transform: uppercase; }
     .badge {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      background: var(--red);
-      color: white;
-      border-radius: 4px;
-      font-size: 9px;
-      font-weight: bold;
-      padding: 4px 6px;
-      z-index: 3;
+      position: absolute; top: 6px; left: 6px; background: var(--red); color: white;
+      border-radius: 4px; font-size: 9px; font-weight: bold; padding: 4px 6px; z-index: 3;
     }
 
-    /* =========================
-       EMPTY
-    ========================= */
+    /* EMPTY */
+    .empty { text-align: center; color: #888; padding: 45px 20px; font-size: 14px; }
+    .empty strong { color: #fff; display: block; margin-bottom: 8px; }
 
-    .empty {
-      text-align: center;
-      color: #888;
-      padding: 45px 20px;
-      font-size: 14px;
-    }
-
-    .empty strong {
-      color: #fff;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    /* =========================
-       MODAL M3U
-    ========================= */
-
+    /* MODAL M3U */
     .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 5000;
-      background: rgba(0,0,0,.82);
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
+      display: none; position: fixed; inset: 0; z-index: 5000;
+      background: rgba(0,0,0,.82); align-items: center; justify-content: center; padding: 18px;
     }
-
-    .modal-box {
-      width: 100%;
-      max-width: 500px;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .modal-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .modal-box input[type="text"],
-    .modal-box input[type="file"] {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
+    .modal-box { width: 100%; max-width: 500px; background: #181818; border: 1px solid #333; border-radius: 12px; padding: 20px; }
+    .modal-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; }
+    .modal-box input[type="text"], .modal-box input[type="file"] { width: 100%; margin-bottom: 10px; }
     .modal-box input[type="text"] {
-      height: 42px;
-      background: #111;
-      border: 1px solid #444;
-      border-radius: 6px;
-      color: white;
-      padding: 0 12px;
-      outline: none;
+      height: 42px; background: #111; border: 1px solid #444; border-radius: 6px;
+      color: white; padding: 0 12px; outline: none;
     }
-
-    .modal-buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
+    .modal-buttons { display: flex; gap: 8px; margin-top: 10px; }
     .modal-buttons button {
-      flex: 1;
-      height: 42px;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #292929;
-      color: white;
+      flex: 1; height: 42px; border-radius: 6px; border: 1px solid #444;
+      background: #292929; color: white;
     }
+    .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
-    .modal-buttons .red {
-      background: var(--red);
-      border-color: var(--red);
-    }
-
-    /* =========================
-       PLAYER
-    ========================= */
-
+    /* PLAYER */
     #playerModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: #000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+      display: none; position: fixed; inset: 0; z-index: 10000;
+      background: #000; align-items: center; justify-content: center; flex-direction: column;
     }
-
-    #video {
-      width: 100%;
-      max-height: 85vh;
-      background: #000;
-    }
-
+    #video { width: 100%; max-height: 85vh; background: #000; }
     .player-top {
-      width: 100%;
-      min-height: 55px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      background: #111;
+      width: 100%; min-height: 55px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 15px; background: #111;
     }
-
     #playerTitle {
-      color: white;
-      font-weight: bold;
-      font-size: 14px;
-      max-width: 80%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: white; font-weight: bold; font-size: 14px; max-width: 80%;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     #closePlayer {
-      border: 0;
-      background: var(--red);
-      color: white;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      font-size: 20px;
+      border: 0; background: var(--red); color: white; width: 38px;
+      height: 38px; border-radius: 50%; font-size: 20px;
     }
 
-    /* =========================
-       RESPONSIVO
-    ========================= */
-
+    /* RESPONSIVO */
     @media (max-width: 480px) {
-
-      .navbar {
-        padding: 0 10px;
-      }
-
-      .logo {
-        font-size: 17px;
-      }
-
-      .nav-btn {
-        padding: 7px 8px;
-        font-size: 10px;
-      }
-
-      .hero {
-        min-height: 230px;
-        height: 34vh;
-        padding: 25px 15px;
-      }
-
-      .hero-title {
-        font-size: 28px;
-      }
-
-      .hero-description {
-        font-size: 12px;
-      }
-
-      .section-title {
-        font-size: 17px;
-      }
-
-      .card-info {
-        padding: 6px;
-      }
-
-      .card-title {
-        font-size: 10px;
-      }
-
-      .card-category {
-        font-size: 8px;
-      }
+      .navbar { padding: 0 10px; }
+      .logo { font-size: 17px; }
+      .nav-btn { padding: 7px 8px; font-size: 10px; }
+      .hero { min-height: 230px; height: 34vh; padding: 25px 15px; }
+      .hero-title { font-size: 28px; }
+      .hero-description { font-size: 12px; }
+      .section-title { font-size: 17px; }
+      .card-info { padding: 6px; }
+      .card-title { font-size: 10px; }
+      .card-category { font-size: 8px; }
     }
   </style>
 </head>
-
 <body>
 
   <div id="authScreen">
     <div class="auth-box">
-
-      <div class="auth-logo">
-        RENATO IPTV
-      </div>
-
-      <div class="auth-subtitle">
-        Acesse sua programação
-      </div>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="E-mail"
-        autocomplete="email"
-      >
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Senha"
-        autocomplete="current-password"
-      >
-
-      <button class="auth-btn" id="authButton">
-        Entrar
-      </button>
-
+      <div class="auth-logo">RENATO IPTV</div>
+      <div class="auth-subtitle">Acesse sua programação</div>
+      <input type="email" id="email" placeholder="E-mail" autocomplete="email">
+      <input type="password" id="password" placeholder="Senha" autocomplete="current-password">
+      <button class="auth-btn" id="authButton">Entrar</button>
       <div class="auth-switch">
-        <span id="authSwitch">
-          Criar uma conta
-        </span>
+        <span id="authSwitch">Criar uma conta</span>
       </div>
-
       <div id="authMessage"></div>
-
     </div>
   </div>
 
   <div id="app">
-
     <nav class="navbar">
-
-      <div class="logo">
-        RENATO IPTV
-      </div>
-
+      <div class="logo">RENATO IPTV</div>
       <div class="nav-actions">
-
-        <button
-          class="nav-btn primary"
-          id="addListBtn"
-        >
-          + Lista
-        </button>
-
-        <button
-          class="nav-btn"
-          id="logoutBtn"
-        >
-          Sair
-        </button>
-
+        <button class="nav-btn primary" id="addListBtn">+ Lista</button>
+        <button class="nav-btn" id="logoutBtn">Sair</button>
       </div>
-
     </nav>
 
     <div class="search-area">
-
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="🔎 Pesquisar canais, filmes, séries..."
-      >
-
+      <input type="search" id="searchInput" placeholder="🔎 Pesquisar canais, filmes, séries...">
     </div>
 
     <section class="hero" id="hero">
-
       <div class="hero-content">
-
-        <div class="hero-title" id="heroTitle">
-          RENATO IPTV
-        </div>
-
-        <div class="hero-description" id="heroDescription">
-          Sua programação em um só lugar.
-        </div>
-
-        <button
-          class="hero-play"
-          id="heroPlay"
-        >
-          ▶ Assistir
-        </button>
-
+        <div class="hero-title" id="heroTitle">RENATO IPTV</div>
+        <div class="hero-description" id="heroDescription">Sua programação em um só lugar.</div>
+        <button class="hero-play" id="heroPlay">▶ Assistir</button>
       </div>
-
     </section>
 
     <div class="tabs">
-
-      <button class="tab active" data-filter="todos">
-        Todos
-      </button>
-
-      <button class="tab" data-filter="canais">
-        Canais
-      </button>
-
-      <button class="tab" data-filter="filmes">
-        Filmes
-      </button>
-
-      <button class="tab" data-filter="series">
-        Séries
-      </button>
-
-      <button class="tab" data-filter="novelas">
-        Novelas
-      </button>
-
+      <button class="tab active" data-filter="todos">Todos</button>
+      <button class="tab" data-filter="canais">Canais</button>
+      <button class="tab" data-filter="filmes">Filmes</button>
+      <button class="tab" data-filter="series">Séries</button>
+      <button class="tab" data-filter="novelas">Novelas</button>
     </div>
 
     <main id="content"></main>
-
   </div>
 
   <div class="modal" id="m3uModal">
-
     <div class="modal-box">
-
-      <div class="modal-title">
-        Adicionar lista M3U
-      </div>
-
-      <input
-        type="text"
-        id="m3uUrl"
-        placeholder="Cole aqui a URL da lista M3U/M3U8"
-      >
-
-      <input
-        type="file"
-        id="m3uFile"
-        accept=".m3u,.m3u8,.txt"
-      >
-
+      <div class="modal-title">Adicionar lista M3U</div>
+      <input type="text" id="m3uUrl" placeholder="Cole aqui a URL da lista M3U/M3U8">
+      <input type="file" id="m3uFile" accept=".m3u,.m3u8,.txt">
       <div class="modal-buttons">
-
-        <button id="closeM3u">
-          Cancelar
-        </button>
-
-        <button class="red" id="loadM3u">
-          Carregar lista
-        </button>
-
+        <button id="closeM3u">Cancelar</button>
+        <button class="red" id="loadM3u">Carregar lista</button>
       </div>
-
     </div>
-
   </div>
 
   <div id="playerModal">
-
     <div class="player-top">
-
-      <div id="playerTitle">
-        Reprodução
-      </div>
-
-      <button id="closePlayer">
-        ×
-      </button>
-
+      <div id="playerTitle">Reprodução</div>
+      <button id="closePlayer">×</button>
     </div>
-
-    <video
-      id="video"
-      controls
-      playsinline
-      preload="metadata"
-    ></video>
-
+    <video id="video" controls playsinline preload="metadata"></video>
   </div>
 
   <script>
-
-    /* =====================================================
-       SUPABASE
-    ===================================================== */
-
-    const SUPABASE_URL =
-      "https://tcsikxqgyyvewqwfudcu.supabase.co";
-
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc2lreHFneXl2ZXdxd2Z1ZGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3OTY1NDgsImV4cCI6MjEwNTM3MjU0OH0.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
-
-    const sb =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-
     /* =====================================================
        VARIÁVEIS
     ===================================================== */
-
     let currentUser = null;
     let list = [];
     let currentFilter = "todos";
     let searchTerm = "";
     let hls = null;
 
-
     /* =====================================================
        DEMO
     ===================================================== */
-
     const DEMO = `#EXTM3U
-
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/222/fff&text=Canal+1" group-title="Canais",Canal Demo 1
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/333/fff&text=Canal+2" group-title="Canais",Canal Demo 2
 https://test-streams.mux.dev/test_001/stream.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/444/fff&text=Canal+3" group-title="Canais",Canal Demo 3
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/555/fff&text=Filme+1" group-title="Filmes",Filme Demo 1
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/666/fff&text=Filme+2" group-title="Filmes",Filme Demo 2
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/777/fff&text=Filme+3" group-title="Filmes",Filme Demo 3
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/888/fff&text=Serie+1" group-title="Series",Serie Demo 1
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/999/fff&text=Serie+2" group-title="Series",Serie Demo 2
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/aa0000/fff&text=Serie+3" group-title="Series",Serie Demo 3
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
 #EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/bb0000/fff&text=Novela+1" group-title="Novelas",Novela Demo 1
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/cc0000/fff&text=Novela+2" group-title="Novelas",Novela Demo 2
-https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
-
-#EXTINF:-1 tvg-logo="https://dummyimage.com/300x450/dd0000/fff&text=Novela+3" group-title="Novelas",Novela Demo 3
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
-
 
     /* =====================================================
        NORMALIZAÇÃO
     ===================================================== */
-
     function normalizeText(value) {
-
-      return String(value || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
-
+      return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
-
-
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
 
     function escapeHtml(value) {
-
       return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
-
 
     /* =====================================================
        CATEGORIA
     ===================================================== */
-
     function detectCategory(name, group) {
-
-      const text =
-        normalizeText(
-          String(name || "") +
-          " " +
-          String(group || "")
-        );
-
-      if (
-        text.includes("novela")
-      ) {
-        return "novelas";
-      }
-
-      if (
-        text.includes("serie") ||
-        text.includes("series") ||
-        text.includes("temporada") ||
-        text.includes("episodio") ||
-        /s\d{1,2}e\d{1,2}/i.test(text)
-      ) {
-        return "series";
-      }
-
-      if (
-        text.includes("filme") ||
-        text.includes("filmes") ||
-        text.includes("movie") ||
-        text.includes("movies") ||
-        text.includes("film") ||
-        text.includes("vod")
-      ) {
-        return "filmes";
-      }
-
+      const text = normalizeText(String(name || "") + " " + String(group || ""));
+      if (text.includes("novela")) return "novelas";
+      if (text.includes("serie") || text.includes("series") || text.includes("temporada") || text.includes("episodio") || /s\d{1,2}e\d{1,2}/i.test(text)) return "series";
+      if (text.includes("filme") || text.includes("filmes") || text.includes("movie") || text.includes("movies") || text.includes("film") || text.includes("vod")) return "filmes";
       return "canais";
     }
-
 
     /* =====================================================
        PARSER M3U
     ===================================================== */
-
     function parseM3U(text) {
-
-      const lines =
-        String(text || "")
-          .split(/\r?\n/);
-
+      const lines = String(text || "").split(/\r?\n/);
       const result = [];
-
       let item = null;
-
       for (let i = 0; i < lines.length; i++) {
-
-        const line =
-          lines[i].trim();
-
-        if (!line) {
-          continue;
-        }
-
-        if (
-          line
-            .toUpperCase()
-            .startsWith("#EXTINF:")
-        ) {
-
-          const logoMatch =
-            line.match(
-              /tvg-logo\s*=\s*["']([^"']*)["']/i
-            );
-
-          const groupMatch =
-            line.match(
-              /group-title\s*=\s*["']([^"']*)["']/i
-            );
-
-          const comma =
-            line.indexOf(",");
-
+        const line = lines[i].trim();
+        if (!line) continue;
+        if (line.toUpperCase().startsWith("#EXTINF:")) {
+          const logoMatch = line.match(/tvg-logo\s*=\s*["']([^"']*)["']/i);
+          const groupMatch = line.match(/group-title\s*=\s*["']([^"']*)["']/i);
+          const comma = line.indexOf(",");
           let name = "Sem nome";
-
-          if (comma !== -1) {
-
-            name =
-              line
-                .substring(comma + 1)
-                .trim();
-
-          }
-
-          const logo =
-            logoMatch
-              ? logoMatch[1]
-              : "";
-
-          const group =
-            groupMatch
-              ? groupMatch[1]
-              : "";
-
+          if (comma !== -1) name = line.substring(comma + 1).trim();
+          const logo = logoMatch ? logoMatch[1] : "";
+          const group = groupMatch ? groupMatch[1] : "";
           item = {
-
-            name:
-              name || "Sem nome",
-
-            logo:
-              logo,
-
-            group:
-              group,
-
-            cat:
-              detectCategory(
-                name,
-                group
-              ),
-
-            url:
-              ""
-
+            name: name || "Sem nome",
+            logo: logo,
+            group: group,
+            cat: detectCategory(name, group),
+            url: ""
           };
-
           continue;
         }
-
-        if (
-          line.startsWith("#")
-        ) {
-          continue;
-        }
-
-        if (
-          item &&
-          !line.startsWith("#")
-        ) {
-
+        if (line.startsWith("#")) continue;
+        if (item && !line.startsWith("#")) {
           item.url = line;
-
-          if (item.url) {
-
-            result.push({
-              ...item
-            });
-
-          }
-
+          if (item.url) result.push({ ...item });
           item = null;
         }
-
       }
-
       return result;
     }
-
 
     /* =====================================================
        CARD
     ===================================================== */
-
     function createCard(item) {
-
-      const index =
-        list.indexOf(item);
-
-      const logo =
-        item.logo ||
-        "https://dummyimage.com/300x450/222/ffffff&text=RENATO+IPTV";
-
+      const index = list.indexOf(item);
+      const logo = item.logo || "https://dummyimage.com/300x450/222/ffffff&text=RENATO+IPTV";
       return `
-
-        <div
-          class="card"
-          data-index="${index}"
-        >
-
-          <div class="badge">
-            ${escapeHtml(
-              item.cat === "canais"
-                ? "LIVE"
-                : item.cat.toUpperCase()
-            )}
-          </div>
-
-          <img
-            class="card-img"
-            src="${escapeHtml(logo)}"
-            alt="${escapeHtml(item.name)}"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='https://dummyimage.com/300x450/222/ffffff&text=IPTV';"
-          >
-
+        <div class="card" data-index="${index}">
+          <div class="badge">${escapeHtml(item.cat === "canais" ? "LIVE" : item.cat.toUpperCase())}</div>
+          <img class="card-img" src="${escapeHtml(logo)}" alt="${escapeHtml(item.name)}" loading="lazy"
+            onerror="this.onerror=null;this.src='https://dummyimage.com/300x450/222/ffffff&text=IPTV';">
           <div class="card-info">
-
-            <div class="card-title">
-              ${escapeHtml(item.name)}
-            </div>
-
-            <div class="card-category">
-              ${escapeHtml(item.group || item.cat)}
-            </div>
-
+            <div class="card-title">${escapeHtml(item.name)}</div>
+            <div class="card-category">${escapeHtml(item.group || item.c   at)}</div>
           </div>
-
-        </div>
-
-      `;
+        function </div>`;
     }
 
-
-    /* =====================================================
-       RENDER
-    ===================================================== */
-
+ close    /* =====================================================
+M       RENDER
+    =================================3==================== */
     function render(data) {
-
-      const content =
-        document.getElementById(
-          "content"
-        );
-
+     U const content = document.getElementById("content");
       content.innerHTML = "";
-
       if (!data.length) {
-
-        content.innerHTML = `
-
-          <div class="empty">
-
-            <strong>
-              Nenhum conteúdo encontrado
-            </strong>
-
-            Tente outra pesquisa ou carregue uma lista M3U.
-
-          </div>
-
-        `;
-
+        content.innerHTML = `<div class="empty"><strong>Nenhum conteúdo encontrado</strong>Tente outra pesquisa ou carregue uma lista M3U.</div>`;
         return;
       }
-
       const categories = [
-
-        {
-          id: "canais",
-          title: "Canais"
-        },
-
-        {
-          id: "filmes",
-          title: "Filmes"
-        },
-
-        {
-          id: "series",
-          title: "Séries"
-        },
-
-        {
-          id: "novelas",
-          title: "Novelas"
-        }
-
+        { id: "canais", title: "Canais" },
+        { id: "filmes", title: "Filmes" },
+        { id: "series", title: "Séries" },
+        { id: "novelas", title: "Novelas" }
       ];
-
-      if (
-        currentFilter === "todos"
-      ) {
-
-        categories.forEach(
-          category => {
-
-            const items =
-              data.filter(
-                item =>
-                  item.cat ===
-                  category.id
-              );
-
-            if (!items.length) {
-              return;
-            }
-
-            const section =
-              document.createElement(
-                "section"
-              );
-
-            section.className =
-              "section";
-
-            section.innerHTML = `
-
-              <div class="section-title">
-                ${category.title}
-                <span>(${items.length})</span>
-              </div>
-
-              <div class="grid">
-                ${items
-                  .map(createCard)
-                  .join("")}
-              </div>
-
-            `;
-
-            content.appendChild(
-              section
-            );
-
-          }
-        );
-
-      } else {
-
-        const category =
-          categories.find(
-            c =>
-              c.id ===
-              currentFilter
-          );
-
-        const title =
-          category
-            ? category.title
-            : currentFilter;
-
-        const section =
-          document.createElement(
-            "section"
-          );
-
-        section.className =
-          "section";
-
-        section.innerHTML = `
-
-          <div class="section-title">
-            ${title}
-            <span>(${data.length})</span>
-          </div>
-
-          <div class="grid">
-            ${data
-              .map(createCard)
-              .join("")}
-          </div>
-
-        `;
-
-        content.appendChild(
-          section
-        );
-
-      }
-
-      content
-        .querySelectorAll(".card")
-        .forEach(card => {
-
-          card.addEventListener(
-            "click",
-            () => {
-
-              const index =
-                Number(
-                  card.dataset.index
-                );
-
-              const item =
-                list[index];
-
-              if (item) {
-
-                playVideo(
-                  item.url,
-                  item.name
-                );
-
-              }
-
-            }
-          );
-
+      if (currentFilter === "todos") {
+        categories.forEach(category => {
+          const items = data.filter(item => item.cat === category.id);
+          if (!items.length) return;
+          const section = document.createElement("section");
+          section.className = "section";
+          section.innerHTML = `
+            <div class="section-title">${category.title} <span>(${items.length})</span></div>
+            <div class="grid">${items.map(createCard).join("")}</div>`;
+          content.appendChild(section);
         });
-
+      } else {
+        const category = categories.find(c => c.id === currentFilter);
+        const title = category ? category.title : currentFilter;
+        const section = document.createElement("section");
+        section.className = "section";
+        section.innerHTML = `
+          <div class="section-title">${title} <span>(${data.length})</span></div>
+          <div class="grid">${data.map(createCard).join("")}</div>`;
+        content.appendChild(section);
+      }
+      content.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          const index = Number(card.dataset.index);
+          const item = list[index];
+          if (item) playVideo(item.url, item.name);
+        });
+      });
     }
-
 
     /* =====================================================
        FILTRAR
     ===================================================== */
-
     function updateView() {
-
-      const normalizedSearch =
-        normalizeText(
-          searchTerm
-        );
-
-      let data =
-        list.filter(
-          item => {
-
-            const text =
-              normalizeText(
-                item.name +
-                " " +
-                item.group
-              );
-
-            const categoryOK =
-              currentFilter === "todos" ||
-              item.cat ===
-              currentFilter;
-
-            const searchOK =
-              !normalizedSearch ||
-              text.includes(
-                normalizedSearch
-              );
-
-            return (
-              categoryOK &&
-              searchOK
-            );
-
-          }
-        );
-
+      const normalizedSearch = normalizeText(searchTerm);
+      let data = list.filter(item => {
+        const text = normalizeText(item.name + " " + item.group);
+        const categoryOK = currentFilter === "todos" || item.cat === currentFilter;
+        const searchOK = !normalizedSearch || text.includes(normalizedSearch);
+        return categoryOK && searchOK;
+      });
       render(data);
-
     }
-
 
     /* =====================================================
        HERO
     ===================================================== */
-
     function updateHero() {
-
-      const hero =
-        document.getElementById(
-          "hero"
-        );
-
-      const title =
-        document.getElementById(
-          "heroTitle"
-        );
-
-      const description =
-        document.getElementById(
-          "heroDescription"
-        );
-
+      const hero = document.getElementById("hero");
+      const title = document.getElementById("heroTitle");
+      const description = document.getElementById("heroDescription");
       if (!list.length) {
-
-        hero.style.backgroundImage =
-          "linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.5)),linear-gradient(135deg,#300,#111)";
-
-        title.textContent =
-          "RENATO IPTV";
-
-        description.textContent =
-          "Sua programação em um só lugar.";
-
+        hero.style.backgroundImage = "linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.5)),linear-gradient(135deg,#300,#111)";
+        title.textContent = "RENATO IPTV";
+        description.textContent = "Sua programação em um só lugar.";
         return;
       }
-
-      const item =
-        list[0];
-
+      const item = list[0];
       if (item.logo) {
-
-        hero.style.backgroundImage =
-          `
-          linear-gradient(
-            90deg,
-            rgba(0,0,0,.95),
-            rgba(0,0,0,.5),
-            rgba(0,0,0,.8)
-          ),
-          url("${item.logo}")
-          `;
-
+        hero.style.backgroundImage = `linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.5),rgba(0,0,0,.8)),url("${item.logo}")`;
       }
-
-      title.textContent =
-        item.name;
-
-      description.textContent =
-        item.group ||
-        "Conteúdo disponível";
-
+      title.textContent = item.name;
+      description.textContent = item.group || "Conteúdo disponível";
     }
-
 
     /* =====================================================
        PLAYER
     ===================================================== */
-
     function isHlsUrl(url) {
-
-      return /\.m3u8(?:$|[?#])/i
-        .test(
-          String(url || "")
-        );
-
+      return /\.m3u8(?:$|[?#])/i.test(String(url || ""));
     }
 
-
-    function playVideo(
-      url,
-      name
-    ) {
-
-      if (!url) {
-        return;
-      }
-
-      const modal =
-        document.getElementById(
-          "playerModal"
-        );
-
-      const video =
-        document.getElementById(
-          "video"
-        );
-
-      const title =
-        document.getElementById(
-          "playerTitle"
-        );
-
-      title.textContent =
-        name || "Reprodução";
-
-      modal.style.display =
-        "flex";
-
-      if (hls) {
-
-        hls.destroy();
-
-        hls = null;
-
-      }
-
+    function playVideo(url, name) {
+      if (!url) return;
+      const modal = document.getElementById("playerModal");
+      const video = document.getElementById("video");
+      const title = document.getElementById("playerTitle");
+      title.textContent = name || "Reprodução";
+      modal.style.display = "flex";
+      if (hls) { hls.destroy(); hls = null; }
       video.pause();
-
-      video.removeAttribute(
-        "src"
-      );
-
+      video.removeAttribute("src");
       video.load();
-
-      if (
-        isHlsUrl(url) &&
-        window.Hls &&
-        Hls.isSupported()
-      ) {
-
-        hls =
-          new Hls({
-            enableWorker: true
-          });
-
-        hls.loadSource(
-          url
-        );
-
-        hls.attachMedia(
-          video
-        );
-
-        hls.on(
-          Hls.Events.MANIFEST_PARSED,
-          () => {
-
-            video.play()
-              .catch(() => {});
-
-          }
-        );
-
-        hls.on(
-          Hls.Events.ERROR,
-          (
-            event,
-            data
-          ) => {
-
-            console.error(
-              "Erro HLS:",
-              data
-            );
-
-          }
-        );
-
-      } else if (
-        isHlsUrl(url) &&
-        video.canPlayType(
-          "application/vnd.apple.mpegurl"
-        )
-      ) {
-
+      if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
+        hls = new Hls({ enableWorker: true });
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play().catch(() => {}); });
+        hls.on(Hls.Events.ERROR, (event, data) => { console.error("Erro HLS:", data); });
+      } else if (isHlsUrl(url) && video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = url;
-
-        video.play()
-          .catch(() => {});
-
+        video.play().catch(() => {});
       } else {
-
         video.src = url;
-
-        video.play()
-          .catch(() => {});
-
+        video.play().catch(() => {});
       }
-
     }
-
-
-    /* =====================================================
-       FECHAR PLAYER
-    ===================================================== */
 
     function closePlayer() {
-
-      const modal =
-        document.getElementById(
-          "playerModal"
-        );
-
-      const video =
-        document.getElementById(
-          "video"
-        );
-
+      const modal = document.getElementById("playerModal");
+      const video = document.getElementById("video");
       video.pause();
-
-      video.removeAttribute(
-        "src"
-      );
-
+      video.removeAttribute("src");
       video.load();
-
-      if (hls) {
-
-        hls.destroy();
-
-        hls = null;
-
-      }
-
-      modal.style.display =
-        "none";
-
+      if (hls) { hls.destroy(); hls = null; }
+      modal.style.display = "none";
     }
 
-
     /* =====================================================
-       SALVAR LOCAL
+       SALVAR / CARREGAR LOCAL
     ===================================================== */
-
     function saveLocal() {
-
-      try {
-
-        localStorage.setItem(
-          "renato_iptv_list",
-          JSON.stringify(list)
-        );
-
-      } catch (error) {
-
-        console.error(
-          "Erro ao salvar local:",
-          error
-        );
-
-      }
-
+      try { localStorage.setItem("renato_iptv_list", JSON.stringify(list)); }
+      catch (error) { console.error("Erro ao salvar local:", error); }
     }
-
-
-    /* =====================================================
-       CARREGAR LOCAL
-    ===================================================== */
 
     function loadLocal() {
-
       try {
-
-        const saved =
-          localStorage.getItem(
-            "renato_iptv_list"
-          );
-
-        if (!saved) {
-          return false;
-        }
-
-        const parsed =
-          JSON.parse(saved);
-
-        if (
-          Array.isArray(parsed) &&
-          parsed.length
-        ) {
-
+        const saved = localStorage.getItem("renato_iptv_list");
+        if (!saved) return false;
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length) {
           list = parsed;
-
           updateHero();
-
           updateView();
-
           return true;
-
         }
-
-      } catch (error) {
-
-        console.error(
-          "Erro ao carregar lista local:",
-          error
-        );
-
-      }
-
+      } catch (error) { console.error("Erro ao carregar lista local:", error); }
       return false;
-
     }
-
-
-    /* =====================================================
-       SALVAR SUPABASE
-    ===================================================== */
-
-    async function saveListToCloud() {
-
-      if (!currentUser) {
-        return;
-      }
-
-      try {
-
-        const {
-          error
-        } = await sb
-          .from("user_lists")
-          .upsert(
-            {
-              user_id:
-                currentUser.id,
-
-              content:
-                JSON.stringify(list),
-
-              updated_at:
-                new Date()
-                  .toISOString()
-
-            },
-            {
-              onConflict:
-                "user_id"
-            }
-          );
-
-        if (error) {
-
-          console.warn(
-            "Não foi possível salvar no Supabase:",
-            error.message
-          );
-
-        }
-
-      } catch (error) {
-
-        console.warn(
-          "Erro Supabase:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* =====================================================
-       CARREGAR SUPABASE
-    ===================================================== */
-
-    async function loadListFromCloud() {
-
-      if (!currentUser) {
-        return false;
-      }
-
-      try {
-
-        const {
-          data,
-          error
-        } = await sb
-          .from("user_lists")
-          .select("content")
-          .eq(
-            "user_id",
-            currentUser.id
-          )
-          .maybeSingle();
-
-        if (error) {
-
-          console.warn(
-            "Erro carregando lista:",
-            error.message
-          );
-
-          return false;
-
-        }
-
-        if (
-          data &&
-          data.content
-        ) {
-
-          const parsed =
-            typeof data.content === "string"
-              ? JSON.parse(data.content)
-              : data.content;
-
-          if (
-            Array.isArray(parsed) &&
-            parsed.length
-          ) {
-
-            list = parsed;
-
-            saveLocal();
-
-            updateHero();
-
-            updateView();
-
-            return true;
-
-          }
-
-        }
-
-      } catch (error) {
-
-        console.warn(
-          "Erro ao carregar Supabase:",
-          error
-        );
-
-      }
-
-      return false;
-
-    }
-
 
     /* =====================================================
        CARREGAR DEMO
     ===================================================== */
-
     function loadDemo() {
-
-      const parsed =
-        parseM3U(
-          DEMO
-        );
-
-      if (parsed.length) {
-
-        list =
-          parsed;
-
-        updateHero();
-
-        updateView();
-
-      }
-
+      const parsed = parseM3U(DEMO);
+      if (parsed.length) { list = parsed; updateHero(); updateView(); }
     }
-
 
     /* =====================================================
        CARREGAR TEXTO M3U
     ===================================================== */
-
-    async function loadM3UText(
-      text
-    ) {
-
-      const parsed =
-        parseM3U(
-          text
-        );
-
+    async function loadM3UText(text) {
+      const parsed = parseM3U(text);
       if (!parsed.length) {
-
-        alert(
-          "Não foi possível encontrar conteúdos nessa lista M3U."
-        );
-
+        alert("Não foi possível encontrar conteúdos nessa lista M3U.");
         return;
-
       }
-
-      list =
-        parsed;
-
+      list = parsed;
       saveLocal();
-
-      await saveListToCloud();
-
       updateHero();
-
       updateView();
-
       closeM3UModal();
-
-      alert(
-        `${parsed.length} itens carregados com sucesso.`
-      );
-
+      alert(`${parsed.length} itens carregados com sucesso.`);
     }
-
 
     /* =====================================================
        CARREGAR URL M3U
     ===================================================== */
-
-    async function loadM3UUrl(
-      url
-    ) {
-
-      if (!url) {
-
-        alert(
-          "Digite uma URL M3U."
-        );
-
-        return;
-
-      }
-
+    async function loadM3UUrl(url) {
+      if (!url) { alert("Digite uma URL M3U."); return; }
       try {
-
-        const response =
-          await fetch(
-            url
-          );
-
-        if (!response.ok) {
-
-          throw new Error(
-            "HTTP " +
-            response.status
-          );
-
-        }
-
-        const text =
-          await response.text();
-
-        await loadM3UText(
-          text
-        );
-
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const text = await response.text();
+        await loadM3UText(text);
       } catch (error) {
-
-        console.warn(
-          "Falha direta:",
-          error
-        );
-
+        console.warn("Falha direta:", error);
         try {
-
-          const proxy =
-            "https://corsproxy.io/?" +
-            encodeURIComponent(
-              url
-            );
-
-          const response =
-            await fetch(
-              proxy
-            );
-
-          if (!response.ok) {
-
-            throw new Error(
-              "Proxy HTTP " +
-              response.status
-            );
-
-          }
-
-          const text =
-            await response.text();
-
-          await loadM3UText(
-            text
-          );
-
+          const proxy = "https://corsproxy.io/?" + encodeURIComponent(url);
+          const response = await fetch(proxy);
+          if (!response.ok) throw new Error("Proxy HTTP " + response.status);
+          const text = await response.text();
+          await loadM3UText(text);
         } catch (proxyError) {
-
-          console.error(
-            proxyError
-          );
-
-          alert(
-            "Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida."
-          );
-
+          console.error(proxyError);
+          alert("Não foi possível carregar a lista. O servidor da M3U pode estar bloqueando acesso externo (CORS) ou a URL pode estar inválida.");
         }
-
       }
-
     }
-
 
     /* =====================================================
        ARQUIVO M3U
     ===================================================== */
-
-    function loadM3UFile(
-      file
-    ) {
-
-      if (!file) {
-        return;
-      }
-
-      const reader =
-        new FileReader();
-
-      reader.onload =
-        async function(event) {
-
-          await loadM3UText(
-            event.target.result
-          );
-
-        };
-
-      reader.onerror =
-        function() {
-
-          alert(
-            "Erro ao ler o arquivo."
-          );
-
-        };
-
-      reader.readAsText(
-        file
-      );
-
+    function loadM3UFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(event) { await loadM3UText(event.target.result); };
+      reader.onerror = function() { alert("Erro ao ler o arquivo."); };
+      reader.readAsText(file);
     }
-
 
     /* =====================================================
        MODAL
     ===================================================== */
-
-    function openM3UModal() {
-
-      document
-        .getElementById(
-          "m3uModal"
-        )
-        .style.display =
-        "flex";
-
-    }
-
-
-    function closeM3UModal() {
-
-      document
-        .getElementById(
-          "m3uModal"
-        )
-        .style.display =
-        "none";
-
-    }
-
+    function openM3UModal() { document.getElementById("m3uModal").style.display = "flex"; }
+Modal() { document.getElementById("m3uModal").style.display = "none"; }
 
     /* =====================================================
-       AUTENTICAÇÃO
+       AUTENTICAÇÃO SIMPLIFICADA (SEM SUPABASE)
     ===================================================== */
+    let isSignup = false;
 
-    let isSignup =
-      false;
-
-
-    function showAuthMessage(
-      message
-    ) {
-
-      document
-        .getElementById(
-          "authMessage"
-        )
-        .textContent =
-        message || "";
-
+    function showAuthMessage(message) {
+      document.getElementById("authMessage").textContent = message || "";
     }
-
 
     async function handleAuth() {
-
-      const email =
-        document
-          .getElementById(
-            "email"
-          )
-          .value
-          .trim();
-
-      const password =
-        document
-          .getElementById(
-            "password"
-          )
-          .value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
       if (!email || !password) {
-
-        showAuthMessage(
-          "Informe e-mail e senha."
-        );
-
+        showAuthMessage("Informe e-mail e senha.");
         return;
-
       }
 
-      showAuthMessage(
-        "Aguarde..."
-      );
-
-      try {
-
-        if (isSignup) {
-
-          const {
-            data,
-            error
-          } =
-            await sb.auth
-              .signUp({
-                email,
-                password
-              });
-
-          if (error) {
-            throw error;
-          }
-
-          if (data.user) {
-
-            currentUser =
-              data.user;
-
-          }
-
-          showAuthMessage(
-            "Conta criada. Verifique seu e-mail se a confirmação estiver ativada."
-          );
-
-        } else {
-
-          const {
-            data,
-            error
-          } =
-            await sb.auth
-              .signInWithPassword({
-                email,
-                password
-              });
-
-          if (error) {
-            throw error;
-          }
-
-          currentUser =
-            data.user;
-
-          showApp();
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        showAuthMessage(
-          error.message ||
-          "Erro na autenticação."
-        );
-
+      // AQUI NÃO TEM MAIS VERIFICAÇÃO DE API KEY.
+      // QUALQUER E-MAIL E SENHA FUNCIONAM.
+      currentUser = { id: "local_" + Date.now(), email: email };
+      
+      if (isSignup) {
+        showAuthMessage("Conta criada localmente! Entrando...");
+        setTimeout(() => { showApp(); }, 800);
+      } else {
+        showApp();
       }
-
     }
-
 
     /* =====================================================
        MOSTRAR APP
     ===================================================== */
-
     async function showApp() {
+      document.getElementById("authScreen").style.display = "none";
+      document.getElementById("app").style.display = "block";
 
-      document
-        .getElementById(
-          "authScreen"
-        )
-        .style.display =
-        "none";
-
-      document
-        .getElementById(
-          "app"
-        )
-        .style.display =
-        "block";
-
-      const cloudLoaded =
-        await loadListFromCloud();
-
-      if (!cloudLoaded) {
-
-        const localLoaded =
-          loadLocal();
-
-        if (!localLoaded) {
-
-          loadDemo();
-
-        }
-
+      const localLoaded = loadLocal();
+      if (!localLoaded) {
+        loadDemo();
       }
-
     }
-
 
     /* =====================================================
        LOGOUT
     ===================================================== */
-
     async function logout() {
-
-      await sb.auth.signOut();
-
-      currentUser =
-        null;
-
+      currentUser = null;
       list = [];
-
-      document
-        .getElementById(
-          "app"
-        )
-        .style.display =
-        "none";
-
-      document
-        .getElementById(
-          "authScreen"
-        )
-        .style.display =
-        "flex";
-
+      document.getElementById("app").style.display = "none";
+      document.getElementById("authScreen").style.display = "flex";
+      document.getElementById("authMessage").textContent = "";
     }
-
 
     /* =====================================================
        EVENTOS
     ===================================================== */
-
-    document
-      .getElementById(
-        "authButton"
-      )
-      .addEventListener(
-        "click",
-        handleAuth
-      );
-
-
-    document
-      .getElementById(
-        "authSwitch"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          isSignup =
-            !isSignup;
-
-          document
-            .getElementById(
-              "authButton"
-            )
-            .textContent =
-            isSignup
-              ? "Criar conta"
-              : "Entrar";
-
-          document
-            .getElementById(
-              "authSwitch"
-            )
-            .textContent =
-            isSignup
-              ? "Já tenho uma conta"
-              : "Criar uma conta";
-
-          showAuthMessage(
-            ""
-          );
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "logoutBtn"
-      )
-      .addEventListener(
-        "click",
-        logout
-      );
-
-
-    document
-      .getElementById(
-        "addListBtn"
-      )
-      .addEventListener(
-        "click",
-        openM3UModal
-      );
-
-
-    document
-      .getElementById(
-        "closeM3u"
-      )
-      .addEventListener(
-        "click",
-        closeM3UModal
-      );
-
-
-    document
-      .getElementById(
-        "loadM3u"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const url =
-            document
-              .getElementById(
-                "m3uUrl"
-              )
-              .value
-              .trim();
-
-          const file =
-            document
-              .getElementById(
-                "m3uFile"
-              )
-              .files[0];
-
-          if (file) {
-
-            loadM3UFile(
-              file
-            );
-
-          } else {
-
-            await loadM3UUrl(
-              url
-            );
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .addEventListener(
-        "input",
-        event => {
-
-          searchTerm =
-            event.target.value;
-
-          updateView();
-
-        }
-      );
-
-
-    document
-      .querySelectorAll(
-        ".tab"
-      )
-      .forEach(
-        tab => {
-
-          tab.addEventListener(
-            "click",
-            () => {
-
-              document
-                .querySelectorAll(
-                  ".tab"
-                )
-                .forEach(
-                  t =>
-                    t.classList
-                      .remove(
-                        "active"
-                      )
-                );
-
-              tab.classList.add(
-                "active"
-              );
-
-              currentFilter =
-                tab.dataset.filter;
-
-              updateView();
-
-            }
-          );
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        "closePlayer"
-      )
-      .addEventListener(
-        "click",
-        closePlayer
-      );
-
-
-    document
-      .getElementById(
-        "heroPlay"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          if (list.length) {
-
-            playVideo(
-              list[0].url,
-              list[0].name
-            );
-
-          }
-
-        }
-      );
-
-
-    /* =====================================================
-       ENTER NO LOGIN
-    ===================================================== */
-
-    document
-      .getElementById(
-        "password"
-      )
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if (
-            event.key === "Enter"
-          ) {
-
-            handleAuth();
-
-          }
-
-        }
-      );
-
-
-    /* =====================================================
-       SUPABASE SESSION
-    ===================================================== */
-
-    async function checkSession() {
-
-      try {
-
-        const {
-          data
-        } =
-          await sb.auth
-            .getSession();
-
-        if (
-          data &&
-          data.session
-        ) {
-
-          currentUser =
-            data.session.user;
-
-          await showApp();
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
+    document.getElementById("authButton").addEventListener("click", handleAuth);
+
+    document.getElementById("authSwitch").addEventListener("click", () => {
+      isSignup = !isSignup;
+      document.getElementById("authButton").textContent = isSignup ? "Criar conta" : "Entrar";
+      document.getElementById("authSwitch").textContent = isSignup ? "Já tenho uma conta" : "Criar uma conta";
+      showAuthMessage("");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("addListBtn").addEventListener("click", openM3UModal);
+    document.getElementById("closeM3u").addEventListener("click", closeM3UModal);
+
+    document.getElementById("loadM3u").addEventListener("click", async () => {
+      const url = document.getElementById("m3uUrl").value.trim();
+      const file = document.getElementById("m3uFile").files[0];
+      if (file) {
+        loadM3UFile(file);
+      } else {
+        await loadM3UUrl(url);
       }
+    });
 
-    }
+    document.getElementById("searchInput").addEventListener("input", event => {
+      searchTerm = event.target.value;
+      updateView();
+    });
 
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentFilter = tab.dataset.filter;
+        updateView();
+      });
+    });
 
-    sb.auth.onAuthStateChange(
-      (
-        event,
-        session
-      ) => {
+    document.getElementById("closePlayer").addEventListener("click", closePlayer);
 
-        if (
-          session &&
-          session.user
-        ) {
+    document.getElementById("heroPlay").addEventListener("click", () => {
+      if (list.length) playVideo(list[0].url, list[0].name);
+    });
 
-          currentUser =
-            session.user;
-
-        }
-
-      }
-    );
-
+    document.getElementById("password").addEventListener("keydown", event => {
+      if (event.key === "Enter") handleAuth();
+    });
 
     /* =====================================================
        INICIALIZAÇÃO
     ===================================================== */
-
-    checkSession();
-
+    // Não precisa mais verificar sessão do Supabase.
+    // O app começa na tela de login e aceita qualquer credencial.
+    console.log("RENATO IPTV carregado - Modo Local (sem API Key)");
   </script>
-
 </body>
 </html>
