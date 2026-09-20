@@ -172,7 +172,7 @@
     .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
     /* ============================================
-       PLAYER LIMPO - BOTÃO VOLTAR INVISÍVEL
+       PLAYER - APENAS VÍDEO E CONTROLES NATIVOS
     ============================================ */
     #playerModal {
       display: none; position: fixed; inset: 0; z-index: 10000;
@@ -189,46 +189,13 @@
       background: #000;
     }
 
-    /* Vídeo preenche tudo */
+    /* Vídeo com controles nativos visíveis */
     #video {
       display: block;
       background: #000;
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-
-    /* Esconde controles nativos */
-    #video::-webkit-media-controls {
-      display: none !important;
-    }
-
-    /* Botão Voltar - INVISÍVEL por padrão */
-    #closePlayer {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      z-index: 20;
-      border: 0;
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      font-size: 26px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;                    /* invisível por padrão */
-      pointer-events: none;          /* não clicável enquanto invisível */
-      transition: opacity 0.3s ease;
-    }
-
-    /* Quando o botão está visível */
-    #closePlayer.visible {
-      opacity: 1;
-      pointer-events: auto;          /* clicável quando visível */
     }
 
     /* RESPONSIVO */
@@ -306,9 +273,8 @@
     </div>
   </div>
 
-  <!-- PLAYER LIMPO -->
+  <!-- PLAYER: apenas o vídeo com controles nativos -->
   <div id="playerModal">
-    <button id="closePlayer">×</button>
     <div class="video-container">
       <video id="video" controls playsinline preload="metadata"></video>
     </div>
@@ -323,7 +289,6 @@
     let currentFilter = "todos";
     let searchTerm = "";
     let hls = null;
-    let buttonVisible = false;
 
     /* =====================================================
        DEMO
@@ -528,19 +493,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
-       TOGGLE DO BOTÃO VOLTAR
-    ===================================================== */
-    function toggleCloseButton() {
-      const btn = document.getElementById("closePlayer");
-      buttonVisible = !buttonVisible;
-      if (buttonVisible) {
-        btn.classList.add("visible");
-      } else {
-        btn.classList.remove("visible");
-      }
-    }
-
-    /* =====================================================
        PLAYER
     ===================================================== */
     function isHlsUrl(url) {
@@ -552,10 +504,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       const modal = document.getElementById("playerModal");
       const video = document.getElementById("video");
       modal.style.display = "block";
-
-      // Reseta o botão voltar (invisível ao abrir)
-      buttonVisible = false;
-      document.getElementById("closePlayer").classList.remove("visible");
 
       // GIRA A TELA AUTOMATICAMENTE AO DAR PLAY
       await rotateToLandscape();
@@ -588,10 +536,22 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       video.load();
       if (hls) { hls.destroy(); hls = null; }
       modal.style.display = "none";
-      document.getElementById("closePlayer").classList.remove("visible");
-      buttonVisible = false;
       await unlockRotation();
     }
+
+    /* =====================================================
+       BOTÃO VOLTAR DO CELULAR FECHA O PLAYER
+    ===================================================== */
+    function pushPlayerState() {
+      history.pushState({ player: true }, "");
+    }
+
+    window.addEventListener("popstate", function() {
+      const modal = document.getElementById("playerModal");
+      if (modal.style.display === "block") {
+        closePlayer();
+      }
+    });
 
     /* =====================================================
        SALVAR / CARREGAR LOCAL
@@ -781,22 +741,6 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
 
     document.getElementById("password").addEventListener("keydown", event => {
       if (event.key === "Enter") handleAuth();
-    });
-
-    /* =====================================================
-       CLIQUES NA TELA DO PLAYER - MOSTRA/ESCONDE BOTÃO
-    ===================================================== */
-    // Clique em qualquer lugar da tela do player (exceto no botão)
-    document.getElementById("playerModal").addEventListener("click", function(event) {
-      // Se o clique foi no próprio botão, não alterna (deixa o botão agir)
-      if (event.target.id === "closePlayer") return;
-      toggleCloseButton();
-    });
-
-    // Clique no botão voltar (fecha o player)
-    document.getElementById("closePlayer").addEventListener("click", function(event) {
-      event.stopPropagation(); // evita que o clique "vaze" para o player
-      closePlayer();
     });
 
     /* =====================================================
