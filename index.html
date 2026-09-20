@@ -12,9 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
-    /* =========================================================
-       RESET
-    ========================================================== */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -47,15 +44,7 @@
         radial-gradient(circle at 50% -10%, rgba(229,9,20,.14), transparent 35%),
         var(--bg);
       color: var(--text);
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       overflow-x: hidden;
     }
     body.player-open {
@@ -642,7 +631,7 @@
     }
 
     /* =========================================================
-       PLAYER - MODO PAISAGEM VIA CSS (FUNCIONA EM TODOS OS APARELHOS)
+       PLAYER - MODO PAISAGEM VIA CSS + SEM MENSAGENS
     ========================================================== */
     #playerModal {
       padding: 0;
@@ -657,7 +646,6 @@
       display: block;
     }
 
-    /* O shell ocupa toda a tela */
     .player-shell {
       position: absolute;
       inset: 0;
@@ -665,15 +653,12 @@
       overflow: hidden;
     }
 
-    /* O container do vídeo é rotacionado 90° para ficar em paisagem */
     .video-container {
       position: absolute;
       top: 50%;
       left: 50%;
-      /* Dimensões trocadas para simular paisagem dentro de um container retrato */
       width: 100vh;
       height: 100vw;
-      /* Rotação de 90 graus */
       transform: translate(-50%, -50%) rotate(90deg);
       transform-origin: center center;
       background: #000;
@@ -687,7 +672,7 @@
       display: block;
     }
 
-    /* Botão de fechar - invisível por padrão, mas considerando a rotação */
+    /* Botão de fechar - invisível por padrão */
     .player-close {
       position: absolute;
       top: 20px;
@@ -717,7 +702,7 @@
       background: rgba(229,9,20,.9);
     }
 
-    /* Loading */
+    /* Loading - permanece apenas para o carregamento inicial */
     .player-loading {
       position: absolute;
       z-index: 4;
@@ -745,23 +730,12 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Mensagens no meio do player - DESATIVADAS */
     .player-message {
-      position: absolute;
-      z-index: 5;
-      left: 50%;
-      bottom: 40px;
-      transform: translateX(-50%);
-      width: min(90%, 520px);
-      padding: 12px 15px;
-      border-radius: 10px;
-      background: rgba(0,0,0,.82);
-      border: 1px solid rgba(255,255,255,.1);
-      text-align: center;
-      color: #ddd;
-      font-size: 13px;
-      display: none;
-      backdrop-filter: blur(10px);
+      display: none !important;
     }
+
     .player-error {
       position: absolute;
       z-index: 6;
@@ -801,13 +775,9 @@
       filter: brightness(1.1);
     }
 
-    /* =========================================================
-       QUANDO O CELULAR JÁ ESTIVER EM PAISAGEM
-       (aí o vídeo NÃO precisa ser rotacionado)
-    ========================================================== */
+    /* Quando o celular já estiver em paisagem, o vídeo não precisa ser rotacionado */
     @media screen and (orientation: landscape) {
       .video-container {
-        /* Volta ao normal: sem rotação, ocupa a tela toda */
         width: 100%;
         height: 100%;
         transform: translate(-50%, -50%) rotate(0deg);
@@ -886,9 +856,6 @@
 </head>
 <body>
 
-  <!-- =========================================================
-       AUTH
-  ========================================================== -->
   <section id="authScreen">
     <div class="auth-box">
       <div class="auth-logo">
@@ -914,9 +881,6 @@
     </div>
   </section>
 
-  <!-- =========================================================
-       APP
-  ========================================================== -->
   <main id="app">
     <nav class="navbar">
       <div class="brand">
@@ -972,9 +936,6 @@
     </section>
   </main>
 
-  <!-- =========================================================
-       M3U MODAL
-  ========================================================== -->
   <div id="m3uModal" class="modal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1002,9 +963,6 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       PLAYER - MODO PAISAGEM AUTOMÁTICO VIA CSS
-  ========================================================== -->
   <div id="playerModal">
     <div class="player-shell">
       <button id="playerCloseButton" class="player-close" type="button">×</button>
@@ -1014,7 +972,6 @@
           <div class="spinner"></div>
           <p>Carregando transmissão...</p>
         </div>
-        <div id="playerMessage" class="player-message"></div>
         <div id="playerError" class="player-error">
           <div class="player-error-box">
             <div class="error-icon">⚠️</div>
@@ -1032,17 +989,11 @@
   <script>
     "use strict";
 
-    /* =========================================================
-       SUPABASE
-    ========================================================== */
     const SUPABASE_URL = "https://tcsikxqgyyvewqwfudcu.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0Y3Npa3hxZ3l5dmV3cXdmdWRjdSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5Nzk2NTQ4LCJleHAiOjIxMDUzNzI1NDh9.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
     const TABLE_NAME = "user_lists";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* =========================================================
-       DEMO
-    ========================================================== */
     const DEMO_M3U = `#EXTM3U
 #EXTINF:-1 tvg-id="demo-1" tvg-logo="https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV" group-title="Canais",Canal Demo 1
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
@@ -1052,9 +1003,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 #EXTINF:-1 tvg-id="demo-4" tvg-logo="https://dummyimage.com/600x338/444/fff&text=SERIE" group-title="Séries",Série Demo
 `;
 
-    /* =========================================================
-       ESTADO
-    ========================================================== */
     let currentUser = null;
     let list = [];
     let filteredList = [];
@@ -1072,9 +1020,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     let toastTimer = null;
     let authMode = "login";
 
-    /* =========================================================
-       ELEMENTOS
-    ========================================================== */
     const authScreen = document.getElementById("authScreen");
     const app = document.getElementById("app");
     const loginTab = document.getElementById("loginTab");
@@ -1107,15 +1052,11 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     const videoPlayer = document.getElementById("videoPlayer");
     const playerCloseButton = document.getElementById("playerCloseButton");
     const playerLoading = document.getElementById("playerLoading");
-    const playerMessage = document.getElementById("playerMessage");
     const playerError = document.getElementById("playerError");
     const playerErrorText = document.getElementById("playerErrorText");
     const retryPlayerButton = document.getElementById("retryPlayerButton");
     const toast = document.getElementById("toast");
 
-    /* =========================================================
-       UTILITÁRIOS
-    ========================================================== */
     function escapeHtml(value) {
       return String(value || "")
         .replaceAll("&", "&amp;")
@@ -1171,9 +1112,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    /* =========================================================
-       CATEGORIA
-    ========================================================== */
     function detectCategory(title, group) {
       const text = normalizeText(`${title || ""} ${group || ""}`);
       if (text.includes("novela") || text.includes("novelas")) return "novelas";
@@ -1182,9 +1120,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return "canais";
     }
 
-    /* =========================================================
-       M3U PARSER
-    ========================================================== */
     function parseM3U(text) {
       const lines = String(text || "").replace(/\r/g, "").split("\n");
       const items = [];
@@ -1222,9 +1157,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return items;
     }
 
-    /* =========================================================
-       RENDER
-    ========================================================== */
     function getFilteredItems() {
       const normalizedSearch = normalizeText(searchTerm);
       return list.filter(item => {
@@ -1293,9 +1225,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return labels[category] || "Conteúdo";
     }
 
-    /* =========================================================
-       HERO
-    ========================================================== */
     function updateHero() {
       const item = filteredList[0] || list[0] || null;
       currentHeroItem = item;
@@ -1314,9 +1243,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       heroPlayButton.disabled = !isHttpUrl(item.url);
     }
 
-    /* =========================================================
-       LOCAL STORAGE
-    ========================================================== */
     const LOCAL_STORAGE_KEY = "renato_iptv_list";
 
     function saveLocal() {
@@ -1342,9 +1268,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    /* =========================================================
-       SUPABASE - LISTA
-    ========================================================== */
     async function saveCloud() {
       if (!currentUser) return;
       try {
@@ -1394,9 +1317,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return false;
     }
 
-    /* =========================================================
-       DEFINIR LISTA
-    ========================================================== */
     async function setList(newList, saveOnline = true) {
       if (!Array.isArray(newList) || !newList.length) {
         showToast("Nenhum conteúdo válido foi encontrado.");
@@ -1418,9 +1338,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return true;
     }
 
-    /* =========================================================
-       IMPORTAR M3U
-    ========================================================== */
     async function importM3UText(text, sourceName = "lista") {
       const parsed = parseM3U(text);
       if (!parsed.length) {
@@ -1495,10 +1412,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    /* =========================================================
-       ORIENTAÇÃO - TENTA TRAVAR EM PAISAGEM (Android)
-       No iPhone não funciona, mas o CSS já gira o vídeo
-    ========================================================== */
     async function tryLockLandscape() {
       try {
         const elem = document.getElementById("playerModal");
@@ -1534,9 +1447,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       } catch (e) {}
     }
 
-    /* =========================================================
-       PLAYER - CONTROLE
-    ========================================================== */
     function destroyHls() {
       clearTimeout(hlsRetryTimer);
       hlsRetryTimer = null;
@@ -1567,13 +1477,14 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       playerLoading.style.display = "none";
     }
 
+    // *** FUNÇÃO DE MENSAGEM DESATIVADA - não mostra mais nada no meio da tela ***
     function showPlayerMessage(message) {
-      playerMessage.textContent = message;
-      playerMessage.style.display = "block";
+      // Desativado a pedido do usuário
+      // Não exibe mais "transmissão instável", "aguardando dados", etc.
     }
 
     function hidePlayerMessage() {
-      playerMessage.style.display = "none";
+      // Nada a fazer
     }
 
     function showPlayerError(message) {
@@ -1589,21 +1500,16 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     function prepareVideoEvents() {
       videoPlayer.onplaying = () => {
         hidePlayerLoading();
-        hidePlayerMessage();
         hidePlayerError();
       };
       videoPlayer.oncanplay = () => {
         hidePlayerLoading();
       };
       videoPlayer.onwaiting = () => {
-        if (playerError.style.display !== "flex") {
-          showPlayerMessage("Carregando transmissão...");
-        }
+        // Desativado - não mostra mais nada
       };
       videoPlayer.onstalled = () => {
-        if (playerError.style.display !== "flex") {
-          showPlayerMessage("A transmissão está instável. Tentando continuar...");
-        }
+        // Desativado - não mostra mais nada
       };
       videoPlayer.onerror = () => {
         if (hls || !playerModal || !playerModal.classList.contains("active")) {
@@ -1623,7 +1529,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         showPlayerError(message);
       };
       videoPlayer.onended = () => {
-        showPlayerMessage("A transmissão foi encerrada.");
+        // Desativado - não mostra mais nada
       };
     }
 
@@ -1635,13 +1541,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         }
       } catch (error) {
         hidePlayerLoading();
-        showPlayerMessage("Toque no botão ▶ do player para iniciar.");
       }
     }
 
-    /* =========================================================
-       PLAYER HLS
-    ========================================================== */
     function startHlsPlayer(url) {
       if (!window.Hls || !Hls.isSupported()) {
         return false;
@@ -1672,16 +1574,14 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       instance.on(Hls.Events.ERROR, (_event, data) => {
         if (hls !== instance) return;
         if (!data.fatal) {
-          if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
-            showPlayerMessage("Aguardando dados da transmissão...");
-          }
+          // Desativado - não mostra mensagens de buffer stalled
           return;
         }
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
           if (hlsRetryCount < 3) {
             hlsRetryCount++;
             const delay = 1500 * hlsRetryCount;
-            showPlayerMessage(`Reconectando à transmissão... (${hlsRetryCount}/3)`);
+            // Sem mensagem visual - reconecta silenciosamente
             clearTimeout(hlsRetryTimer);
             hlsRetryTimer = setTimeout(() => {
               if (hls !== instance) return;
@@ -1699,7 +1599,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
           if (mediaRecoveryAttempts < 2) {
             mediaRecoveryAttempts++;
-            showPlayerMessage("Recuperando o player...");
+            // Sem mensagem visual - recupera silenciosamente
             try {
               instance.recoverMediaError();
             } catch (error) {
@@ -1715,9 +1615,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       return true;
     }
 
-    /* =========================================================
-       PLAYER NATIVO
-    ========================================================== */
     function startNativeHls(url) {
       lastPlayerWasHls = true;
       videoPlayer.src = url;
@@ -1732,9 +1629,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       safePlay();
     }
 
-    /* =========================================================
-       ABRIR PLAYER - MODO PAISAGEM AUTOMÁTICO (CSS + JS)
-    ========================================================== */
     async function openPlayer(url, title, item = null) {
       if (!isHttpUrl(url)) {
         showToast("O endereço dessa transmissão não é válido.");
@@ -1744,20 +1638,15 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       currentVideoTitle = title || "";
       currentVideoItem = item;
 
-      // Mostra o player
       playerModal.classList.add("active");
       playerModal.style.display = "block";
       document.body.classList.add("player-open");
 
-      // Reseta o botão de fechar (invisível ao abrir)
       playerCloseButton.classList.remove("visible");
 
-      // Esconde overlays
       hidePlayerError();
-      hidePlayerMessage();
       showPlayerLoading();
 
-      // Destrói HLS antigo e reseta o vídeo
       destroyHls();
       resetVideo();
 
@@ -1765,11 +1654,8 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       mediaRecoveryAttempts = 0;
       prepareVideoEvents();
 
-      // Tenta travar em paisagem (funciona no Android)
-      // No iPhone não funciona, mas o CSS já gira o vídeo
       await tryLockLandscape();
 
-      // Inicia o player
       if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
         const started = startHlsPlayer(url);
         if (started) return;
@@ -1781,15 +1667,11 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       startDirectVideo(url);
     }
 
-    /* =========================================================
-       FECHAR PLAYER
-    ========================================================== */
     async function closePlayer() {
       destroyHls();
       resetVideo();
       hidePlayerError();
       hidePlayerLoading();
-      hidePlayerMessage();
       playerModal.classList.remove("active");
       playerModal.style.display = "none";
       document.body.classList.remove("player-open");
@@ -1800,17 +1682,11 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       await unlockOrientation();
     }
 
-    /* =========================================================
-       RETRY PLAYER
-    ========================================================== */
     function retryCurrentPlayer() {
       if (!currentVideoUrl) return;
       openPlayer(currentVideoUrl, currentVideoTitle, currentVideoItem);
     }
 
-    /* =========================================================
-       AUTH
-    ========================================================== */
     function setAuthMode(mode) {
       authMode = mode;
       const signup = mode === "signup";
@@ -1869,9 +1745,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    /* =========================================================
-       SHOW APP
-    ========================================================== */
     async function showApp() {
       authScreen.style.display = "none";
       app.style.display = "block";
@@ -1894,9 +1767,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       render();
     }
 
-    /* =========================================================
-       LOGOUT
-    ========================================================== */
     async function logout() {
       try {
         await supabaseClient.auth.signOut();
@@ -1908,9 +1778,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       showToast("Você saiu da conta.");
     }
 
-    /* =========================================================
-       MODAL M3U
-    ========================================================== */
     function openM3UModal() {
       m3uModal.style.display = "flex";
       m3uMessage.textContent = "";
@@ -1923,9 +1790,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       m3uModal.style.display = "none";
     }
 
-    /* =========================================================
-       EVENTOS AUTH
-    ========================================================== */
     loginTab.addEventListener("click", () => setAuthMode("login"));
     signupTab.addEventListener("click", () => setAuthMode("signup"));
     authButton.addEventListener("click", handleAuth);
@@ -1937,9 +1801,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     });
     logoutButton.addEventListener("click", logout);
 
-    /* =========================================================
-       EVENTOS M3U
-    ========================================================== */
     m3uOpenButton.addEventListener("click", openM3UModal);
     heroListButton.addEventListener("click", openM3UModal);
     m3uCloseButton.addEventListener("click", closeM3UModal);
@@ -1950,9 +1811,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       if (event.key === "Enter") loadM3UFromUrl();
     });
 
-    /* =========================================================
-       TABS
-    ========================================================== */
     document.querySelectorAll(".tab").forEach(button => {
       button.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(tab => {
@@ -1964,39 +1822,26 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       });
     });
 
-    /* =========================================================
-       BUSCA
-    ========================================================== */
     searchInput.addEventListener("input", event => {
       searchTerm = event.target.value;
       render();
     });
 
-    /* =========================================================
-       HERO PLAY
-    ========================================================== */
     heroPlayButton.addEventListener("click", () => {
       if (currentHeroItem) {
         openPlayer(currentHeroItem.url, currentHeroItem.title, currentHeroItem);
       }
     });
 
-    /* =========================================================
-       PLAYER EVENTOS
-    ========================================================== */
     playerCloseButton.addEventListener("click", closePlayer);
     retryPlayerButton.addEventListener("click", retryCurrentPlayer);
 
-    // Toque na tela do player mostra/esconde o botão fechar
     playerArea.addEventListener("click", (event) => {
       if (event.target.closest(".player-close")) return;
       if (event.target.closest(".retry-player")) return;
       playerCloseButton.classList.toggle("visible");
     });
 
-    /* =========================================================
-       TECLADO
-    ========================================================== */
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
       if (playerModal.classList.contains("active")) {
@@ -2008,18 +1853,12 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     });
 
-    /* =========================================================
-       CLICK FORA DO MODAL
-    ========================================================== */
     m3uModal.addEventListener("click", event => {
       if (event.target === m3uModal) {
         closeM3UModal();
       }
     });
 
-    /* =========================================================
-       SUPABASE SESSION
-    ========================================================== */
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         currentUser = session.user;
@@ -2029,9 +1868,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     });
 
-    /* =========================================================
-       INICIALIZAÇÃO
-    ========================================================== */
     async function initializeApp() {
       try {
         const { data, error } = await supabaseClient.auth.getSession();
