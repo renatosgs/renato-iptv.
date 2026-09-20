@@ -8,7 +8,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RENATO IPTV</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
@@ -76,123 +75,11 @@
       background: #555;
     }
 
-    #authScreen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background:
-        linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.95)),
-        radial-gradient(circle at center, rgba(229,9,20,.18), transparent 55%);
-    }
-    .auth-box {
-      width: 100%;
-      max-width: 430px;
-      padding: 35px 28px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: rgba(15,15,15,.94);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
-      animation: fadeUp .5s ease;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .auth-logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .auth-logo .logo-main {
-      font-size: 34px;
-      font-weight: 900;
-      letter-spacing: -1.5px;
-    }
-    .auth-logo .logo-main span {
-      color: var(--accent);
-    }
-    .auth-logo p {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .auth-tabs {
-      display: flex;
-      gap: 5px;
-      background: #090909;
-      padding: 5px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-    .auth-tab {
-      flex: 1;
-      padding: 11px;
-      border-radius: 9px;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 700;
-      transition: .2s;
-    }
-    .auth-tab.active {
-      background: var(--accent);
-      color: white;
-    }
-    .field {
-      margin-bottom: 15px;
-    }
-    .field label {
-      display: block;
-      margin-bottom: 7px;
-      color: #ddd;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .field input {
-      width: 100%;
-      padding: 14px 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      background: #090909;
-      color: white;
-      transition: .2s;
-    }
-    .field input:focus {
-      border-color: rgba(229,9,20,.75);
-      box-shadow: 0 0 0 3px rgba(229,9,20,.10);
-    }
-    .auth-button {
-      width: 100%;
-      margin-top: 5px;
-      padding: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      font-weight: 800;
-      transition: .2s;
-    }
-    .auth-button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.08);
-    }
-    .auth-button:disabled {
-      opacity: .6;
-      cursor: wait;
-      transform: none;
-    }
-    #authMessage {
-      min-height: 22px;
-      margin-top: 14px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
+    /* =========================================================
+       APP
+    ========================================================== */
     #app {
-      display: none;
+      display: block;
       min-height: 100vh;
     }
     .navbar {
@@ -424,6 +311,10 @@
       transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
       animation: fadeUp .4s ease backwards;
     }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .card:hover {
       transform: translateY(-4px);
       border-color: rgba(255,255,255,.16);
@@ -606,6 +497,9 @@
       font-size: 12px;
     }
 
+    /* =========================================================
+       PLAYER
+    ========================================================== */
     #playerModal {
       padding: 0;
       background: #000;
@@ -821,31 +715,6 @@
 </head>
 <body>
 
-  <section id="authScreen">
-    <div class="auth-box">
-      <div class="auth-logo">
-        <div class="logo-main">
-          RENATO <span>IPTV</span>
-        </div>
-        <p>Entre para acessar sua programação</p>
-      </div>
-      <div class="auth-tabs">
-        <button id="loginTab" class="auth-tab active" type="button">Entrar</button>
-        <button id="signupTab" class="auth-tab" type="button">Criar conta</button>
-      </div>
-      <div class="field">
-        <label for="emailInput">E-mail</label>
-        <input id="emailInput" type="email" autocomplete="email" placeholder="seuemail@email.com">
-      </div>
-      <div class="field">
-        <label for="passwordInput">Senha</label>
-        <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Digite sua senha">
-      </div>
-      <button id="authButton" class="auth-button" type="button">Entrar</button>
-      <div id="authMessage"></div>
-    </div>
-  </section>
-
   <main id="app">
     <nav class="navbar">
       <div class="brand">
@@ -857,7 +726,6 @@
       </div>
       <div class="nav-actions">
         <button id="m3uOpenButton" class="icon-btn" type="button" title="Adicionar lista">＋</button>
-        <button id="logoutButton" class="icon-btn" type="button" title="Sair">⇥</button>
       </div>
     </nav>
 
@@ -954,11 +822,6 @@
   <script>
     "use strict";
 
-    const SUPABASE_URL = "https://tcsikxqgyyvewqwfudcu.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0Y3Npa3hxZ3l5dmV3cXdmdWRjdSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5Nzk2NTQ4LCJleHAiOjIxMDUzNzI1NDh9.xwEoEjEpteTrSKJ-dOPszpwpQ-p5lgZphNZ93NyUoxg";
-    const TABLE_NAME = "user_lists";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const DEMO_M3U = `#EXTM3U
 #EXTINF:-1 tvg-id="demo-1" tvg-logo="https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV" group-title="Canais",Canal Demo 1
 https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
@@ -968,7 +831,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 #EXTINF:-1 tvg-id="demo-4" tvg-logo="https://dummyimage.com/600x338/444/fff&text=SERIE" group-title="Séries",Série Demo
 `;
 
-    let currentUser = null;
     let list = [];
     let filteredList = [];
     let currentCategory = "todos";
@@ -983,19 +845,10 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     let mediaRecoveryAttempts = 0;
     let lastPlayerWasHls = false;
     let toastTimer = null;
-    let authMode = "login";
     let loadingShownOnce = false;
     let stallDetectionTimer = null;
 
-    const authScreen = document.getElementById("authScreen");
     const app = document.getElementById("app");
-    const loginTab = document.getElementById("loginTab");
-    const signupTab = document.getElementById("signupTab");
-    const emailInput = document.getElementById("emailInput");
-    const passwordInput = document.getElementById("passwordInput");
-    const authButton = document.getElementById("authButton");
-    const authMessage = document.getElementById("authMessage");
-    const logoutButton = document.getElementById("logoutButton");
     const m3uModal = document.getElementById("m3uModal");
     const m3uOpenButton = document.getElementById("m3uOpenButton");
     const m3uCloseButton = document.getElementById("m3uCloseButton");
@@ -1235,56 +1088,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    async function saveCloud() {
-      if (!currentUser) return;
-      try {
-        const { error } = await supabaseClient
-          .from(TABLE_NAME)
-          .upsert(
-            {
-              user_id: currentUser.id,
-              content: list,
-              updated_at: new Date().toISOString()
-            },
-            { onConflict: "user_id" }
-          );
-        if (error) {
-          console.warn("Não foi possível salvar no Supabase:", error);
-          showToast("Lista salva no aparelho, mas o armazenamento online apresentou um erro.");
-          return;
-        }
-        showToast("Lista salva com sucesso.");
-      } catch (error) {
-        console.warn("Erro Supabase:", error);
-        showToast("Lista salva localmente.");
-      }
-    }
-
-    async function loadCloud() {
-      if (!currentUser) return false;
-      try {
-        const { data, error } = await supabaseClient
-          .from(TABLE_NAME)
-          .select("content")
-          .eq("user_id", currentUser.id)
-          .maybeSingle();
-        if (error) {
-          console.warn("Erro ao buscar lista online:", error);
-          return false;
-        }
-        if (data && Array.isArray(data.content) && data.content.length) {
-          list = data.content.filter(item => item && typeof item.title === "string" && isHttpUrl(item.url));
-          saveLocal();
-          render();
-          return true;
-        }
-      } catch (error) {
-        console.warn("Erro ao carregar Supabase:", error);
-      }
-      return false;
-    }
-
-    async function setList(newList, saveOnline = true) {
+    async function setList(newList) {
       if (!Array.isArray(newList) || !newList.length) {
         showToast("Nenhum conteúdo válido foi encontrado.");
         return false;
@@ -1299,9 +1103,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }));
       saveLocal();
       render();
-      if (saveOnline) {
-        await saveCloud();
-      }
       return true;
     }
 
@@ -1312,7 +1113,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         return false;
       }
       m3uMessage.textContent = `Encontrados ${parsed.length} itens.`;
-      const success = await setList(parsed, true);
+      const success = await setList(parsed);
       if (success) {
         closeM3UModal();
         showToast(`${parsed.length} itens carregados de ${sourceName}.`);
@@ -1437,7 +1238,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       } catch {}
       videoPlayer.removeAttribute("src");
       videoPlayer.load();
-      // Libera buffer da memória
       try {
         videoPlayer.querySelectorAll("source").forEach(s => s.remove());
       } catch {}
@@ -1464,7 +1264,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       playerError.style.display = "none";
     }
 
-    // *** DETECÇÃO DE TRAVAMENTO - recarrega se travar ***
     function startStallDetection() {
       let lastTime = 0;
       let stallCount = 0;
@@ -1476,7 +1275,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         if (now === lastTime) {
           stallCount++;
           if (stallCount >= 5) {
-            // 5 segundos travado = recarrega
             console.warn("Travamento detectado - recarregando...");
             stallCount = 0;
             if (hls) {
@@ -1552,51 +1350,38 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    // =========================================================
-    // HLS - CONFIGURADO PARA 8 GB COM PROTEÇÃO AUTOMÁTICA
-    // =========================================================
     function startHlsPlayer(url) {
       if (!window.Hls || !Hls.isSupported()) {
         return false;
       }
 
-      // *** TENTA 8 GB, MAS COM PROTEÇÃO ***
-      // Se o navegador reclamar, reduz automaticamente
-      let bufferLength = 480;         // 8 minutos à frente
-      let bufferSize = 8000 * 1000 * 1000; // 8 GB de buffer
-      let maxBuffer = 1600;           // 26 minutos máximo
-      let backBuffer = 300;           // 5 minutos para trás
+      let bufferLength = 480;
+      let bufferSize = 8000 * 1000 * 1000;
+      let maxBuffer = 1600;
+      let backBuffer = 300;
 
       try {
-        // Testa se o navegador aguenta (detecção de dispositivo)
-        const memInfo = navigator.deviceMemory || navigator.hardwareConcurrency || 4;
-
-        // deviceMemory retorna em GB. Se for <= 4, reduz o buffer
         if (navigator.deviceMemory) {
           if (navigator.deviceMemory <= 2) {
             bufferLength = 30;
             bufferSize = 50 * 1000 * 1000;
             maxBuffer = 60;
             backBuffer = 15;
-            console.warn("Dispositivo com pouca memória - buffer reduzido para 50 MB");
           } else if (navigator.deviceMemory <= 4) {
             bufferLength = 120;
             bufferSize = 200 * 1000 * 1000;
             maxBuffer = 300;
             backBuffer = 60;
-            console.warn("Dispositivo médio - buffer de 200 MB");
           } else if (navigator.deviceMemory <= 8) {
             bufferLength = 480;
             bufferSize = 8000 * 1000 * 1000;
             maxBuffer = 1600;
             backBuffer = 300;
-            console.warn("Dispositivo com 8GB - buffer máximo de 8 GB");
           } else {
             bufferLength = 600;
             bufferSize = 8000 * 1000 * 1000;
             maxBuffer = 1800;
             backBuffer = 400;
-            console.warn("Dispositivo top - buffer de 8 GB");
           }
         }
       } catch (e) {
@@ -1604,26 +1389,19 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
 
       const instance = new Hls({
-        // *** QUALIDADE MÁXIMA ***
         startLevel: -1,
         capLevelToPlayerSize: false,
         capLevelOnFPSDrop: false,
-
-        // *** BUFFER MÁXIMO (ATÉ 8 GB SE O CELULAR AGUENTAR) ***
         maxBufferLength: bufferLength,
         maxMaxBufferLength: maxBuffer,
         maxBufferSize: bufferSize,
         maxBufferHole: 0.5,
         backBufferLength: backBuffer,
-
-        // *** ABR (Adaptive Bitrate) - QUALIDADE MÁXIMA ***
         abrEwmaDefaultEstimate: 8000000,
         abrBandWidthFactor: 0.95,
         abrBandWidthUpFactor: 0.9,
         abrMaxWithRealBitrate: false,
         startFragPrefetch: true,
-
-        // *** RECUPERAÇÃO ***
         manifestLoadingMaxRetry: 10,
         manifestLoadingRetryDelay: 500,
         manifestLoadingMaxRetryTimeout: 64000,
@@ -1633,16 +1411,10 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         fragLoadingMaxRetry: 10,
         fragLoadingRetryDelay: 500,
         fragLoadingMaxRetryTimeout: 64000,
-
-        // *** TIMEOUTS ***
         fragLoadingTimeOut: 30000,
         manifestLoadingTimeOut: 15000,
         levelLoadingTimeOut: 15000,
-
-        // *** LATÊNCIA ***
         lowLatencyMode: false,
-
-        // *** PERFORMANCE ***
         enableWorker: true,
         enableSoftwareAES: true
       });
@@ -1660,11 +1432,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         if (hls !== instance) return;
         hidePlayerLoading();
         safePlay();
-        // Inicia detecção de travamento após o vídeo começar
         startStallDetection();
       });
 
-      // *** FORÇA A MELHOR QUALIDADE ***
       instance.on(Hls.Events.LEVEL_LOADED, () => {
         if (hls !== instance) return;
         try {
@@ -1678,7 +1448,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         }
       });
 
-      // *** ERROS SILENCIOSOS ***
       instance.on(Hls.Events.ERROR, (_event, data) => {
         if (hls !== instance) return;
         if (!data.fatal) return;
@@ -1775,19 +1544,15 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       startDirectVideo(url);
     }
 
-    // *** FECHA E LIMPA TUDO ***
     async function closePlayer() {
-      // Para o vídeo e destrói o HLS (libera toda a memória)
       destroyHls();
       resetVideo();
 
-      // Limpa o buffer manualmente (força o navegador a liberar)
       try {
         videoPlayer.src = "";
         videoPlayer.load();
       } catch (e) {}
 
-      // Limpa cache do vídeo (se suportado)
       try {
         if ("mediaSession" in navigator) {
           navigator.mediaSession.metadata = null;
@@ -1807,7 +1572,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 
       await unlockOrientation();
 
-      // Força garbage collection se disponível
       if (window.gc) {
         try { window.gc(); } catch (e) {}
       }
@@ -1816,97 +1580,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     function retryCurrentPlayer() {
       if (!currentVideoUrl) return;
       openPlayer(currentVideoUrl, currentVideoTitle, currentVideoItem);
-    }
-
-    function setAuthMode(mode) {
-      authMode = mode;
-      const signup = mode === "signup";
-      loginTab.classList.toggle("active", !signup);
-      signupTab.classList.toggle("active", signup);
-      authButton.textContent = signup ? "Criar conta" : "Entrar";
-      authMessage.textContent = "";
-      passwordInput.autocomplete = signup ? "new-password" : "current-password";
-    }
-
-    function friendlyAuthError(error) {
-      const message = String(error?.message || "").toLowerCase();
-      if (message.includes("invalid login credentials")) return "E-mail ou senha incorretos.";
-      if (message.includes("user already registered")) return "Este e-mail já possui uma conta.";
-      if (message.includes("password should be at least")) return "A senha precisa ter pelo menos 6 caracteres.";
-      if (message.includes("email not confirmed")) return "Confirme seu e-mail antes de entrar.";
-      if (message.includes("rate limit")) return "Muitas tentativas. Aguarde alguns minutos.";
-      return error?.message || "Não foi possível concluir a operação.";
-    }
-
-    async function handleAuth() {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      if (!email || !email.includes("@")) {
-        authMessage.textContent = "Digite um e-mail válido.";
-        return;
-      }
-      if (password.length < 6) {
-        authMessage.textContent = "A senha deve ter pelo menos 6 caracteres.";
-        return;
-      }
-      setButtonLoading(authButton, true, authMode === "signup" ? "Criando..." : "Entrando...");
-      authMessage.textContent = "Aguarde...";
-      try {
-        if (authMode === "signup") {
-          const { data, error } = await supabaseClient.auth.signUp({ email, password });
-          if (error) throw error;
-          if (data?.session) {
-            currentUser = data.user;
-            await showApp();
-            authMessage.textContent = "";
-          } else {
-            authMessage.textContent = "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
-          }
-        } else {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          currentUser = data.user;
-          await showApp();
-        }
-      } catch (error) {
-        console.error("Erro de autenticação:", error);
-        authMessage.textContent = friendlyAuthError(error);
-      } finally {
-        setButtonLoading(authButton, false);
-      }
-    }
-
-    async function showApp() {
-      authScreen.style.display = "none";
-      app.style.display = "block";
-      const loadedCloud = await loadCloud();
-      if (!loadedCloud) {
-        const loadedLocal = loadLocal();
-        if (!loadedLocal) {
-          list = [];
-          render();
-        }
-      }
-    }
-
-    function showAuth() {
-      app.style.display = "none";
-      authScreen.style.display = "flex";
-      currentUser = null;
-      list = [];
-      filteredList = [];
-      render();
-    }
-
-    async function logout() {
-      try {
-        await supabaseClient.auth.signOut();
-      } catch (error) {
-        console.warn(error);
-      }
-      closePlayer();
-      showAuth();
-      showToast("Você saiu da conta.");
     }
 
     function openM3UModal() {
@@ -1920,17 +1593,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     function closeM3UModal() {
       m3uModal.style.display = "none";
     }
-
-    loginTab.addEventListener("click", () => setAuthMode("login"));
-    signupTab.addEventListener("click", () => setAuthMode("signup"));
-    authButton.addEventListener("click", handleAuth);
-    emailInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") handleAuth();
-    });
-    passwordInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") handleAuth();
-    });
-    logoutButton.addEventListener("click", logout);
 
     m3uOpenButton.addEventListener("click", openM3UModal);
     heroListButton.addEventListener("click", openM3UModal);
@@ -1990,32 +1652,14 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     });
 
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        currentUser = session.user;
-      }
-      if (event === "SIGNED_OUT") {
-        showAuth();
-      }
-    });
-
-    async function initializeApp() {
-      try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error) {
-          console.warn("Erro ao verificar sessão:", error);
-          showAuth();
-          return;
-        }
-        if (data?.session?.user) {
-          currentUser = data.session.user;
-          await showApp();
-        } else {
-          showAuth();
-        }
-      } catch (error) {
-        console.error("Erro na inicialização:", error);
-        showAuth();
+    // =========================================================
+    // INICIALIZAÇÃO
+    // =========================================================
+    function initializeApp() {
+      const loadedLocal = loadLocal();
+      if (!loadedLocal) {
+        list = [];
+        render();
       }
     }
 
