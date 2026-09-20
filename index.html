@@ -606,9 +606,6 @@
       font-size: 12px;
     }
 
-    /* =========================================================
-       PLAYER - MODO PAISAGEM VIA CSS
-    ========================================================== */
     #playerModal {
       padding: 0;
       background: #000;
@@ -677,7 +674,6 @@
       background: rgba(229,9,20,.9);
     }
 
-    /* Loading aparece apenas uma vez */
     .player-loading {
       position: absolute;
       z-index: 4;
@@ -745,30 +741,11 @@
       filter: brightness(1.1);
     }
 
-    /* =========================================================
-       *** IMPORTANTE: ESCONDE O AVISO NATIVO DE "REDE INSTÁVEL" ***
-       Alguns navegadores mostram um aviso nativo quando a rede
-       fica instável. Aqui desativamos os pseudo-elementos.
-    ========================================================== */
-    video::-webkit-media-controls-overlay-play-button {
-      display: none !important;
-    }
-    video::-webkit-media-controls-overlay-enclosure {
-      display: none !important;
-    }
-    video::-internal-media-controls-download-button {
-      display: none !important;
-    }
-    video::-webkit-media-controls-panel {
-      /* Mantém os controles normais visíveis */
-    }
-    /* Esconde a mensagem de status de rede nativa (Android Chrome) */
-    video::-webkit-media-controls-status-display {
-      display: none !important;
-    }
-    video::-webkit-media-controls-time-remaining-display {
-      display: none !important;
-    }
+    video::-webkit-media-controls-overlay-play-button { display: none !important; }
+    video::-webkit-media-controls-overlay-enclosure { display: none !important; }
+    video::-internal-media-controls-download-button { display: none !important; }
+    video::-webkit-media-controls-status-display { display: none !important; }
+    video::-webkit-media-controls-time-remaining-display { display: none !important; }
 
     @media screen and (orientation: landscape) {
       .video-container {
@@ -951,7 +928,6 @@
     </div>
   </div>
 
-  <!-- PLAYER -->
   <div id="playerModal">
     <div class="player-shell">
       <button id="playerCloseButton" class="player-close" type="button">×</button>
@@ -1444,9 +1420,9 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         try {
           hls.destroy();
         } catch (error) {
-          console.warn("Erro aoContent destruir HLS:", error);
+          console.warn("Erro ao destruir HLS:", error);
         }
- =        hls = null;
+        hls = null;
       }
     }
 
@@ -1455,8 +1431,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         videoPlayer.pause();
       } catch {}
       videoPlayer.removeAttribute("src");
- message;
-           player videoPlayer.load();
+      videoPlayer.load();
     }
 
     function showPlayerLoading(message = "Carregando transmissão...") {
@@ -1472,15 +1447,14 @@ https://test-streams.mux.dev/test_001/stream.m3u8
 
     function showPlayerError(message) {
       hidePlayerLoading();
-      playerErrorText.textError.style.display = "flex";
+      playerErrorText.textContent = message;
+      playerError.style.display = "flex";
     }
 
     function hidePlayerError() {
       playerError.style.display = "none";
     }
 
-    // *** EVENTOS DO VÍDEO - TOTALMENTE SILENCIOSOS ***
-    // Removemos/desativamos qualquer evento que possa disparar mensagens
     function prepareVideoEvents() {
       videoPlayer.onplaying = () => {
         hidePlayerLoading();
@@ -1492,8 +1466,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       videoPlayer.oncanplaythrough = () => {
         hidePlayerLoading();
       };
-
-      // Silenciosos: não fazem nada
       videoPlayer.onwaiting = null;
       videoPlayer.onstalled = null;
       videoPlayer.onsuspend = null;
@@ -1509,7 +1481,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       videoPlayer.onloadeddata = null;
       videoPlayer.onabort = null;
       videoPlayer.onemptied = null;
-
       videoPlayer.onerror = () => {
         if (hls || !playerModal || !playerModal.classList.contains("active")) {
           return;
@@ -1541,41 +1512,67 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       }
     }
 
-    // *** HLS CONFIGURADO COM ALTA QUALIDADE E SILENCIOSO ***
+    // =========================================================
+    // HLS - CONFIGURADO PARA BAIXAR O MÁXIMO EM SEGUNDO PLANO
+    // =========================================================
     function startHlsPlayer(url) {
       if (!window.Hls || !Hls.isSupported()) {
         return false;
       }
 
       const instance = new Hls({
+        // *** MÁXIMA QUALIDADE ***
         startLevel: -1,
         capLevelToPlayerSize: false,
         capLevelOnFPSDrop: false,
-        maxBufferLength: 60,
-        maxMaxBufferLength: 120,
-        maxBufferSize: 60 * 1000 * 1000,
-        maxBufferHole: 0.5,
-        backBufferLength: 30,
-        abrEwmaDefaultEstimate: 5000000,
+
+        // *** BUFFER GIGANTE - MUITO VÍDEO EM SEGUNDO PLANO ***
+        maxBufferLength: 600,           // 10 MINUTOS de buffer à frente (antes era 60s)
+        maxMaxBufferLength: 1200,       // Máximo 20 minutos de buffer
+        maxBufferSize: 600 * 1000 * 1000, // 600 MB de buffer em memória (antes era 60 MB)
+        maxBufferHole: 0.3,             // Tolera buracos de 0.3s no buffer
+        backBufferLength: 120,          // 2 minutos de buffer para trás (permite voltar)
+        backBufferSize: 300 * 1000 * 1000, // 300 MB de back buffer
+
+        // *** LÊ MUITO ADIANTE - BAIXA ANTES DE PRECISAR ***
+        startFragPrefetch: true,        // Pré-carrega o primeiro fragmento
+
+        // *** ABR (Adaptive Bitrate) - QUALIDADE MÁXIMA ***
+        abrEwmaDefaultEstimate: 8000000, // Estimativa inicial de 8 Mbps
         abrBandWidthFactor: 0.95,
         abrBandWidthUpFactor: 0.9,
         abrMaxWithRealBitrate: false,
-        startFragPrefetch: true,
-        manifestLoadingMaxRetry: 6,
-        manifestLoadingRetryDelay: 1000,
+
+        // *** RECUPERAÇÃO AUTOMÁTICA ***
+        manifestLoadingMaxRetry: 20,
+        manifestLoadingRetryDelay: 500,
         manifestLoadingMaxRetryTimeout: 64000,
-        levelLoadingMaxRetry: 6,
-        levelLoadingRetryDelay: 1000,
+        levelLoadingMaxRetry: 20,
+        levelLoadingRetryDelay: 500,
         levelLoadingMaxRetryTimeout: 64000,
-        fragLoadingMaxRetry: 6,
-        fragLoadingRetryDelay: 1000,
+        fragLoadingMaxRetry: 20,
+        fragLoadingRetryDelay: 500,
         fragLoadingMaxRetryTimeout: 64000,
+
+        // *** TIMEOUTS GENEROSOS ***
+        fragLoadingTimeOut: 40000,
+        manifestLoadingTimeOut: 20000,
+        levelLoadingTimeOut: 20000,
+
+        // *** LATÊNCIA BAIXA DESATIVADA (PRIORIDADE: QUALIDADE) ***
         lowLatencyMode: false,
+
+        // *** PERFORMANCE ***
         enableWorker: true,
         enableSoftwareAES: true,
-        fragLoadingTimeOut: 20000,
-        manifestLoadingTimeOut: 10000,
-        levelLoadingTimeOut: 10000
+
+        // *** PREFETCH: BAIXA DADOS EM SEGUNDO PLANO ***
+        // Continua baixando fragmentos mesmo se o player estiver pausado
+        testBandwidth: false,
+
+        // *** TAMANHO DO FRAGMENTO ***
+        // Configuração para o player ler mais dados por vez
+        maxFragLookUpTolerance: 0.25
       });
 
       hls = instance;
@@ -1593,6 +1590,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         safePlay();
       });
 
+      // *** FORÇA A MELHOR QUALIDADE ***
       instance.on(Hls.Events.LEVEL_LOADED, () => {
         if (hls !== instance) return;
         try {
@@ -1606,20 +1604,20 @@ https://test-streams.mux.dev/test_001/stream.m3u8
         }
       });
 
-      // *** ERROS SILENCIOSOS: RECONECTA SEM MOSTRAR NADA ***
+      // *** QUANDO O BUFFER ESTIVER CHEIO, CONTINUA BAIXANDO ***
+      instance.on(Hls.Events.FRAG_BUFFERED, () => {
+        // Nada a fazer - o HLS.js já gerencia
+      });
+
+      // *** ERROS SILENCIOSOS ***
       instance.on(Hls.Events.ERROR, (_event, data) => {
         if (hls !== instance) return;
+        if (!data.fatal) return;
 
-        // Erros não fatais: silenciosos
-        if (!data.fatal) {
-          return;
-        }
-
-        // Erro de rede: reconecta silenciosamente
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-          if (hlsRetryCount < 20) {
+          if (hlsRetryCount < 30) {
             hlsRetryCount++;
-            const delay = 500 * Math.min(hlsRetryCount, 8);
+            const delay = 500 * Math.min(hlsRetryCount, 6);
             clearTimeout(hlsRetryTimer);
             hlsRetryTimer = setTimeout(() => {
               if (hls !== instance) return;
@@ -1634,10 +1632,8 @@ https://test-streams.mux.dev/test_001/stream.m3u8
           }
           return;
         }
-
-        // Erro de mídia: recupera silenciosamente
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-          if (mediaRecoveryAttempts < 5) {
+          if (mediaRecoveryAttempts < 10) {
             mediaRecoveryAttempts++;
             try {
               instance.recoverMediaError();
@@ -1649,7 +1645,6 @@ https://test-streams.mux.dev/test_001/stream.m3u8
           }
           return;
         }
-
         showPlayerError("O player encontrou um erro fatal nessa transmissão.");
       });
 
@@ -1684,10 +1679,8 @@ https://test-streams.mux.dev/test_001/stream.m3u8
       document.body.classList.add("player-open");
 
       playerCloseButton.classList.remove("visible");
-
       hidePlayerError();
 
-      // Reseta o controle do loading
       loadingShownOnce = false;
       showPlayerLoading();
 
