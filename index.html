@@ -171,27 +171,20 @@
     }
     .modal-buttons .red { background: var(--red); border-color: var(--red); }
 
-    /* PLAYER - AJUSTADO PARA TELA INTEIRA */
+    /* PLAYER */
     #playerModal {
       display: none; position: fixed; inset: 0; z-index: 10000;
       background: #000; align-items: center; justify-content: center; flex-direction: column;
     }
     
-    /* Classe que controla o modo de exibição do vídeo */
     #video { 
       width: 100%; 
       height: 100%;
       background: #000; 
       transition: object-fit 0.3s ease;
     }
-    /* Modo padrão: mantém proporção (faixas pretas) */
-    #video.fit-contain {
-      object-fit: contain;
-    }
-    /* Modo esticado: preenche a tela toda (corta bordas) */
-    #video.fit-cover {
-      object-fit: cover;
-    }
+    #video.fit-contain { object-fit: contain; }
+    #video.fit-cover { object-fit: cover; }
 
     .player-top {
       width: 100%; min-height: 55px; display: flex; align-items: center;
@@ -202,9 +195,7 @@
       color: white; font-weight: bold; font-size: 14px; max-width: 60%;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .player-buttons {
-      display: flex; align-items: center; gap: 10px;
-    }
+    .player-buttons { display: flex; align-items: center; gap: 10px; }
     .btn-toggle-fit {
       background: #333; color: white; border: 1px solid #555;
       padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: bold;
@@ -487,13 +478,66 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
     }
 
     /* =====================================================
+       ROTACIONAR TELA
+    ===================================================== */
+    async function rotateScreenLandscape() {
+      try {
+        // Tenta travar a orientação em paisagem
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock('landscape');
+        }
+      } catch (e) {
+        console.warn("Não foi possível travar a orientação da tela:", e);
+      }
+    }
+
+    async function unlockScreen() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+      } catch (e) {
+        console.warn("Não foi possível destravar a orientação:", e);
+      }
+    }
+
+    async function requestFullscreen() {
+      const elem = document.getElementById("playerModal");
+      try {
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          await elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          await elem.msRequestFullscreen();
+        }
+      } catch (e) {
+        console.warn("Fullscreen não suportado ou negado:", e);
+      }
+    }
+
+    async function exitFullscreen() {
+      try {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+      } catch (e) {
+        console.warn("Erro ao sair da tela cheia:", e);
+      }
+    }
+
+    /* =====================================================
        PLAYER
     ===================================================== */
     function isHlsUrl(url) {
       return /\.m3u8(?:$|[?#])/i.test(String(url || ""));
     }
 
-    function playVideo(url, name) {
+    async function playVideo(url, name) {
       if (!url) return;
       const modal = document.getElementById("playerModal");
       const video = document.getElementById("video");
@@ -501,12 +545,15 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       title.textContent = name || "Reprodução";
       modal.style.display = "flex";
       
+      // Tenta entrar em tela cheia e girar a tela
+      await requestFullscreen();
+      await rotateScreenLandscape();
+
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
       video.removeAttribute("src");
       video.load();
       
-      // Sempre começa no modo "contain" (mantém proporção)
       video.className = "fit-contain";
       document.getElementById("toggleFitBtn").textContent = "📺 Esticar Tela";
 
@@ -525,7 +572,7 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       }
     }
 
-    function closePlayer() {
+    async function closePlayer() {
       const modal = document.getElementById("playerModal");
       const video = document.getElementById("video");
       video.pause();
@@ -533,6 +580,10 @@ https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`;
       video.load();
       if (hls) { hls.destroy(); hls = null; }
       modal.style.display = "none";
+      
+      // Destrava a orientação e sai da tela cheia ao fechar
+      await unlockScreen();
+      await exitFullscreen();
     }
 
     /* =====================================================
