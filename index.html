@@ -8,9 +8,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RENATO IPTV</title>
 
-  <!-- =========================================================
-       CDN
-  ========================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -22,6 +19,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
     :root {
       --bg: #050505;
@@ -63,8 +61,7 @@
     body.player-open {
       overflow: hidden;
     }
-    button,
-    input {
+    button, input {
       font: inherit;
     }
     button {
@@ -100,15 +97,8 @@
       justify-content: center;
       padding: 20px;
       background:
-        linear-gradient(
-          rgba(0,0,0,.75),
-          rgba(0,0,0,.95)
-        ),
-        radial-gradient(
-          circle at center,
-          rgba(229,9,20,.18),
-          transparent 55%
-        );
+        linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.95)),
+        radial-gradient(circle at center, rgba(229,9,20,.18), transparent 55%);
     }
     .auth-box {
       width: 100%;
@@ -119,6 +109,11 @@
       background: rgba(15,15,15,.94);
       box-shadow: var(--shadow);
       backdrop-filter: blur(20px);
+      animation: fadeUp .5s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .auth-logo {
       text-align: center;
@@ -152,6 +147,7 @@
       background: transparent;
       color: var(--muted);
       font-weight: 700;
+      transition: .2s;
     }
     .auth-tab.active {
       background: var(--accent);
@@ -252,9 +248,11 @@
       outline: none;
       background: #111;
       color: white;
+      transition: .2s;
     }
     .search-box input:focus {
       border-color: rgba(229,9,20,.6);
+      background: #161616;
     }
     .search-icon {
       position: absolute;
@@ -277,9 +275,11 @@
       color: white;
       border: 1px solid var(--border);
       transition: .2s;
+      font-size: 18px;
     }
     .icon-btn:hover {
       background: #222;
+      transform: scale(1.05);
     }
 
     /* =========================================================
@@ -290,14 +290,7 @@
       min-height: 330px;
       margin: 0;
       overflow: hidden;
-      background:
-        linear-gradient(
-          90deg,
-          #050505 0%,
-          rgba(5,5,5,.92) 32%,
-          rgba(5,5,5,.55) 65%,
-          #050505 100%
-        );
+      background: linear-gradient(90deg, #050505 0%, rgba(5,5,5,.92) 32%, rgba(5,5,5,.55) 65%, #050505 100%);
     }
     .hero-bg {
       position: absolute;
@@ -306,6 +299,7 @@
       background-size: cover;
       opacity: .35;
       filter: saturate(.9);
+      transition: opacity .5s;
     }
     .hero-gradient {
       position: absolute;
@@ -346,26 +340,32 @@
       margin-top: 22px;
       flex-wrap: wrap;
     }
-    .primary-btn,
-    .secondary-btn {
+    .primary-btn, .secondary-btn {
       padding: 12px 18px;
       border-radius: 9px;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      transition: .2s;
     }
     .primary-btn {
       background: white;
       color: black;
+    }
+    .primary-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255,255,255,.15);
     }
     .secondary-btn {
       background: rgba(255,255,255,.1);
       color: white;
       border: 1px solid var(--border);
     }
-    .primary-btn:disabled,
-    .secondary-btn:disabled {
+    .secondary-btn:hover {
+      background: rgba(255,255,255,.15);
+    }
+    .primary-btn:disabled, .secondary-btn:disabled {
       opacity: .45;
       cursor: not-allowed;
     }
@@ -386,6 +386,10 @@
       backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255,255,255,.04);
       overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-wrap::-webkit-scrollbar {
+      display: none;
     }
     .tabs {
       display: flex;
@@ -404,6 +408,7 @@
     }
     .tab:hover {
       color: white;
+      background: #1a1a1a;
     }
     .tab.active {
       color: white;
@@ -445,10 +450,8 @@
       background: var(--card);
       border: 1px solid rgba(255,255,255,.055);
       cursor: pointer;
-      transition:
-        transform .22s ease,
-        border-color .22s ease,
-        box-shadow .22s ease;
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+      animation: fadeUp .4s ease backwards;
     }
     .card:hover {
       transform: translateY(-4px);
@@ -459,8 +462,7 @@
       position: relative;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      background:
-        linear-gradient(135deg, #181818, #0c0c0c);
+      background: linear-gradient(135deg, #181818, #0c0c0c);
     }
     .card-image img {
       width: 100%;
@@ -495,6 +497,7 @@
       color: white;
       font-size: 18px;
       box-shadow: 0 8px 25px rgba(0,0,0,.45);
+      padding-left: 3px;
     }
     .card-info {
       padding: 10px;
@@ -555,6 +558,7 @@
       background: #111;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
+      animation: fadeUp .3s ease;
     }
     .modal-header {
       display: flex;
@@ -573,6 +577,10 @@
       background: #202020;
       color: white;
       font-size: 19px;
+      transition: .2s;
+    }
+    .close-btn:hover {
+      background: #2d2d2d;
     }
     .modal-section {
       padding: 15px;
@@ -610,9 +618,16 @@
       background: var(--accent);
       color: white;
       font-weight: 800;
+      transition: .2s;
+    }
+    .modal-action:hover:not(:disabled) {
+      filter: brightness(1.1);
     }
     .modal-action.secondary {
       background: #222;
+    }
+    .modal-action.secondary:hover:not(:disabled) {
+      background: #2d2d2d;
     }
     .modal-action:disabled {
       opacity: .5;
@@ -627,67 +642,82 @@
     }
 
     /* =========================================================
-       PLAYER
+       PLAYER - MODO PAISAGEM VIA CSS (FUNCIONA EM TODOS OS APARELHOS)
     ========================================================== */
     #playerModal {
       padding: 0;
       background: #000;
-    }
-    .player-shell {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #000;
-    }
-    .player-top {
-      min-height: 58px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 14px;
-      background: #080808;
-      border-bottom: 1px solid #171717;
-    }
-    .player-title {
-      flex: 1;
-      min-width: 0;
-      font-weight: 800;
-      white-space: nowrap;
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .player-tools {
-      display: flex;
-      gap: 7px;
+    #playerModal.active {
+      display: block;
     }
-    .player-tool {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      background: #181818;
-      color: white;
-      border: 1px solid var(--border);
+
+    /* O shell ocupa toda a tela */
+    .player-shell {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      overflow: hidden;
     }
-    .player-tool:hover {
-      background: #272727;
-    }
-    .player-area {
-      position: relative;
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    /* O container do vídeo é rotacionado 90° para ficar em paisagem */
+    .video-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      /* Dimensões trocadas para simular paisagem dentro de um container retrato */
+      width: 100vh;
+      height: 100vw;
+      /* Rotação de 90 graus */
+      transform: translate(-50%, -50%) rotate(90deg);
+      transform-origin: center center;
       background: #000;
     }
+
     #videoPlayer {
       width: 100%;
       height: 100%;
-      max-height: calc(100vh - 58px);
       background: #000;
       object-fit: contain;
+      display: block;
     }
+
+    /* Botão de fechar - invisível por padrão, mas considerando a rotação */
+    .player-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.7);
+      color: white;
+      font-size: 26px;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .player-close.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .player-close:hover {
+      background: rgba(229,9,20,.9);
+    }
+
+    /* Loading */
     .player-loading {
       position: absolute;
       z-index: 4;
@@ -713,15 +743,13 @@
       color: #ddd;
     }
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
     .player-message {
       position: absolute;
       z-index: 5;
       left: 50%;
-      bottom: 35px;
+      bottom: 40px;
       transform: translateX(-50%);
       width: min(90%, 520px);
       padding: 12px 15px;
@@ -732,6 +760,7 @@
       color: #ddd;
       font-size: 13px;
       display: none;
+      backdrop-filter: blur(10px);
     }
     .player-error {
       position: absolute;
@@ -741,7 +770,7 @@
       align-items: center;
       justify-content: center;
       padding: 25px;
-      background: rgba(0,0,0,.78);
+      background: rgba(0,0,0,.85);
       text-align: center;
     }
     .player-error-box {
@@ -766,6 +795,23 @@
       background: var(--accent);
       color: white;
       font-weight: 800;
+      transition: .2s;
+    }
+    .retry-player:hover {
+      filter: brightness(1.1);
+    }
+
+    /* =========================================================
+       QUANDO O CELULAR JÁ ESTIVER EM PAISAGEM
+       (aí o vídeo NÃO precisa ser rotacionado)
+    ========================================================== */
+    @media screen and (orientation: landscape) {
+      .video-container {
+        /* Volta ao normal: sem rotação, ocupa a tela toda */
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
     }
 
     /* =========================================================
@@ -773,7 +819,7 @@
     ========================================================== */
     #toast {
       position: fixed;
-      z-index: 1000;
+      z-index: 2000;
       left: 50%;
       bottom: 22px;
       transform: translate(-50%, 20px);
@@ -800,44 +846,22 @@
        RESPONSIVE
     ========================================================== */
     @media (min-width: 600px) {
-      .grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
     @media (min-width: 1000px) {
-      .grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-      }
+      .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
     @media (min-width: 1500px) {
-      .grid {
-        grid-template-columns: repeat(8, minmax(0, 1fr));
-      }
+      .grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
     }
     @media (max-width: 700px) {
-      .navbar {
-        padding: 10px 12px;
-        gap: 9px;
-      }
-      .brand {
-        font-size: 17px;
-      }
-      .search-box {
-        max-width: none;
-      }
-      .nav-actions {
-        display: none;
-      }
-      .hero {
-        min-height: 300px;
-      }
-      .hero-content {
-        padding: 70px 20px 40px;
-      }
-      .content {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
+      .navbar { padding: 10px 12px; gap: 9px; }
+      .brand { font-size: 17px; }
+      .search-box { max-width: none; }
+      .nav-actions { display: none; }
+      .hero { min-height: 300px; }
+      .hero-content { padding: 70px 20px 40px; }
+      .content { padding-left: 12px; padding-right: 12px; }
       .tabs-wrap {
         top: 63px;
         margin-left: -12px;
@@ -845,26 +869,17 @@
         padding-left: 12px;
         padding-right: 12px;
       }
-      .grid {
-        gap: 8px;
-      }
-      .card {
-        border-radius: 9px;
-      }
-      .card-info {
-        padding: 8px;
-      }
-      .card-title {
-        font-size: 11px;
-      }
-      .card-category {
-        font-size: 10px;
-      }
-      .modal {
-        padding: 10px;
-      }
-      .modal-box {
-        padding: 17px;
+      .grid { gap: 8px; }
+      .card { border-radius: 9px; }
+      .card-info { padding: 8px; }
+      .card-title { font-size: 11px; }
+      .card-category { font-size: 10px; }
+      .modal { padding: 10px; }
+      .modal-box { padding: 17px; }
+      .player-close {
+        width: 42px;
+        height: 42px;
+        font-size: 24px;
       }
     }
   </style>
@@ -883,12 +898,8 @@
         <p>Entre para acessar sua programação</p>
       </div>
       <div class="auth-tabs">
-        <button id="loginTab" class="auth-tab active" type="button">
-          Entrar
-        </button>
-        <button id="signupTab" class="auth-tab" type="button">
-          Criar conta
-        </button>
+        <button id="loginTab" class="auth-tab active" type="button">Entrar</button>
+        <button id="signupTab" class="auth-tab" type="button">Criar conta</button>
       </div>
       <div class="field">
         <label for="emailInput">E-mail</label>
@@ -898,9 +909,7 @@
         <label for="passwordInput">Senha</label>
         <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Digite sua senha">
       </div>
-      <button id="authButton" class="auth-button" type="button">
-        Entrar
-      </button>
+      <button id="authButton" class="auth-button" type="button">Entrar</button>
       <div id="authMessage"></div>
     </div>
   </section>
@@ -923,9 +932,6 @@
       </div>
     </nav>
 
-    <!-- =======================================================
-         HERO
-    ======================================================== -->
     <section class="hero">
       <div id="heroBg" class="hero-bg"></div>
       <div class="hero-gradient"></div>
@@ -937,19 +943,12 @@
           filmes e séries em uma interface simples e rápida.
         </p>
         <div class="hero-buttons">
-          <button id="heroPlayButton" class="primary-btn" type="button" disabled>
-            ▶ Assistir
-          </button>
-          <button id="heroListButton" class="secondary-btn" type="button">
-            ＋ Adicionar lista
-          </button>
+          <button id="heroPlayButton" class="primary-btn" type="button" disabled>▶ Assistir</button>
+          <button id="heroListButton" class="secondary-btn" type="button">＋ Adicionar lista</button>
         </div>
       </div>
     </section>
 
-    <!-- =======================================================
-         CONTENT
-    ======================================================== -->
     <section class="content">
       <div class="tabs-wrap">
         <div class="tabs">
@@ -1004,19 +1003,12 @@
   </div>
 
   <!-- =========================================================
-       PLAYER
+       PLAYER - MODO PAISAGEM AUTOMÁTICO VIA CSS
   ========================================================== -->
-  <div id="playerModal" class="modal">
+  <div id="playerModal">
     <div class="player-shell">
-      <div class="player-top">
-        <div id="playerTitle" class="player-title">Reprodutor</div>
-        <div class="player-tools">
-          <button id="pipButton" class="player-tool" type="button" title="Picture-in-Picture">▣</button>
-          <button id="fullscreenButton" class="player-tool" type="button" title="Tela cheia">⛶</button>
-          <button id="playerCloseButton" class="player-tool" type="button" title="Fechar">×</button>
-        </div>
-      </div>
-      <div id="playerArea" class="player-area">
+      <button id="playerCloseButton" class="player-close" type="button">×</button>
+      <div id="playerArea" class="video-container">
         <video id="videoPlayer" controls playsinline preload="metadata"></video>
         <div id="playerLoading" class="player-loading">
           <div class="spinner"></div>
@@ -1035,9 +1027,6 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       TOAST
-  ========================================================== -->
   <div id="toast"></div>
 
   <script>
@@ -1116,10 +1105,7 @@ https://test-streams.mux.dev/test_001/stream.m3u8
     const playerModal = document.getElementById("playerModal");
     const playerArea = document.getElementById("playerArea");
     const videoPlayer = document.getElementById("videoPlayer");
-    const playerTitle = document.getElementById("playerTitle");
     const playerCloseButton = document.getElementById("playerCloseButton");
-    const fullscreenButton = document.getElementById("fullscreenButton");
-    const pipButton = document.getElementById("pipButton");
     const playerLoading = document.getElementById("playerLoading");
     const playerMessage = document.getElementById("playerMessage");
     const playerError = document.getElementById("playerError");
@@ -1231,16 +1217,16 @@ https://test-streams.mux.dev/test_001/stream.m3u8
             category: detectCategory(title, group)
           });
           currentInfo = null;
-3        }
+        }
       }
       return items;
-u    }
+    }
 
     /* =========================================================
-       RMessageENDER
+       RENDER
     ========================================================== */
-    function.text getFilteredItems() {
-      const normalizedSearchContent = = normalizeText(searchTerm);
+    function getFilteredItems() {
+      const normalizedSearch = normalizeText(searchTerm);
       return list.filter(item => {
         const categoryMatch = currentCategory === "todos" || item.category === currentCategory;
         if (!categoryMatch) return false;
@@ -1259,8 +1245,8 @@ u    }
       } else {
         empty.style.display = "none";
         const fragment = document.createDocumentFragment();
-        filteredList.forEach(item => {
-          const card = createCard(item);
+        filteredList.forEach((item, index) => {
+          const card = createCard(item, index);
           fragment.appendChild(card);
         });
         grid.appendChild(fragment);
@@ -1268,9 +1254,10 @@ u    }
       updateHero();
     }
 
-    function createCard(item) {
+    function createCard(item, index) {
       const card = document.createElement("article");
       card.className = "card";
+      card.style.animationDelay = `${Math.min(index * 20, 400)}ms`;
       const image = item.logo && isHttpUrl(item.logo)
         ? item.logo
         : "https://dummyimage.com/600x338/111/fff&text=RENATO+IPTV";
@@ -1452,7 +1439,7 @@ u    }
     async function loadM3UFromUrl() {
       const url = m3uUrl.value.trim();
       if (!isHttpUrl(url)) {
-        m "Digite uma URL HTTP ou HTTPS válida.";
+        m3uMessage.textContent = "Digite uma URL HTTP ou HTTPS válida.";
         return;
       }
       setButtonLoading(loadUrlButton, true, "Carregando...");
@@ -1506,6 +1493,45 @@ u    }
       } finally {
         setButtonLoading(demoButton, false);
       }
+    }
+
+    /* =========================================================
+       ORIENTAÇÃO - TENTA TRAVAR EM PAISAGEM (Android)
+       No iPhone não funciona, mas o CSS já gira o vídeo
+    ========================================================== */
+    async function tryLockLandscape() {
+      try {
+        const elem = document.getElementById("playerModal");
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          await elem.webkitRequestFullscreen();
+        }
+      } catch (e) {
+        console.warn("Fullscreen não suportado:", e);
+      }
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock("landscape");
+        }
+      } catch (e) {
+        console.warn("Lock de orientação não suportado:", e);
+      }
+    }
+
+    async function unlockOrientation() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+      } catch (e) {}
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          await document.webkitExitFullscreen();
+        }
+      } catch (e) {}
     }
 
     /* =========================================================
@@ -1580,7 +1606,7 @@ u    }
         }
       };
       videoPlayer.onerror = () => {
-        if (hls || !playerModal || playerModal.style.display !== "flex") {
+        if (hls || !playerModal || !playerModal.classList.contains("active")) {
           return;
         }
         const error = videoPlayer.error;
@@ -1707,27 +1733,43 @@ u    }
     }
 
     /* =========================================================
-       ABRIR PLAYER
+       ABRIR PLAYER - MODO PAISAGEM AUTOMÁTICO (CSS + JS)
     ========================================================== */
-    function openPlayer(url, title, item = null) {
+    async function openPlayer(url, title, item = null) {
       if (!isHttpUrl(url)) {
         showToast("O endereço dessa transmissão não é válido.");
         return;
       }
       currentVideoUrl = url;
-      currentVideoTitle = title || "Reprodutor";
+      currentVideoTitle = title || "";
       currentVideoItem = item;
-      playerTitle.textContent = currentVideoTitle;
-      playerModal.style.display = "flex";
+
+      // Mostra o player
+      playerModal.classList.add("active");
+      playerModal.style.display = "block";
       document.body.classList.add("player-open");
+
+      // Reseta o botão de fechar (invisível ao abrir)
+      playerCloseButton.classList.remove("visible");
+
+      // Esconde overlays
       hidePlayerError();
       hidePlayerMessage();
       showPlayerLoading();
+
+      // Destrói HLS antigo e reseta o vídeo
       destroyHls();
       resetVideo();
+
       hlsRetryCount = 0;
       mediaRecoveryAttempts = 0;
       prepareVideoEvents();
+
+      // Tenta travar em paisagem (funciona no Android)
+      // No iPhone não funciona, mas o CSS já gira o vídeo
+      await tryLockLandscape();
+
+      // Inicia o player
       if (isHlsUrl(url) && window.Hls && Hls.isSupported()) {
         const started = startHlsPlayer(url);
         if (started) return;
@@ -1742,22 +1784,20 @@ u    }
     /* =========================================================
        FECHAR PLAYER
     ========================================================== */
-    function closePlayer() {
-      try {
-        if (document.fullscreenElement) {
-          document.exitFullscreen().catch(() => {});
-        }
-      } catch {}
+    async function closePlayer() {
       destroyHls();
       resetVideo();
       hidePlayerError();
       hidePlayerLoading();
       hidePlayerMessage();
+      playerModal.classList.remove("active");
       playerModal.style.display = "none";
       document.body.classList.remove("player-open");
+      playerCloseButton.classList.remove("visible");
       currentVideoUrl = "";
       currentVideoTitle = "";
       currentVideoItem = null;
+      await unlockOrientation();
     }
 
     /* =========================================================
@@ -1766,50 +1806,6 @@ u    }
     function retryCurrentPlayer() {
       if (!currentVideoUrl) return;
       openPlayer(currentVideoUrl, currentVideoTitle, currentVideoItem);
-    }
-
-    /* =========================================================
-       FULLSCREEN
-    ========================================================== */
-    async function toggleFullscreen() {
-      try {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
-          return;
-        }
-        if (playerArea.requestFullscreen) {
-          await playerArea.requestFullscreen();
-          return;
-        }
-        if (videoPlayer.requestFullscreen) {
-          await videoPlayer.requestFullscreen();
-          return;
-        }
-        if (typeof videoPlayer.webkitEnterFullscreen === "function") {
-          videoPlayer.webkitEnterFullscreen();
-        }
-      } catch (error) {
-        console.warn("Tela cheia indisponível:", error);
-      }
-    }
-
-    /* =========================================================
-       PICTURE IN PICTURE
-    ========================================================== */
-    async function togglePictureInPicture() {
-      try {
-        if (document.pictureInPictureElement) {
-          await document.exitPictureInPicture();
-          return;
-        }
-        if (document.pictureInPictureEnabled && videoPlayer.requestPictureInPicture) {
-          await videoPlayer.requestPictureInPicture();
-        } else {
-          showToast("Picture-in-Picture não é compatível neste navegador.");
-        }
-      } catch (error) {
-        console.warn("PiP indisponível:", error);
-      }
     }
 
     /* =========================================================
@@ -1989,11 +1985,13 @@ u    }
        PLAYER EVENTOS
     ========================================================== */
     playerCloseButton.addEventListener("click", closePlayer);
-    fullscreenButton.addEventListener("click", toggleFullscreen);
-    pipButton.addEventListener("click", togglePictureInPicture);
     retryPlayerButton.addEventListener("click", retryCurrentPlayer);
-    document.addEventListener("fullscreenchange", () => {
-      fullscreenButton.textContent = document.fullscreenElement ? "×" : "⛶";
+
+    // Toque na tela do player mostra/esconde o botão fechar
+    playerArea.addEventListener("click", (event) => {
+      if (event.target.closest(".player-close")) return;
+      if (event.target.closest(".retry-player")) return;
+      playerCloseButton.classList.toggle("visible");
     });
 
     /* =========================================================
@@ -2001,7 +1999,7 @@ u    }
     ========================================================== */
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
-      if (playerModal.style.display === "flex") {
+      if (playerModal.classList.contains("active")) {
         closePlayer();
         return;
       }
