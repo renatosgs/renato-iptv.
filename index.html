@@ -3,252 +3,177 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090a0f">
-<title>RENATO IPTV</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>RENATO IPTV PREMIUM</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
-:root {
-  --bg:#090a0f;
-  --panel:#141620;
-  --panel2:#1c1f2b;
+:root{
+  --bg:#08090d;
+  --surface:#11131a;
+  --surface2:#191c25;
   --red:#e50935;
-  --text:#fff;
-  --muted:#9296a5;
+  --white:#fff;
+  --muted:#9296a4;
 }
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--white);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-button,input {font:inherit}
-button {cursor:pointer}
-header {
-  height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 17px;
-  background:#101119;
-  border-bottom:1px solid #252735;
-  position:sticky;
-  top:0;
-  z-index:10;
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+header{
+  height:65px;padding:0 18px;display:flex;
+  align-items:center;justify-content:space-between;
+  background:#0c0d12;border-bottom:1px solid #242631;
+  position:sticky;top:0;z-index:20;
 }
-.logo {
-  font-size:23px;
-  font-weight:900;
-  letter-spacing:1px;
+.logo{font-size:22px;font-weight:950;letter-spacing:1px}
+.logo span{color:var(--red)}
+.status{font-size:11px;color:#a1a4b0}
+.page{padding:16px 16px 100px}
+.login{
+  max-width:420px;margin:45px auto;padding:27px;
+  border:1px solid #282b37;border-radius:20px;
+  background:linear-gradient(145deg,#191c26,#0e1016);
 }
-.logo span {color:var(--red)}
-.header-status {font-size:11px;color:#8d91a0}
-.page {padding:16px;padding-bottom:100px}
-.hidden {display:none!important}
-h2 {font-size:20px;margin:10px 0 15px}
-h3 {font-size:15px;margin:0 0 12px}
-.muted {color:var(--muted)}
-.login {
-  max-width:430px;
-  margin:55px auto;
-  background:var(--panel);
-  padding:25px;
-  border-radius:18px;
-  border:1px solid #292c39;
+.login h1{font-size:29px;margin:0}
+.login h1 span{color:var(--red)}
+.login p{color:var(--muted);font-size:13px}
+.field{
+  width:100%;padding:15px;margin:7px 0;
+  background:#090a0f;border:1px solid #303340;
+  border-radius:11px;color:white;outline:none;
 }
-.login h1 {font-size:27px;margin:0 0 8px}
-.login h1 span {color:var(--red)}
-.field {
-  width:100%;
-  background:#090b12;
-  color:white;
-  border:1px solid #303342;
-  padding:15px;
-  border-radius:10px;
-  margin:7px 0;
-  outline:none;
+.field:focus{border-color:var(--red)}
+.primary{
+  border:0;border-radius:10px;background:var(--red);
+  color:white;padding:14px 18px;font-weight:800;
 }
-.field:focus {border-color:var(--red)}
-.primary {
-  background:var(--red);
-  color:white;
-  border:0;
-  padding:14px;
-  width:100%;
-  border-radius:10px;
-  font-weight:800;
-  margin-top:12px;
+.login .primary{width:100%;margin-top:12px}
+.secondary{
+  border:1px solid #303340;background:#1b1e28;
+  color:white;border-radius:9px;padding:10px 13px;
 }
-.secondary {
-  background:var(--panel2);
-  color:white;
-  border:1px solid #303342;
-  padding:10px 13px;
-  border-radius:9px;
+.hero{
+  min-height:245px;border-radius:19px;overflow:hidden;
+  position:relative;margin:8px 0 24px;
+  display:flex;align-items:flex-end;
+  background:linear-gradient(90deg,#171923 0%,#171923dd 48%,#17192333),
+  linear-gradient(0deg,#090a0f,#272b3b);
+  border:1px solid #292c38;
 }
-.tabs {
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:12px 0;
+.hero-content{padding:23px;position:relative;z-index:2;max-width:85%}
+.hero-label{
+  color:#ff526f;font-size:10px;font-weight:900;
+  letter-spacing:2px;text-transform:uppercase;
+}
+.hero h1{font-size:29px;margin:9px 0}
+.hero p{font-size:12px;color:#c4c6ce;line-height:1.5}
+.hero button{margin-top:8px}
+.section-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:22px 0 12px;
+}
+.section-heading h2{font-size:18px;margin:0}
+.section-heading span{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;margin:13px 0}
+.toolbar input{margin:0;flex:1;min-width:0}
+.tabs{
+  display:flex;gap:8px;overflow:auto;padding:5px 0 15px;
   scrollbar-width:none;
 }
-.tab {
-  background:var(--panel);
-  color:#aaa;
-  border:1px solid #292c39;
-  border-radius:20px;
-  padding:10px 17px;
-  white-space:nowrap;
+.tab{
+  white-space:nowrap;padding:10px 17px;border-radius:30px;
+  background:#151720;border:1px solid #292c38;
+  color:#a5a8b3;font-size:12px;font-weight:750;
 }
-.tab.active {background:var(--red);color:white;border-color:var(--red)}
-.toolbar {
-  display:flex;
-  gap:8px;
-  margin:10px 0;
+.tab.active{background:var(--red);border-color:var(--red);color:white}
+.hero-banner{
+  width:100%;height:100%;position:absolute;inset:0;
+  object-fit:cover;opacity:.3;
 }
-.toolbar input {flex:1;min-width:0;margin:0}
-.layout {
-  display:grid;
-  grid-template-columns:125px minmax(0,1fr);
+.layout{display:grid;grid-template-columns:125px minmax(0,1fr);gap:12px}
+.categories{
+  display:flex;flex-direction:column;gap:7px;
+  max-height:65vh;overflow:auto;
+}
+.category{
+  text-align:left;padding:10px;border-radius:9px;
+  background:#151720;border:1px solid #292c38;
+  color:#b8bbc5;font-size:11px;
+}
+.category.active{background:#39121e;border-color:var(--red);color:white}
+.items{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
   gap:12px;
 }
-.categories {
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-  max-height:65vh;
-  overflow:auto;
-}
-.category {
-  background:var(--panel);
-  color:#bbb;
-  border:1px solid #292c39;
-  border-radius:8px;
-  padding:10px;
-  text-align:left;
-  font-size:12px;
-}
-.category.active {background:#35131f;color:white;border-color:var(--red)}
-.items {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(125px,1fr));
-  gap:12px;
-}
-.item {
-  background:var(--panel);
-  border:1px solid #292c39;
-  border-radius:12px;
-  overflow:hidden;
+.item{
+  background:var(--surface);border:1px solid #242733;
+  border-radius:13px;overflow:hidden;position:relative;
   min-width:0;
-  position:relative;
 }
-.item img {
-  width:100%;
-  height:105px;
-  object-fit:contain;
-  background:#090b12;
+.item img{
+  width:100%;height:145px;object-fit:cover;
+  background:#171923;display:block;
 }
-.item-info {padding:9px}
-.item-name {
-  font-size:12px;
-  font-weight:700;
-  line-height:1.4;
-  min-height:34px;
-  overflow-wrap:anywhere;
+.item-info{padding:10px}
+.item-name{
+  font-size:12px;font-weight:750;line-height:1.4;
+  min-height:34px;overflow-wrap:anywhere;
 }
-.item-actions {display:flex;gap:6px;margin-top:8px}
-.item-actions button {
-  flex:1;
-  border:0;
-  border-radius:7px;
-  padding:8px 3px;
-  background:#292c39;
-  color:white;
-  font-size:12px;
+.item-actions{display:flex;gap:6px;margin-top:9px}
+.item-actions button{
+  flex:1;border:0;border-radius:8px;padding:9px 3px;
+  background:#282b36;color:white;font-size:11px;
 }
-.item-actions button.play {background:var(--red)}
-.star {
-  position:absolute;
-  top:6px;
-  right:6px;
-  border:0;
-  border-radius:20px;
-  background:#090a0fcc;
-  color:white;
-  padding:6px;
+.item-actions .play{background:var(--red)}
+.star{
+  position:absolute;top:8px;right:8px;
+  border:0;border-radius:30px;background:#090a0dcc;
+  color:white;padding:7px 9px;font-size:15px;
 }
-.player {
-  position:fixed;
-  inset:0;
-  background:#000;
-  z-index:30;
-  display:flex;
-  flex-direction:column;
+.empty{
+  grid-column:1/-1;text-align:center;
+  padding:35px 10px;color:var(--muted);font-size:13px;
 }
-.player-top {
-  height:55px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 15px;
-}
-.player video {
-  width:100%;
-  flex:1;
-  min-height:0;
-  background:#000;
-  object-fit:contain;
-}
-.player-bottom {padding:12px 15px 25px;background:#101119}
-.player-bottom button {
-  background:#292c39;color:white;border:0;
-  padding:10px;border-radius:8px;margin-right:5px;
-}
-.notice {
-  padding:12px;
-  background:#24151b;
-  color:#ffb5c3;
-  border-radius:9px;
-  margin:12px 0;
-  font-size:13px;
-}
-.empty {
-  color:var(--muted);
-  text-align:center;
-  padding:35px 10px;
-  grid-column:1/-1;
-}
-.bottom-nav {
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:15;
-  background:#11131d;
-  border-top:1px solid #292c39;
-  display:flex;
-  justify-content:space-around;
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:25;
+  background:#10121a;border-top:1px solid #292c38;
+  display:flex;justify-content:space-around;
   padding:10px 3px calc(10px + env(safe-area-inset-bottom));
 }
-.bottom-nav button {
-  color:#9a9eac;
-  background:none;
-  border:0;
-  font-size:11px;
+.bottom-nav button{
+  border:0;background:none;color:#8d91a0;font-size:10px;
 }
-.bottom-nav button strong {
-  display:block;
-  font-size:19px;
-  margin-bottom:3px;
+.bottom-nav strong{display:block;font-size:20px;margin-bottom:3px}
+.bottom-nav button.active{color:var(--red)}
+.player{
+  position:fixed;inset:0;background:#000;z-index:50;
+  display:flex;flex-direction:column;
 }
-.bottom-nav button.active {color:var(--red)}
-@media(max-width:360px) {
-  .layout {grid-template-columns:105px minmax(0,1fr)}
-  .items {grid-template-columns:repeat(2,minmax(0,1fr))}
+.player-top{
+  height:58px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 15px;
+  background:#11131b;
+}
+.player video{
+  width:100%;flex:1;min-height:0;
+  background:black;object-fit:contain;
+}
+.player-bottom{padding:13px;background:#11131b}
+.player-bottom button{
+  border:0;border-radius:8px;padding:10px;
+  margin-right:5px;background:#292c38;color:white;
+}
+#message{font-size:12px;color:#ffb4c1;margin-top:10px}
+@media(min-width:650px){
+  .items{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .hero{min-height:300px}
+  .hero h1{font-size:38px}
 }
 </style>
 </head>
@@ -257,27 +182,34 @@ h3 {font-size:15px;margin:0 0 12px}
 
 <header>
   <div class="logo">RENATO <span>IPTV</span></div>
-  <div class="header-status" id="status">Desconectado</div>
+  <div class="status" id="status">● Desconectado</div>
 </header>
 
 <section id="loginPage" class="page">
   <div class="login">
     <h1>RENATO <span>IPTV</span></h1>
-    <p class="muted">Entre com seus dados de acesso IPTV.</p>
-
-    <input id="server" class="field" placeholder="Servidor (https://servidor.com)">
+    <p>Entre para acessar seu entretenimento.</p>
+    <input id="server" class="field" placeholder="Servidor">
     <input id="username" class="field" placeholder="Usuário">
     <input id="password" class="field" type="password" placeholder="Senha">
-
-    <button class="primary" onclick="connect()">CONECTAR</button>
-    <div id="loginMessage" class="muted" style="margin-top:15px;font-size:13px"></div>
+    <button class="primary" onclick="connect()">ENTRAR NO APLICATIVO</button>
+    <div id="loginMessage" class="muted"></div>
   </div>
 </section>
 
 <section id="appPage" class="page hidden">
 
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-label">RENATO IPTV PREMIUM</div>
+      <h1>Seu entretenimento começa aqui.</h1>
+      <p>TV ao vivo, filmes e séries em um só lugar.</p>
+      <button class="primary" onclick="changeType('live')">▶ Assistir TV</button>
+    </div>
+  </div>
+
   <div class="toolbar">
-    <input id="search" class="field" placeholder="Buscar canais, filmes e séries..." oninput="renderItems()">
+    <input id="search" class="field" placeholder="⌕  Buscar conteúdo..." oninput="renderItems()">
     <button class="secondary" onclick="refreshAll()">↻</button>
   </div>
 
@@ -288,12 +220,14 @@ h3 {font-size:15px;margin:0 0 12px}
     <button class="tab" data-type="favorites" onclick="changeType('favorites')">♥ FAVORITOS</button>
   </div>
 
+  <div class="section-heading">
+    <h2 id="catalogTitle">TV ao vivo</h2>
+    <span id="sectionTitle"></span>
+  </div>
+
   <div class="layout">
     <aside id="categories" class="categories"></aside>
-    <main>
-      <div id="sectionTitle" class="muted" style="font-size:12px;margin:5px 0 12px"></div>
-      <div id="items" class="items"></div>
-    </main>
+    <main id="items" class="items"></main>
   </div>
 </section>
 
@@ -307,559 +241,334 @@ h3 {font-size:15px;margin:0 0 12px}
 
 <div id="player" class="player hidden">
   <div class="player-top">
-    <button class="secondary" onclick="closePlayer()">✕ VOLTAR</button>
-    <span id="playerTitle">RENATO IPTV</span>
+    <button class="secondary" onclick="closePlayer()">✕ Voltar</button>
+    <strong id="playerTitle">RENATO IPTV</strong>
   </div>
   <video id="video" controls playsinline webkit-playsinline></video>
   <div class="player-bottom">
     <button onclick="toggleFullscreen()">⛶ Tela cheia</button>
-    <button onclick="closePlayer()">Fechar player</button>
-    <div id="playerMessage" class="muted" style="font-size:12px;margin-top:10px"></div>
+    <button onclick="closePlayer()">Fechar</button>
+    <div id="message"></div>
   </div>
 </div>
 
 <script>
-const state = {
-  server:"",
-  username:"",
-  password:"",
-  token:null,
-  type:"live",
-  category:"all",
-  catalogs:{
-    live:[],
-    movie:[],
-    series:[]
-  },
-  categories:{
-    live:[],
-    movie:[],
-    series:[]
-  },
-  favorites:new Set(),
-  hls:null,
-  currentUrl:null
+const state={
+ server:"",username:"",password:"",
+ type:"live",category:"all",
+ catalogs:{live:[],movie:[],series:[]},
+ categories:{live:[],movie:[],series:[]},
+ favorites:new Set(JSON.parse(localStorage.getItem("renato_favorites")||"[]")),
+ hls:null
 };
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-function cleanServer(value) {
-  return value.trim().replace(/\/+$/,"");
+function cleanServer(v){return v.trim().replace(/\/+$/,"")}
+
+function apiUrl(action,extra={}){
+ const p=new URLSearchParams({
+  username:state.username,
+  password:state.password,
+  action,...extra
+ });
+ return state.server+"/player_api.php?"+p.toString();
 }
 
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[char]);
+async function api(action,extra={}){
+ const r=await fetch(apiUrl(action,extra));
+ if(!r.ok)throw new Error("Erro HTTP "+r.status);
+ return r.json();
 }
 
-function apiUrl(action, extra={}) {
-  const params = new URLSearchParams({
-    username:state.username,
-    password:state.password,
-    action,
-    ...extra
-  });
-  return state.server + "/player_api.php?" + params.toString();
-}
+async function connect(){
+ state.server=cleanServer($("server").value);
+ state.username=$("username").value.trim();
+ state.password=$("password").value;
 
-async function api(action, extra={}) {
-  const response = await fetch(apiUrl(action,extra));
-  if (!response.ok) {
-    throw new Error("Erro HTTP " + response.status);
-  }
-  return await response.json();
-}
+ if(!state.server||!state.username||!state.password){
+  $("loginMessage").textContent="Preencha todos os campos.";
+  return;
+ }
 
-async function connect() {
-  state.server = cleanServer($("server").value);
-  state.username = $("username").value.trim();
-  state.password = $("password").value;
+ if(!/^https?:\/\//i.test(state.server)){
+  state.server="http://"+state.server;
+ }
 
-  if (!state.server || !state.username || !state.password) {
-    $("loginMessage").textContent = "Preencha servidor, usuário e senha.";
-    return;
-  }
+ $("loginMessage").textContent="Conectando...";
 
-  if (!/^https?:\/\//i.test(state.server)) {
-    state.server = "http://" + state.server;
-  }
+ try{
+  const info=await api("get_live_streams");
+  if(!Array.isArray(info))throw new Error("Acesso não validado.");
 
-  $("loginMessage").textContent = "Conectando ao servidor...";
-
-  try {
-    const response = await fetch(
-      apiUrl("get_live_categories")
-    );
-
-    if (!response.ok) throw new Error("Servidor não respondeu.");
-
-    const userInfo = await api("get_live_streams");
-
-    if (!Array.isArray(userInfo)) {
-      throw new Error("Não foi possível validar o acesso.");
-    }
-
-    state.catalogs.live = userInfo.map(x => ({...x,_kind:"live"}));
-
-    await loadCatalog("live");
-    await loadCatalog("movie");
-    await loadCatalog("series");
-
-    $("loginPage").classList.add("hidden");
-    $("appPage").classList.remove("hidden");
-    $("bottomNav").classList.remove("hidden");
-    $("status").textContent = "Conectado";
-
-    changeType("live");
-  } catch(error) {
-    $("loginMessage").textContent =
-      "Falha ao conectar: " + error.message +
-      ". Verifique os dados e o acesso ao servidor.";
-  }
-}
-
-async function loadCatalog(type) {
-  const actions = {
-    live:["get_live_streams","get_live_categories"],
-    movie:["get_vod_streams","get_vod_categories"],
-    series:["get_series","get_series_categories"]
-  };
-
-  const [itemsAction,categoriesAction] = actions[type];
-
-  const results = await Promise.all([
-    api(itemsAction),
-    api(categoriesAction)
+  await Promise.all([
+   loadCatalog("live"),
+   loadCatalog("movie"),
+   loadCatalog("series")
   ]);
 
-  if (!Array.isArray(results[0])) {
-    throw new Error("O servidor não retornou o catálogo.");
-  }
-
-  state.catalogs[type] = results[0].map(x => ({
-    ...x,
-    _kind:type
-  }));
-
-  state.categories[type] = Array.isArray(results[1])
-    ? results[1]
-    : [];
+  $("loginPage").classList.add("hidden");
+  $("appPage").classList.remove("hidden");
+  $("bottomNav").classList.remove("hidden");
+  $("status").textContent="● Conectado";
+  changeType("live");
+ }catch(e){
+  $("loginMessage").textContent="Falha: "+e.message+
+   ". Confira os dados e o acesso ao servidor.";
+ }
 }
 
-async function refreshAll() {
-  $("sectionTitle").textContent = "Atualizando catálogo...";
-  try {
-    await Promise.all([
-      loadCatalog("live"),
-      loadCatalog("movie"),
-      loadCatalog("series")
-    ]);
-    renderCategories();
-    renderItems();
-    $("sectionTitle").textContent = "Catálogo atualizado";
-  } catch(error) {
-    $("sectionTitle").textContent =
-      "Não foi possível atualizar: " + error.message;
-  }
+async function loadCatalog(type){
+ const actions={
+  live:["get_live_streams","get_live_categories"],
+  movie:["get_vod_streams","get_vod_categories"],
+  series:["get_series","get_series_categories"]
+ };
+ const [a,b]=actions[type];
+ const [items,cats]=await Promise.all([api(a),api(b)]);
+ if(!Array.isArray(items))throw new Error("Catálogo indisponível.");
+ state.catalogs[type]=items.map(x=>({...x,_kind:type}));
+ state.categories[type]=Array.isArray(cats)?cats:[];
 }
 
-function changeType(type) {
-  state.type = type;
-  state.category = "all";
-
-  document.querySelectorAll(".tab").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.type === type
-    );
-  });
-
-  document.querySelectorAll(".bottom-nav button").forEach((button,i) => {
-    button.classList.toggle(
-      "active",
-      ["live","movie","series","favorites"][i] === type
-    );
-  });
-
+async function refreshAll(){
+ $("sectionTitle").textContent="Atualizando...";
+ try{
+  await Promise.all(["live","movie","series"].map(loadCatalog));
   renderCategories();
   renderItems();
+  $("sectionTitle").textContent="Atualizado";
+ }catch(e){
+  $("sectionTitle").textContent="Erro ao atualizar";
+ }
 }
 
-function renderCategories() {
-  const container = $("categories");
-  container.innerHTML = "";
+function changeType(type){
+ state.type=type;
+ state.category="all";
+ const names={live:"TV ao vivo",movie:"Filmes",series:"Séries",favorites:"Favoritos"};
+ $("catalogTitle").textContent=names[type];
+ document.querySelectorAll(".tab").forEach(b=>
+  b.classList.toggle("active",b.dataset.type===type)
+ );
+ document.querySelectorAll(".bottom-nav button").forEach((b,i)=>
+  b.classList.toggle("active",["live","movie","series","favorites"][i]===type)
+ );
+ renderCategories();
+ renderItems();
+}
 
-  if (state.type === "favorites") {
-    container.innerHTML =
-      '<button class="category active">Meus favoritos</button>';
-    return;
-  }
+function renderCategories(){
+ const c=$("categories");
+ c.innerHTML="";
+ if(state.type==="favorites"){
+  c.innerHTML='<button class="category active">Meus favoritos</button>';
+  return;
+ }
+ const all=document.createElement("button");
+ all.className="category"+(state.category==="all"?" active":"");
+ all.textContent="Todas";
+ all.onclick=()=>{
+  state.category="all";renderCategories();renderItems();
+ };
+ c.appendChild(all);
 
-  const all = document.createElement("button");
-  all.className = "category active";
-  all.textContent = "Todas";
-  all.onclick = () => {
-    state.category = "all";
-    renderCategories();
-    renderItems();
+ state.categories[state.type].forEach(cat=>{
+  const b=document.createElement("button");
+  b.className="category"+(String(state.category)===String(cat.category_id)?" active":"");
+  b.textContent=cat.category_name||"Categoria";
+  b.onclick=()=>{
+   state.category=String(cat.category_id);
+   renderCategories();renderItems();
   };
-  container.appendChild(all);
+  c.appendChild(b);
+ });
+}
 
-  state.categories[state.type].forEach(category => {
-    const button = document.createElement("button");
-    button.className = "category";
-    button.textContent = category.category_name || "Categoria";
+function favoriteKey(item){
+ return (item._kind||state.type)+":"+
+  (item.stream_id||item.series_id||item.id);
+}
 
-    if (String(state.category) === String(category.category_id)) {
-      button.classList.add("active");
-    }
+function getCurrentItems(){
+ let items=state.type==="favorites"
+  ?Object.values(state.catalogs).flat().filter(x=>state.favorites.has(favoriteKey(x)))
+  :state.catalogs[state.type]||[];
 
-    button.onclick = () => {
-      state.category = String(category.category_id);
-      renderCategories();
-      renderItems();
-    };
+ if(state.type!=="favorites"&&state.category!=="all"){
+  items=items.filter(x=>String(x.category_id)===String(state.category));
+ }
+ const q=$("search").value.trim().toLowerCase();
+ if(q)items=items.filter(x=>String(x.name||"").toLowerCase().includes(q));
+ return items;
+}
 
-    container.appendChild(button);
+function renderItems(){
+ const c=$("items"),items=getCurrentItems();
+ $("sectionTitle").textContent=items.length+" conteúdos";
+ c.innerHTML="";
+ if(!items.length){
+  c.innerHTML='<div class="empty">Nenhum conteúdo encontrado.</div>';
+  return;
+ }
+
+ items.forEach(item=>{
+  const type=item._kind||state.type;
+  const card=document.createElement("article");
+  card.className="item";
+
+  const img=document.createElement("img");
+  img.loading="lazy";
+  img.alt=item.name||"Conteúdo";
+  img.src=item.stream_icon||item.cover||item.movie_image||"";
+  img.onerror=()=>{img.style.visibility="hidden"};
+
+  const star=document.createElement("button");
+  star.className="star";
+  star.textContent=state.favorites.has(favoriteKey(item))?"♥":"♡";
+  star.onclick=()=>toggleFavorite(item);
+
+  const info=document.createElement("div");
+  info.className="item-info";
+
+  const name=document.createElement("div");
+  name.className="item-name";
+  name.textContent=item.name||"Sem nome";
+
+  const actions=document.createElement("div");
+  actions.className="item-actions";
+
+  const play=document.createElement("button");
+  play.className="play";
+  play.textContent=type==="series"?"Abrir":"Assistir";
+  play.onclick=()=>type==="series"?openSeries(item):playItem(item,type);
+
+  actions.appendChild(play);
+  info.append(name,actions);
+  card.append(img,star,info);
+  c.appendChild(card);
+ });
+}
+
+function toggleFavorite(item){
+ const key=favoriteKey(item);
+ if(state.favorites.has(key))state.favorites.delete(key);
+ else state.favorites.add(key);
+ localStorage.setItem("renato_favorites",JSON.stringify([...state.favorites]));
+ renderItems();
+}
+
+function streamUrl(item,type){
+ const id=item.stream_id||item.id;
+ const base=state.server+"/"+type.replace("movie","movie");
+ const ext=item.container_extension||"mp4";
+ const folder=type==="live"?"live":type==="movie"?"movie":"series";
+ const suffix=type==="live"?"m3u8":ext;
+ return base.replace(/\/$/,"")+"/"+encodeURIComponent(state.username)+
+  "/"+encodeURIComponent(state.password)+"/"+encodeURIComponent(id)+"."+suffix;
+}
+
+function playItem(item,type){
+ openPlayer(streamUrl(item,type),item.name);
+}
+
+function destroyPlayer(){
+ if(state.hls){state.hls.destroy();state.hls=null}
+ const v=$("video");
+ v.pause();v.removeAttribute("src");v.load();
+}
+
+function openPlayer(url,title){
+ destroyPlayer();
+ const v=$("video");
+ $("player").classList.remove("hidden");
+ $("playerTitle").textContent=title||"RENATO IPTV";
+ $("message").textContent="Carregando...";
+ if(/\.m3u8($|\?)/i.test(url)&&v.canPlayType("application/vnd.apple.mpegurl")){
+  v.src=url;
+  v.play().catch(()=>{$("message").textContent="Toque em reproduzir."});
+ }else if(window.Hls&&Hls.isSupported()&&/\.m3u8($|\?)/i.test(url)){
+  state.hls=new Hls();
+  state.hls.loadSource(url);
+  state.hls.attachMedia(v);
+  state.hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+  state.hls.on(Hls.Events.ERROR,(e,d)=>{
+   if(d.fatal)$("message").textContent="Erro no fluxo de vídeo.";
   });
-
-  if (state.category === "all") all.classList.add("active");
+ }else{
+  v.src=url;
+  v.play().catch(()=>$("message").textContent="Toque em reproduzir.");
+ }
 }
 
-function getCurrentItems() {
-  let items = [];
-
-  if (state.type === "favorites") {
-    items = [
-      ...state.catalogs.live,
-      ...state.catalogs.movie,
-      ...state.catalogs.series
-    ].filter(item =>
-      state.favorites.has(favoriteKey(item))
-    );
-  } else {
-    items = state.catalogs[state.type] || [];
-  }
-
-  if (state.type !== "favorites" && state.category !== "all") {
-    items = items.filter(item =>
-      String(item.category_id) === String(state.category)
-    );
-  }
-
-  const query = $("search").value.trim().toLowerCase();
-
-  if (query) {
-    items = items.filter(item =>
-      String(item.name || "").toLowerCase().includes(query)
-    );
-  }
-
-  return items;
+function closePlayer(){
+ destroyPlayer();
+ $("player").classList.add("hidden");
+ $("message").textContent="";
 }
 
-function renderItems() {
-  const container = $("items");
-  const items = getCurrentItems();
+function toggleFullscreen(){
+ const v=$("video");
+ if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
+ else if(v.requestFullscreen)v.requestFullscreen();
+}
 
-  $("sectionTitle").textContent =
-    items.length + " itens encontrados";
+async function openSeries(item){
+ $("sectionTitle").textContent="Carregando episódios...";
+ try{
+  const data=await api("get_series_info",{series_id:item.series_id||item.id});
+  const episodes=data.episodes||{};
+  const c=$("items");
+  c.innerHTML="";
 
-  container.innerHTML = "";
+  Object.keys(episodes).forEach(season=>{
+   const heading=document.createElement("h3");
+   heading.style.gridColumn="1/-1";
+   heading.textContent="Temporada "+season;
+   c.appendChild(heading);
 
-  if (!items.length) {
-    container.innerHTML =
-      '<div class="empty">Nenhum conteúdo encontrado.</div>';
-    return;
-  }
-
-  items.forEach(item => {
-    const type = item._kind || state.type;
-    const image = item.stream_icon || item.cover || item.movie_image || "";
-    const favorite = state.favorites.has(favoriteKey(item));
-
-    const card = document.createElement("article");
-    card.className = "item";
-
-    const img = document.createElement("img");
-    img.loading = "lazy";
-    img.alt = item.name || "Conteúdo";
-    img.src = image;
-    img.onerror = () => {
-      img.style.visibility = "hidden";
+   (episodes[season]||[]).forEach(ep=>{
+    const card=document.createElement("article");
+    card.className="item";
+    const info=document.createElement("div");
+    info.className="item-info";
+    const name=document.createElement("div");
+    name.className="item-name";
+    name.textContent=ep.title||ep.name||"Episódio "+ep.episode_num;
+    const btn=document.createElement("button");
+    btn.className="primary";
+    btn.style.width="100%";
+    btn.textContent="Assistir";
+    btn.onclick=()=>{
+     const url=state.server+"/series/"+encodeURIComponent(state.username)+
+      "/"+encodeURIComponent(state.password)+"/"+encodeURIComponent(ep.id)+
+      "."+(ep.container_extension||"mp4");
+     openPlayer(url,name.textContent);
     };
-
-    const star = document.createElement("button");
-    star.className = "star";
-    star.textContent = favorite ? "♥" : "♡";
-    star.onclick = () => toggleFavorite(item);
-
-    const info = document.createElement("div");
-    info.className = "item-info";
-
-    const name = document.createElement("div");
-    name.className = "item-name";
-    name.textContent = item.name || "Sem nome";
-
-    const actions = document.createElement("div");
-    actions.className = "item-actions";
-
-    const play = document.createElement("button");
-    play.className = "play";
-    play.textContent = type === "series" ? "Abrir" : "Assistir";
-    play.onclick = () => {
-      if (type === "series") {
-        openSeries(item);
-      } else {
-        playItem(item,type);
-      }
-    };
-
-    actions.appendChild(play);
-    info.append(name,actions);
-    card.append(img,star,info);
-    container.appendChild(card);
+    info.append(name,btn);card.appendChild(info);c.appendChild(card);
+   });
   });
+  $("sectionTitle").textContent="Temporadas: "+Object.keys(episodes).length;
+ }catch(e){
+  $("sectionTitle").textContent="Erro ao carregar episódios";
+ }
 }
 
-function favoriteKey(item) {
-  return (item._kind || state.type) + ":" +
-    (item.stream_id || item.series_id || item.id);
+function logout(){
+ closePlayer();
+ state.server="";state.username="";state.password="";
+ state.catalogs={live:[],movie:[],series:[]};
+ state.categories={live:[],movie:[],series:[]};
+ $("appPage").classList.add("hidden");
+ $("bottomNav").classList.add("hidden");
+ $("loginPage").classList.remove("hidden");
+ $("status").textContent="● Desconectado";
+ $("loginMessage").textContent="";
 }
 
-function toggleFavorite(item) {
-  const key = favoriteKey(item);
-
-  if (state.favorites.has(key)) {
-    state.favorites.delete(key);
-  } else {
-    state.favorites.add(key);
-  }
-
-  renderItems();
-}
-
-function streamExtension(item) {
-  return item.container_extension || "mp4";
-}
-
-function streamUrl(item,type) {
-  const id = item.stream_id || item.id;
-
-  if (type === "live") {
-    return state.server + "/live/" +
-      encodeURIComponent(state.username) + "/" +
-      encodeURIComponent(state.password) + "/" +
-      encodeURIComponent(id) + ".m3u8";
-  }
-
-  if (type === "movie") {
-    return state.server + "/movie/" +
-      encodeURIComponent(state.username) + "/" +
-      encodeURIComponent(state.password) + "/" +
-      encodeURIComponent(id) + "." +
-      encodeURIComponent(streamExtension(item));
-  }
-
-  return state.server + "/series/" +
-    encodeURIComponent(state.username) + "/" +
-    encodeURIComponent(state.password) + "/" +
-    encodeURIComponent(id) + "." +
-    encodeURIComponent(streamExtension(item));
-}
-
-function playItem(item,type) {
-  const url = streamUrl(item,type);
-  openPlayer(url,item.name);
-}
-
-function openPlayer(url,title) {
-  const video = $("video");
-
-  destroyPlayer();
-
-  $("player").classList.remove("hidden");
-  $("playerTitle").textContent = title || "RENATO IPTV";
-  $("playerMessage").textContent = "Carregando reprodução...";
-
-  state.currentUrl = url;
-
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-
-  const isHls = /\.m3u8($|\?)/i.test(url);
-
-  if (isHls && video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = url;
-    video.play().catch(() => {
-      $("playerMessage").textContent =
-        "Toque no botão de reprodução para iniciar.";
-    });
-    return;
-  }
-
-  if (isHls && window.Hls && Hls.isSupported()) {
-    state.hls = new Hls({
-      enableWorker:true,
-      lowLatencyMode:false,
-      maxBufferLength:30
-    });
-
-    state.hls.loadSource(url);
-    state.hls.attachMedia(video);
-
-    state.hls.on(Hls.Events.MANIFEST_PARSED,() => {
-      video.play().catch(() => {
-        $("playerMessage").textContent =
-          "Toque em reproduzir para iniciar.";
-      });
-    });
-
-    state.hls.on(Hls.Events.ERROR,(event,data) => {
-      if (data.fatal) {
-        $("playerMessage").textContent =
-          "Erro no fluxo. Verifique o formato e o servidor.";
-        destroyPlayer();
-      }
-    });
-
-    return;
-  }
-
-  video.src = url;
-  video.play().catch(() => {
-    $("playerMessage").textContent =
-      "Não foi possível iniciar automaticamente. Toque em reproduzir.";
-  });
-}
-
-function destroyPlayer() {
-  if (state.hls) {
-    state.hls.destroy();
-    state.hls = null;
-  }
-
-  const video = $("video");
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-}
-
-function closePlayer() {
-  destroyPlayer();
-  $("player").classList.add("hidden");
-  $("playerMessage").textContent = "";
-}
-
-function toggleFullscreen() {
-  const video = $("video");
-
-  if (video.webkitEnterFullscreen) {
-    video.webkitEnterFullscreen();
-  } else if (video.requestFullscreen) {
-    video.requestFullscreen();
-  }
-}
-
-async function openSeries(item) {
-  $("sectionTitle").textContent = "Carregando episódios...";
-
-  try {
-    const data = await api("get_series_info",{
-      series_id:item.series_id || item.id
-    });
-
-    const episodes = data.episodes || {};
-    const container = $("items");
-    container.innerHTML = "";
-
-    const title = document.createElement("h3");
-    title.textContent = item.name;
-    title.style.gridColumn = "1/-1";
-    container.appendChild(title);
-
-    const seasons = Object.keys(episodes);
-
-    if (!seasons.length) {
-      container.innerHTML +=
-        '<div class="empty">Nenhum episódio encontrado.</div>';
-      return;
-    }
-
-    seasons.forEach(season => {
-      const seasonTitle = document.createElement("h3");
-      seasonTitle.textContent = "Temporada " + season;
-      seasonTitle.style.gridColumn = "1/-1";
-      container.appendChild(seasonTitle);
-
-      (episodes[season] || []).forEach(episode => {
-        const card = document.createElement("article");
-        card.className = "item";
-
-        const info = document.createElement("div");
-        info.className = "item-info";
-
-        const name = document.createElement("div");
-        name.className = "item-name";
-        name.textContent = episode.title ||
-          episode.name ||
-          "Episódio " + episode.episode_num;
-
-        const play = document.createElement("button");
-        play.className = "primary";
-        play.textContent = "Assistir episódio";
-        play.onclick = () => {
-          const url = state.server + "/series/" +
-            encodeURIComponent(state.username) + "/" +
-            encodeURIComponent(state.password) + "/" +
-            encodeURIComponent(episode.id) + "." +
-            encodeURIComponent(episode.container_extension || "mp4");
-
-          openPlayer(url,name.textContent);
-        };
-
-        info.append(name,play);
-        card.appendChild(info);
-        container.appendChild(card);
-      });
-    });
-
-    $("sectionTitle").textContent =
-      seasons.length + " temporadas";
-
-  } catch(error) {
-    $("sectionTitle").textContent =
-      "Erro ao carregar série: " + error.message;
-  }
-}
-
-function logout() {
-  closePlayer();
-
-  state.server = "";
-  state.username = "";
-  state.password = "";
-  state.catalogs = {live:[],movie:[],series:[]};
-  state.categories = {live:[],movie:[],series:[]};
-  state.favorites.clear();
-
-  $("appPage").classList.add("hidden");
-  $("bottomNav").classList.add("hidden");
-  $("loginPage").classList.remove("hidden");
-  $("status").textContent = "Desconectado";
-  $("loginMessage").textContent = "";
-}
-
-document.addEventListener("keydown",event => {
-  if (event.key === "Escape") closePlayer();
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closePlayer();
 });
 </script>
-
 </body>
 </html>
